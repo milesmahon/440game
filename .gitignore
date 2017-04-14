@@ -14,3 +14,5 @@ zeekPlayer.cc
 AtroposPlayer.java        
 bwebPlayer                
 zookPlayer.py
+.DS_Store
+notes.txt

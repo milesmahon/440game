@@ -47,6 +47,11 @@ Board::Board(Board *oldBoard, string newMove){
   int color = stoi(parsedMove.substr(0, pos));
 }
 
+  //db: print the vector contents
+  //from stackoverflow
+  // for (std::vector<string>::const_iterator i = rows.begin(); i != rows.end(); ++i)
+  //   cerr << *i << endl;
+  // cerr << lastMove << endl;
 
 
 int main(int argc, char* argv[])
