@@ -18,9 +18,9 @@ int main(int argc, char* argv[])
   size_t pos = 0;
   string token;
   while ((pos = inpt.find(delimiter)) != string::npos) { //while can still find "["
-      token = inpt.substr(0, pos-1); //substr from [ to ], don't include ]
-      rows.push_back(token); //append to vector
-      inpt.erase(0, pos + delimiter.length());
+    token = inpt.substr(0, pos-1); //substr from [ to ], don't include ]
+    rows.push_back(token); //append to vector
+    inpt.erase(0, pos + delimiter.length());
   }
   //getting last move:
   pos = inpt.find("]");
