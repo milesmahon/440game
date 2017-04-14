@@ -30,6 +30,7 @@ int main(int argc, char* argv[])
   //strip "LastMove:" from front of last line
   string lastMove = inpt.substr(9, inpt.length());
 
+
   //db: print the vector contents
   //from stackoverflow
   // for (std::vector<string>::const_iterator i = rows.begin(); i != rows.end(); ++i)
