@@ -19,10 +19,9 @@ public:
 
   vector<string> getBoardString(){ return boardState;}
 
-  vector<string> getNextMoves(){
+  vector<string> getNextMoves();
     // This will return a vector containing the next moves possible
     // given the current board state and the last move, including both color and position of these moves
-  }
 };
 
 Board::Board(string initialString){
@@ -56,7 +55,7 @@ Board::Board(Board *oldBoard, string newMove){
 
 Board::~Board(){
   delete[] lastMove;
-  
+
 }
 
 void Board::setLastMove(string move){
@@ -73,6 +72,10 @@ void Board::setLastMove(string move){
   pos = parsedMove.find(')');
   lastMove[3] = stoi(parsedMove.substr(0, pos));  // rightDistance
   parsedMove = parsedMove.substr(pos + 1);
+}
+
+vector<string> Board::getNextMoves(){
+  
 }
 
   //db: print the vector contents
