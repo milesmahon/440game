@@ -54,7 +54,7 @@ Board::Board(string initialString){
     boardState.push_back(boardStateCopy[i]);
   }
 
-  //db:
+  // db:
   // for (int i = 0; i < boardState.size(); i++){
   //   cerr << boardState[i] << endl;
   // }
@@ -103,7 +103,7 @@ vector<int*> Board::getNextMoves(){
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2] - 1; // left distance
     tempMove[3] = lastMove[3]; // right distance
-    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0 
+    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0
       && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
         newMoves->push_back(tempMove);
     }
@@ -113,7 +113,7 @@ vector<int*> Board::getNextMoves(){
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2]; // left distance
     tempMove[3] = lastMove[3] - 1; // right distance
-    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0 
+    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0
       && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
         newMoves->push_back(tempMove);
     }
@@ -123,7 +123,7 @@ vector<int*> Board::getNextMoves(){
     tempMove[1] = lastMove[1]; // height
     tempMove[2] = lastMove[2] - 1; // left distance
     tempMove[3] = lastMove[3] + 1; // right distance
-    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0 
+    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0
       && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
         newMoves->push_back(tempMove);
     }
@@ -133,7 +133,7 @@ vector<int*> Board::getNextMoves(){
     tempMove[1] = lastMove[1]; // height
     tempMove[2] = lastMove[2] + 1; // left distance
     tempMove[3] = lastMove[3] - 1; // right distance
-    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0 
+    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0
       && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
         newMoves->push_back(tempMove);
     }
@@ -143,7 +143,7 @@ vector<int*> Board::getNextMoves(){
     tempMove[1] = lastMove[1] - 1; // height
     tempMove[2] = lastMove[2]; // left distance
     tempMove[3] = lastMove[3] + 1; // right distance
-    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0 
+    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0
       && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
         newMoves->push_back(tempMove);
     }
@@ -153,11 +153,11 @@ vector<int*> Board::getNextMoves(){
     tempMove[1] = lastMove[1] - 1; // height
     tempMove[2] = lastMove[2] + 1; // left distance
     tempMove[3] = lastMove[3]; // right distance
-    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0 
+    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0
       && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
         newMoves->push_back(tempMove);
     }
-    
+
   }
 
   return *newMoves;
@@ -297,9 +297,8 @@ bool isWin(Board board){
       for (int k = height - 1; k <= height + 1; k++){
         int move[3] = {i, j, k};
         if (isValid(move, board.getBoardString().size())){ //need size of board
-          tri->add(0);
-          //TODO: getColor function
-          //tri->add(getColor(i, j, k)); //pass the color to the trianlge
+          //TODO: test w getColor
+          tri->add(board.getColorAt(i, j, k)); //pass the color to the trianlge
         }
       }
       triangles.push_back(*tri);
@@ -340,7 +339,7 @@ void testGiuliano(char* argv[]) {
 	  inpt = "[13][302][1003][31002][100003][3000002][121212]LastPlay:(1,3,1,3)";
   }
   Board *startingBoard = new Board(inpt);
-  
+
   int move[] = {2, 2, 3, 2};
   eval(startingBoard, move);
 }
@@ -351,16 +350,17 @@ int main(int argc, char* argv[])
   // remove all debugging statements before submitting your code
   std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
 
-  
+
   string inpt = argv[1];
   if (inpt == "board1") {
 	  inpt = "[13][302][1003][31002][100003][3000002][121212]LastPlay:(1,3,1,3)";
   }
   Board *startingBoard = new Board(inpt);
   
+  //giuliano testing space
   testGiuliano(argv);
 
-  
+
   if (isWin(*startingBoard)){
     cerr << "debug: WIN!" << endl;
   }
