@@ -130,6 +130,16 @@ bool isWin(Board board){
 }
 
 
+int eval(Board* board, int* lastMove) {
+	int height = board->getBoardString().size();
+	int numMoves = 0;
+	int color = lastMove[0];
+	int mh = lastMove[1];
+	int ml = lastMove[2];
+	std::cout << "color: " << color << "\n";
+	return 0;
+}
+
 int main(int argc, char* argv[])
 {
   // print to stderr for debugging purposes
@@ -140,6 +150,10 @@ int main(int argc, char* argv[])
   string inpt = argv[1];
 
   Board *startingBoard = new Board(inpt);
+  
+  int move[] = {2, 2, 3, 2};
+  eval(startingBoard, move);
+  
   // parse the input string, i.e., argv[1]
 
   // perform intelligent search to determine the next move
