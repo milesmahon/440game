@@ -84,7 +84,7 @@ public:
   int *top;
   int *left;
   int *right;
-  Triangle(int top[4], int left[4], int right[4]);
+  // Triangle(int top[4], int left[4], int right[4]);
   Triangle();
   ~Triangle();
 
@@ -102,7 +102,16 @@ public:
   }
 };
 
+Triangle::Triangle(){
 
+}
+
+Triangle::~Triangle(){
+  delete[] top;
+  delete[] right;
+  delete[] left;
+
+}
   //db: print the vector contents
   //from stackoverflow
   // for (std::vector<string>::const_iterator i = rows.begin(); i != rows.end(); ++i)
@@ -124,9 +133,7 @@ bool isWin(Board board){
       }
       triangles.push_back(*tri);
     }
-
   }
-
 }
 
 
