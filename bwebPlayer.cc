@@ -31,6 +31,7 @@ Board::Board(string initialString){
   //https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
   size_t pos = 0;
   string token;
+  initialString.erase(0, pos + delimiter.length());
 
   while ((pos = initialString.find(delimiter)) != string::npos) { //while can still find "["
       token = initialString.substr(0, pos-1); //substr from [ to ], don't include ]
@@ -214,9 +215,8 @@ int eval(Board* board, int* lastMove) {
 	int color = lastMove[0];
 	int mh = lastMove[1];
 	int ml = lastMove[2];
-	std::vector<string> v = {"a", "b", "c"};
-	std::vector<string> boardString = board->getBoardString();
-	std::cout << "string: " << board->getBoardString()[0] << "\n";
+	std::cout << "string: " << board->getBoardString()[7] << "\n";
+	std::cout << "size: " << board->getBoardString().size() << "\n";
 	return 0;
 }
 
