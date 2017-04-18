@@ -191,6 +191,7 @@ bool isValid(int* move, int size){
   return (move[0] + move[1] + move[2] >= size);
 }
 
+
   //db: print the vector contents
   //from stackoverflow
   // for (std::vector<string>::const_iterator i = rows.begin(); i != rows.end(); ++i)
@@ -225,6 +226,7 @@ bool isWin(Board board){
 
 }
 
+
 int* minimax(){
 
 }
@@ -235,9 +237,23 @@ int eval(Board* board, int* lastMove) {
 	int color = lastMove[0];
 	int mh = lastMove[1];
 	int ml = lastMove[2];
-	std::cout << "string: " << board->getBoardString()[7] << "\n";
+	for (int i = 0; i < board->getBoardString().size(); i++) {
+		std::cout << "string: " << board->getBoardString()[i] << "\n";
+	}
+	//std::cout << "string: " << board->getBoardString()[0] << "\n";
 	std::cout << "size: " << board->getBoardString().size() << "\n";
 	return 0;
+}
+
+void testGiuliano(char* argv[]) {
+  string inpt = argv[1];
+  if (inpt == "board1") {
+	  inpt = "[13][302][1003][31002][100003][3000002][121212]LastPlay:(1,3,1,3)";
+  }
+  Board *startingBoard = new Board(inpt);
+  
+  int move[] = {2, 2, 3, 2};
+  eval(startingBoard, move);
 }
 
 int main(int argc, char* argv[])
@@ -253,10 +269,9 @@ int main(int argc, char* argv[])
   }
   Board *startingBoard = new Board(inpt);
   
-  int move[] = {2, 2, 3, 2};
-  eval(startingBoard, move);
-  
+  testGiuliano(argv);
 
+  
   if (isWin(*startingBoard)){
     cerr << "debug: WIN!" << endl;
 
