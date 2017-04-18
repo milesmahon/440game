@@ -15,7 +15,7 @@ public:
   ~Board();
 
   void setLastMove(string lastMove);
-
+  int getBoardSize(){return boardState.size}
   int* getLastMove(){return lastMove;}
 
   vector<string> getBoardString(){ return boardState;}
@@ -23,8 +23,8 @@ public:
   vector<int> getColorAt(int height, int leftDistance, int rightDistance);
 
   vector<int*> getNextMoves();
-    // This will return a vector containing the next moves possible
-    // given the current board state and the last move, including both color and position of these moves
+
+  vector<int*> getNearby();
 };
 
 Board::Board(string initialString){
@@ -54,7 +54,7 @@ Board::Board(string initialString){
     boardState.push_back(boardStateCopy[i]);
   }
 
-  //db:
+  // db:
   // for (int i = 0; i < boardState.size(); i++){
   //   cerr << boardState[i] << endl;
   // }
@@ -95,6 +95,75 @@ void Board::setLastMove(string move){
 }
 
 vector<int*> Board::getNextMoves(){
+  vector<int*> *newMoves = new vector<int*>();
+  int tempMove[4];
+  for(int color = 1; color <= 3; color++){
+    // top left
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1] + 1; // height
+    tempMove[2] = lastMove[2] - 1; // left distance
+    tempMove[3] = lastMove[3]; // right distance
+    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0 
+      && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
+        newMoves->push_back(tempMove);
+    }
+
+    // top right
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1] + 1; // height
+    tempMove[2] = lastMove[2]; // left distance
+    tempMove[3] = lastMove[3] - 1; // right distance
+    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0 
+      && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
+        newMoves->push_back(tempMove);
+    }
+
+    // left
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1]; // height
+    tempMove[2] = lastMove[2] - 1; // left distance
+    tempMove[3] = lastMove[3] + 1; // right distance
+    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0 
+      && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
+        newMoves->push_back(tempMove);
+    }
+
+    // right
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1]; // height
+    tempMove[2] = lastMove[2] + 1; // left distance
+    tempMove[3] = lastMove[3] - 1; // right distance
+    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0 
+      && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
+        newMoves->push_back(tempMove);
+    }
+
+    // bottom left
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1] - 1; // height
+    tempMove[2] = lastMove[2]; // left distance
+    tempMove[3] = lastMove[3] + 1; // right distance
+    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0 
+      && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
+        newMoves->push_back(tempMove);
+    }
+
+    // bottom right
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1] - 1; // height
+    tempMove[2] = lastMove[2] + 1; // left distance
+    tempMove[3] = lastMove[3]; // right distance
+    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0 
+      && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
+        newMoves->push_back(tempMove);
+    }
+    
+  }
+
+  return *newMoves;
+}
+
+vector<int*> Board::getNearby(){
   vector<int*> *newMoves = new vector<int*>();
   int tempMove[4];
   for(int color = 1; color <= 3; color++){
@@ -145,8 +214,10 @@ vector<int*> Board::getNextMoves(){
   return *newMoves;
 }
 
-vector<int> Board::getColorAt(int height, int leftDistance, int rightDistance){
+int Board::getColorAt(int height, int leftDistance, int rightDistance){
   string row = this->boardState[height];
+  string color = row[leftDistance];
+  return stoi(color);
 }
 
 //triangle holds the COLORS of an arbitrary triangle, no coordinates
@@ -226,9 +297,8 @@ bool isWin(Board board){
       for (int k = height - 1; k <= height + 1; k++){
         int move[3] = {i, j, k};
         if (isValid(move, board.getBoardString().size())){ //need size of board
-          tri->add(0);
-          //TODO: getColor function
-          //tri->add(getColor(i, j, k)); //pass the color to the trianlge
+          //TODO: test w getColor
+          tri->add(board.getColorAt(i, j, k)); //pass the color to the trianlge
         }
       }
       triangles.push_back(*tri);
@@ -269,7 +339,7 @@ void testGiuliano(char* argv[]) {
 	  inpt = "[13][302][1003][31002][100003][3000002][121212]LastPlay:(1,3,1,3)";
   }
   Board *startingBoard = new Board(inpt);
-  
+
   int move[] = {2, 2, 3, 2};
   eval(startingBoard, move);
 }
@@ -280,7 +350,7 @@ int main(int argc, char* argv[])
   // remove all debugging statements before submitting your code
   std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
 
-  
+
   string inpt = argv[1];
   if (inpt == "board1") {
 	  inpt = "[13][302][1003][31002][100003][3000002][121212]LastPlay:(1,3,1,3)";
@@ -290,7 +360,7 @@ int main(int argc, char* argv[])
   //giuliano testing space
   testGiuliano(argv);
 
-  
+
   if (isWin(*startingBoard)){
     cerr << "debug: WIN!" << endl;
   }
