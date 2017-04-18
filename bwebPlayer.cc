@@ -6,20 +6,25 @@ using namespace std;
 class Board
 {
 private:
-  int lastMove[4];
+
+  int *lastMove;
   vector<string> boardState;
 public:
   Board(string initialString);
   Board(Board *board, string newMove);
   ~Board();
 
-  int* getLastMove(){
-    return lastMove;
-  }
+  void setLastMove(string lastMove);
+
+  int* getLastMove(){return lastMove;}
 
   vector<string> getBoardString(){ return boardState;}
 
   vector<string> getNextMoves(){
+
+    // This will return a vector containing the next moves possible
+    // given the current board state and the last move, including both color and position of these moves
+
   }
 };
 
@@ -42,13 +47,35 @@ Board::Board(string initialString){
   rows.push_back(token);
   initialString.erase(0, pos + 1);
   //strip "LastMove:" from front of last line
-  string lastMove = initialString.substr(9, initialString.length());
+  this->lastMove = new int[4];
+  this->setLastMove(initialString.substr(9, initialString.length()));
+
 }
 Board::Board(Board *oldBoard, string newMove){
-  this->boardState = oldBoard->boardState;
-  string parsedMove = newMove.substr(1);
+  this->boardState = oldBoard->boardState; // same as (*oldBoard).boardState
+  this->lastMove = new int[4];
+  this->setLastMove(newMove);
+}
+
+Board::~Board(){
+  delete[] lastMove;
+
+}
+
+void Board::setLastMove(string move){
+  string parsedMove = move.substr(1);
   int pos = parsedMove.find(',');
-  int color = stoi(parsedMove.substr(0, pos));
+  lastMove[0] = stoi(parsedMove.substr(0, pos)); // color
+  parsedMove = parsedMove.substr(pos + 1);
+  pos = parsedMove.find(',');
+  lastMove[1] = stoi(parsedMove.substr(0, pos)); // height
+  parsedMove = parsedMove.substr(pos + 1);
+  pos = parsedMove.find(',');
+  lastMove[2] = stoi(parsedMove.substr(0, pos));  // left Distance
+  parsedMove = parsedMove.substr(pos + 1);
+  pos = parsedMove.find(')');
+  lastMove[3] = stoi(parsedMove.substr(0, pos));  // rightDistance
+  parsedMove = parsedMove.substr(pos + 1);
 }
 
 class Triangle
