@@ -216,8 +216,8 @@ vector<int*> Board::getNearby(){
 
 int Board::getColorAt(int height, int leftDistance, int rightDistance){
   string row = this->boardState[height];
-  string color = row[leftDistance];
-  return stoi(color);
+  char color = row[leftDistance];
+  return color - '0';
 }
 
 //triangle holds the COLORS of an arbitrary triangle, no coordinates
