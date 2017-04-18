@@ -15,12 +15,12 @@ public:
   ~Board();
 
   void setLastMove(string lastMove);
-  int getBoardSize(){return boardState.size}
+  int getBoardSize(){return boardState.size();}
   int* getLastMove(){return lastMove;}
 
   vector<string> getBoardString(){ return boardState;}
 
-  vector<int> getColorAt(int height, int leftDistance, int rightDistance);
+  int getColorAt(int height, int leftDistance, int rightDistance);
 
   vector<int*> getNextMoves();
 
@@ -216,8 +216,8 @@ vector<int*> Board::getNearby(){
 
 int Board::getColorAt(int height, int leftDistance, int rightDistance){
   string row = this->boardState[height];
-  string color = row[leftDistance];
-  return stoi(color);
+  char color = row[leftDistance];
+  return color - '0';
 }
 
 //triangle holds the COLORS of an arbitrary triangle, no coordinates
