@@ -15,7 +15,7 @@ public:
   ~Board();
 
   void setLastMove(string lastMove);
-
+  int getBoardSize(){return boardState.size}
   int* getLastMove(){return lastMove;}
 
   vector<string> getBoardString(){ return boardState;}
@@ -23,8 +23,8 @@ public:
   vector<int> getColorAt(int height, int leftDistance, int rightDistance);
 
   vector<int*> getNextMoves();
-    // This will return a vector containing the next moves possible
-    // given the current board state and the last move, including both color and position of these moves
+
+  vector<int*> getNearby();
 };
 
 Board::Board(string initialString){
@@ -103,6 +103,75 @@ vector<int*> Board::getNextMoves(){
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2] - 1; // left distance
     tempMove[3] = lastMove[3]; // right distance
+    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0 
+      && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
+        newMoves->push_back(tempMove);
+    }
+
+    // top right
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1] + 1; // height
+    tempMove[2] = lastMove[2]; // left distance
+    tempMove[3] = lastMove[3] - 1; // right distance
+    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0 
+      && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
+        newMoves->push_back(tempMove);
+    }
+
+    // left
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1]; // height
+    tempMove[2] = lastMove[2] - 1; // left distance
+    tempMove[3] = lastMove[3] + 1; // right distance
+    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0 
+      && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
+        newMoves->push_back(tempMove);
+    }
+
+    // right
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1]; // height
+    tempMove[2] = lastMove[2] + 1; // left distance
+    tempMove[3] = lastMove[3] - 1; // right distance
+    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0 
+      && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
+        newMoves->push_back(tempMove);
+    }
+
+    // bottom left
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1] - 1; // height
+    tempMove[2] = lastMove[2]; // left distance
+    tempMove[3] = lastMove[3] + 1; // right distance
+    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0 
+      && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
+        newMoves->push_back(tempMove);
+    }
+
+    // bottom right
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1] - 1; // height
+    tempMove[2] = lastMove[2] + 1; // left distance
+    tempMove[3] = lastMove[3]; // right distance
+    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0 
+      && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
+        newMoves->push_back(tempMove);
+    }
+    
+  }
+
+  return *newMoves;
+}
+
+vector<int*> Board::getNearby(){
+  vector<int*> *newMoves = new vector<int*>();
+  int tempMove[4];
+  for(int color = 1; color <= 3; color++){
+    // top left
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1] + 1; // height
+    tempMove[2] = lastMove[2] - 1; // left distance
+    tempMove[3] = lastMove[3]; // right distance
     newMoves->push_back(tempMove);
 
     // top right
@@ -145,8 +214,10 @@ vector<int*> Board::getNextMoves(){
   return *newMoves;
 }
 
-vector<int> Board::getColorAt(int height, int leftDistance, int rightDistance){
+int Board::getColorAt(int height, int leftDistance, int rightDistance){
   string row = this->boardState[height];
+  string color = row[leftDistance];
+  return stoi(color);
 }
 
 //triangle holds the COLORS of an arbitrary triangle, no coordinates
