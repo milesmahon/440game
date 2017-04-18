@@ -28,7 +28,8 @@ public:
 };
 
 Board::Board(string initialString){
-    std::string delimiter = "[";
+  std::string delimiter = "[";
+  vector<string> boardStateCopy; //"Copy" bc will be flipped later in function at *1
 
   //https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
   size_t pos = 0;
@@ -37,15 +38,28 @@ Board::Board(string initialString){
 
   while ((pos = initialString.find(delimiter)) != string::npos) { //while can still find "["
       token = initialString.substr(0, pos-1); //substr from [ to ], don't include ]
-      boardState.push_back(token); //append to vector
+      boardStateCopy.push_back(token); // append to list
+      //cerr << token << endl;
       initialString.erase(0, pos + delimiter.length());
   }
   //getting last move:
   pos = initialString.find("]");
   token = initialString.substr(0, pos);
-  boardState.push_back(token);
+  boardStateCopy.push_back(token);
   initialString.erase(0, pos + 1);
   //strip "LastMove:" from front of last line
+
+  //flip the board so index of row = height of row *1
+  for (int i = boardStateCopy.size(); i >= 0; i--){
+    boardState.push_back(boardStateCopy[i]);
+  }
+
+  //db:
+  // for (int i = 0; i < boardState.size(); i++){
+  //   cerr << boardState[i] << endl;
+  // }
+
+
   cerr << "before setLastMove" <<endl;
   this->lastMove = new int[4];
   this->setLastMove(initialString.substr(9, initialString.length()));
@@ -61,6 +75,8 @@ Board::~Board(){
   delete[] lastMove;
 
 }
+
+//TODO: flipping board so index matches height
 
 void Board::setLastMove(string move){
   string parsedMove = move.substr(1);
@@ -209,7 +225,9 @@ bool isWin(Board board){
       for (int k = height - 1; k <= height + 1; k++){
         int move[3] = {i, j, k};
         if (isValid(move, board.getBoardString().size())){ //need size of board
-          tri->getColor(i, j, k); //pass the color to the trianlge
+          tri->add(0);
+          //TODO: getColor function
+          //tri->add(getColor(i, j, k)); //pass the color to the trianlge
         }
       }
       triangles.push_back(*tri);
@@ -242,7 +260,6 @@ int main(int argc, char* argv[])
 
   if (isWin(*startingBoard)){
     cerr << "debug: WIN!" << endl;
-
   }
   // parse the input string, i.e., argv[1]
 
