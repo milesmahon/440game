@@ -11,7 +11,7 @@ private:
   vector<string> boardState;
 public:
   Board(string initialString);
-  Board(Board *board, string newMove);
+  Board(Board *board, int* newMove);
   ~Board();
 
   void setLastMove(string lastMove);
@@ -20,7 +20,7 @@ public:
 
   vector<string> getBoardString(){ return boardState;}
 
-  vector<string> getNextMoves();
+  vector<int*> getNextMoves();
     // This will return a vector containing the next moves possible
     // given the current board state and the last move, including both color and position of these moves
 };
@@ -48,10 +48,10 @@ Board::Board(string initialString){
   this->setLastMove(initialString.substr(9, initialString.length()));
 
 }
-Board::Board(Board *oldBoard, string newMove){
+Board::Board(Board *oldBoard, int* newMove){
   this->boardState = oldBoard->boardState; // same as (*oldBoard).boardState
-  this->lastMove = new int[4];
-  this->setLastMove(newMove);
+  this->lastMove = newMove;
+  // this->setLastMove(newMove);
 }
 
 Board::~Board(){
@@ -75,8 +75,22 @@ void Board::setLastMove(string move){
   parsedMove = parsedMove.substr(pos + 1);
 }
 
-vector<string> Board::getNextMoves(){
-  
+vector<int*> Board::getNextMoves(){
+  vector<int*> *newMoves = new vector<int*>();
+  int tempMove[4];
+  for(int color = 1; color <= 3; color++){
+    // top left
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1] + 1; // height
+    tempMove[2] = lastMove[2] - 1; // left distance
+    tempMove[3] = lastMove[3]; // right distance
+
+    // top right
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1] + 1; // height
+    tempMove[2] = lastMove[2] - 1; // left distance
+    tempMove[3] = lastMove[3]; // right distance
+  }    
 }
 
 class Triangle
