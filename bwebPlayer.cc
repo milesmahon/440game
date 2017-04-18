@@ -44,6 +44,7 @@ Board::Board(string initialString){
   rows.push_back(token);
   initialString.erase(0, pos + 1);
   //strip "LastMove:" from front of last line
+  cerr << "before setLastMove" <<endl;
   this->lastMove = new int[4];
   this->setLastMove(initialString.substr(9, initialString.length()));
 
@@ -78,22 +79,23 @@ void Board::setLastMove(string move){
 vector<string> Board::getNextMoves(){
 }
 
+//triangle holds the COLORS of an arbitrary triangle, no coordinates
 class Triangle
 {
 public:
-  int *top;
-  int *left;
-  int *right;
+  int top;
+  int left;
+  int right;
   // Triangle(int top[4], int left[4], int right[4]);
   Triangle();
   ~Triangle();
 
-  void add(int move[4]){
-    if (top == nullptr){
+  void add(int color){
+    if (top == -1){
       this->top = move;
-    } else if (left == nullptr){
+    } else if (left == -1){
       this->left = move;
-    } else if (right == nullptr){
+    } else if (right == -1){
       this->right = move;
     } else {
       cout << "ERROR -- triangle full -mm" << endl;
@@ -102,27 +104,37 @@ public:
   }
 
   bool isWin(){
-    int c1 = top[0];
-    int c2 = left[0];
-    int c3 = right[0];
+    int c1 = this->top;
+    int c2 = this->left;
+    int c3 = this->right;
 
     if (c1 != c2 && c2 != c3 && c3 != c1){
       return true;
     }
     return false;
-
   }
 };
 
 
 Triangle::Triangle(){
-
+  top = -1;
+  right = -1;
+  left = -1;
 }
 
 Triangle::~Triangle(){
-  delete[] top;
-  delete[] right;
-  delete[] left;
+    // delete[] top;
+    // delete[] right;
+    // delete[] left;
+}
+
+//ported from AtroposCircle.java
+bool isValid(int* move, int size){
+  if (move[0] >= size || move[1] >= size || move[2] >= size){
+    return false;
+  }
+
+  return (move[0] + move[1] + move[2] >= size);
 }
 
   //db: print the vector contents
@@ -141,8 +153,10 @@ bool isWin(Board board){
     for (int j = right - 1; j <= right + 1; j++){
       Triangle *tri = new Triangle();
       for (int k = height - 1; k <= height + 1; k++){
-        int move[4] = {0, i, j, k};
-        tri->add(move);
+        int move[3] = {i, j, k};
+        if (isValid(move, board.getBoardString().size())){ //need size of board
+          tri->getColor(i, j, k); //pass the color to the trianlge
+        }
       }
       triangles.push_back(*tri);
     }
@@ -168,6 +182,8 @@ int main(int argc, char* argv[])
   string inpt = argv[1];
 
   Board *startingBoard = new Board(inpt);
+
+  isWin(*startingBoard);
   // parse the input string, i.e., argv[1]
 
   // perform intelligent search to determine the next move
