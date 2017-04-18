@@ -20,12 +20,9 @@ public:
 
   vector<string> getBoardString(){ return boardState;}
 
-  vector<string> getNextMoves(){
-
+  vector<string> getNextMoves();
     // This will return a vector containing the next moves possible
     // given the current board state and the last move, including both color and position of these moves
-
-  }
 };
 
 Board::Board(string initialString){
@@ -78,6 +75,10 @@ void Board::setLastMove(string move){
   parsedMove = parsedMove.substr(pos + 1);
 }
 
+vector<string> Board::getNextMoves(){
+
+}
+
 class Triangle
 {
 public:
@@ -102,6 +103,7 @@ public:
   }
 };
 
+
 Triangle::Triangle(){
 
 }
@@ -112,6 +114,7 @@ Triangle::~Triangle(){
   delete[] left;
 
 }
+
   //db: print the vector contents
   //from stackoverflow
   // for (std::vector<string>::const_iterator i = rows.begin(); i != rows.end(); ++i)
