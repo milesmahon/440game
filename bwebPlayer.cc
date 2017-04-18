@@ -11,7 +11,7 @@ private:
   vector<string> boardState;
 public:
   Board(string initialString);
-  Board(Board *board, string newMove);
+  Board(Board *board, int* newMove);
   ~Board();
 
   void setLastMove(string lastMove);
@@ -20,7 +20,7 @@ public:
 
   vector<string> getBoardString(){ return boardState;}
 
-  vector<string> getNextMoves();
+  vector<int*> getNextMoves();
     // This will return a vector containing the next moves possible
     // given the current board state and the last move, including both color and position of these moves
 };
@@ -29,19 +29,18 @@ Board::Board(string initialString){
     std::string delimiter = "[";
 
   //https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
-  vector<string> rows;
   size_t pos = 0;
   string token;
 
   while ((pos = initialString.find(delimiter)) != string::npos) { //while can still find "["
       token = initialString.substr(0, pos-1); //substr from [ to ], don't include ]
-      rows.push_back(token); //append to vector
+      boardState.push_back(token); //append to vector
       initialString.erase(0, pos + delimiter.length());
   }
   //getting last move:
   pos = initialString.find("]");
   token = initialString.substr(0, pos);
-  rows.push_back(token);
+  boardState.push_back(token);
   initialString.erase(0, pos + 1);
   //strip "LastMove:" from front of last line
   cerr << "before setLastMove" <<endl;
@@ -49,10 +48,10 @@ Board::Board(string initialString){
   this->setLastMove(initialString.substr(9, initialString.length()));
 
 }
-Board::Board(Board *oldBoard, string newMove){
+Board::Board(Board *oldBoard, int* newMove){
   this->boardState = oldBoard->boardState; // same as (*oldBoard).boardState
-  this->lastMove = new int[4];
-  this->setLastMove(newMove);
+  this->lastMove = newMove;
+  // this->setLastMove(newMove);
 }
 
 Board::~Board(){
@@ -76,7 +75,55 @@ void Board::setLastMove(string move){
   parsedMove = parsedMove.substr(pos + 1);
 }
 
-vector<string> Board::getNextMoves(){
+vector<int*> Board::getNextMoves(){
+  vector<int*> *newMoves = new vector<int*>();
+  int tempMove[4];
+  for(int color = 1; color <= 3; color++){
+    // top left
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1] + 1; // height
+    tempMove[2] = lastMove[2] - 1; // left distance
+    tempMove[3] = lastMove[3]; // right distance
+    newMoves->push_back(tempMove);
+
+    // top right
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1] + 1; // height
+    tempMove[2] = lastMove[2]; // left distance
+    tempMove[3] = lastMove[3] - 1; // right distance
+    newMoves->push_back(tempMove);
+
+    // left
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1]; // height
+    tempMove[2] = lastMove[2] - 1; // left distance
+    tempMove[3] = lastMove[3] + 1; // right distance
+    newMoves->push_back(tempMove);
+
+    // right
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1]; // height
+    tempMove[2] = lastMove[2] + 1; // left distance
+    tempMove[3] = lastMove[3] - 1; // right distance
+    newMoves->push_back(tempMove);
+
+    // bottom left
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1] - 1; // height
+    tempMove[2] = lastMove[2]; // left distance
+    tempMove[3] = lastMove[3] + 1; // right distance
+    newMoves->push_back(tempMove);
+
+    // bottom right
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1] - 1; // height
+    tempMove[2] = lastMove[2] + 1; // left distance
+    tempMove[3] = lastMove[3]; // right distance
+    newMoves->push_back(tempMove);
+
+  }   
+
+  return *newMoves; 
 }
 
 //triangle holds the COLORS of an arbitrary triangle, no coordinates
@@ -171,6 +218,9 @@ bool isWin(Board board){
 
 }
 
+int* minimax(){
+
+}
 
 int main(int argc, char* argv[])
 {
