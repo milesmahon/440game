@@ -13,6 +13,10 @@ public:
   Board(Board *board, string newMove);
   ~Board();
 
+  string getLastMove(){
+    return lastMove;
+  }
+
   vector<string> getBoardString(){ return boardState;}
 
   vector<string> getNextMoves(){
@@ -53,6 +57,18 @@ Board::Board(Board *oldBoard, string newMove){
   // for (std::vector<string>::const_iterator i = rows.begin(); i != rows.end(); ++i)
   //   cerr << *i << endl;
   // cerr << lastMove << endl;
+bool isWin(Board board){
+  boardState = board.getBoardString();
+  lastMove = board.getLastMove();
+  for (int i = 0; i < boardState.length(); i++){
+    
+
+
+  }
+
+
+}
+
 
 
 int main(int argc, char* argv[])
