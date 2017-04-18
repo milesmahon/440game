@@ -29,19 +29,18 @@ Board::Board(string initialString){
     std::string delimiter = "[";
 
   //https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
-  vector<string> rows;
   size_t pos = 0;
   string token;
 
   while ((pos = initialString.find(delimiter)) != string::npos) { //while can still find "["
       token = initialString.substr(0, pos-1); //substr from [ to ], don't include ]
-      rows.push_back(token); //append to vector
+      boardState.push_back(token); //append to vector
       initialString.erase(0, pos + delimiter.length());
   }
   //getting last move:
   pos = initialString.find("]");
   token = initialString.substr(0, pos);
-  rows.push_back(token);
+  boardState.push_back(token);
   initialString.erase(0, pos + 1);
   //strip "LastMove:" from front of last line
   this->lastMove = new int[4];
@@ -205,6 +204,9 @@ bool isWin(Board board){
 
 }
 
+int* minimax(){
+
+}
 
 int main(int argc, char* argv[])
 {
