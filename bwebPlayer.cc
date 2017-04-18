@@ -76,7 +76,6 @@ void Board::setLastMove(string move){
 }
 
 vector<string> Board::getNextMoves(){
-
 }
 
 class Triangle
@@ -101,6 +100,18 @@ public:
     }
     return;
   }
+
+  bool isWin(){
+    int c1 = top[0];
+    int c2 = left[0];
+    int c3 = right[0];
+
+    if (c1 != c2 && c2 != c3 && c3 != c1){
+      return true;
+    }
+    return false;
+
+  }
 };
 
 
@@ -112,7 +123,6 @@ Triangle::~Triangle(){
   delete[] top;
   delete[] right;
   delete[] left;
-
 }
 
   //db: print the vector contents
@@ -137,6 +147,14 @@ bool isWin(Board board){
       triangles.push_back(*tri);
     }
   }
+
+  for (int x = 0; x < triangles.size(); x++){
+    if (triangles[x].isWin()){
+      return true;
+    }
+  }
+  return false;
+
 }
 
 
