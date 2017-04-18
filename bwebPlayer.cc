@@ -212,7 +212,9 @@ int eval(Board* board, int* lastMove) {
 	int color = lastMove[0];
 	int mh = lastMove[1];
 	int ml = lastMove[2];
-	std::cout << "color: " << color << "\n";
+	std::vector<string> v = {"a", "b", "c"};
+	std::vector<string> boardString = board->getBoardString();
+	std::cout << "string: " << board->getBoardString()[0] << "\n";
 	return 0;
 }
 
@@ -222,13 +224,15 @@ int main(int argc, char* argv[])
   // remove all debugging statements before submitting your code
   std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
 
-
+  
   string inpt = argv[1];
-
+  if (inpt == "board1") {
+	  inpt = "[13][302][1003][31002][100003][3000002][121212]LastPlay:(1,3,1,3)";
+  }
   Board *startingBoard = new Board(inpt);
   
   int move[] = {2, 2, 3, 2};
-  //eval(startingBoard, move);
+  eval(startingBoard, move);
   
   // parse the input string, i.e., argv[1]
 
