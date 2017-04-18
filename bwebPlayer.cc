@@ -233,7 +233,10 @@ int main(int argc, char* argv[])
 
   Board *startingBoard = new Board(inpt);
 
-  isWin(*startingBoard);
+  if (isWin(*startingBoard)){
+    cerr << "debug: WIN!" << endl;
+
+  }
   // parse the input string, i.e., argv[1]
 
   // perform intelligent search to determine the next move
