@@ -20,6 +20,8 @@ public:
 
   vector<string> getBoardString(){ return boardState;}
 
+  vector<int> getColorAt(int height, int leftDistance, int rightDistance);
+
   vector<int*> getNextMoves();
     // This will return a vector containing the next moves possible
     // given the current board state and the last move, including both color and position of these moves
@@ -31,6 +33,7 @@ Board::Board(string initialString){
   //https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
   size_t pos = 0;
   string token;
+  initialString.erase(0, pos + delimiter.length());
 
   while ((pos = initialString.find(delimiter)) != string::npos) { //while can still find "["
       token = initialString.substr(0, pos-1); //substr from [ to ], don't include ]
@@ -124,6 +127,10 @@ vector<int*> Board::getNextMoves(){
   }
 
   return *newMoves;
+}
+
+vector<int> Board::getColorAt(int height, int leftDistance, int rightDistance){
+  string row = this->boardState[height];
 }
 
 //triangle holds the COLORS of an arbitrary triangle, no coordinates
