@@ -195,14 +195,14 @@ int main(int argc, char* argv[])
   Board *startingBoard = new Board(inpt);
   
   int move[] = {2, 2, 3, 2};
-  eval(startingBoard, move);
+  //eval(startingBoard, move);
   
   // parse the input string, i.e., argv[1]
 
   // perform intelligent search to determine the next move
 
   // print to stdout for AtroposGame
-  std::cout << "(1,2,2,2)";
+  //std::cout << "(1,2,2,2)";
   // As you can see Zeek's algorithm is not very intelligent. He
   // will be disqualified.
 
