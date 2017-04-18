@@ -84,13 +84,46 @@ vector<int*> Board::getNextMoves(){
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2] - 1; // left distance
     tempMove[3] = lastMove[3]; // right distance
+    newMoves->push_back(tempMove);
 
     // top right
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] + 1; // height
+    tempMove[2] = lastMove[2]; // left distance
+    tempMove[3] = lastMove[3] - 1; // right distance
+    newMoves->push_back(tempMove);
+
+    // left
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1]; // height
     tempMove[2] = lastMove[2] - 1; // left distance
+    tempMove[3] = lastMove[3] + 1; // right distance
+    newMoves->push_back(tempMove);
+
+    // right
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1]; // height
+    tempMove[2] = lastMove[2] + 1; // left distance
+    tempMove[3] = lastMove[3] - 1; // right distance
+    newMoves->push_back(tempMove);
+
+    // bottom left
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1] - 1; // height
+    tempMove[2] = lastMove[2]; // left distance
+    tempMove[3] = lastMove[3] + 1; // right distance
+    newMoves->push_back(tempMove);
+
+    // bottom right
+    tempMove[0] = color; // color
+    tempMove[1] = lastMove[1] - 1; // height
+    tempMove[2] = lastMove[2] + 1; // left distance
     tempMove[3] = lastMove[3]; // right distance
-  }    
+    newMoves->push_back(tempMove);
+
+  }   
+
+  return *newMoves; 
 }
 
 class Triangle
