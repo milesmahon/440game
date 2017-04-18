@@ -25,6 +25,8 @@ public:
   vector<int*> getNextMoves();
 
   vector<int*> getNearby();
+  
+  vector<int*> getNearby2();
 };
 
 Board::Board(string initialString){
@@ -172,42 +174,130 @@ vector<int*> Board::getNearby(){
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2] - 1; // left distance
     tempMove[3] = lastMove[3]; // right distance
-    newMoves->push_back(tempMove);
+	if (tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0) {
+		newMoves->push_back(tempMove);
+	}
 
     // top right
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2]; // left distance
     tempMove[3] = lastMove[3] - 1; // right distance
-    newMoves->push_back(tempMove);
+	if (tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0) {
+		newMoves->push_back(tempMove);
+	}
 
     // left
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1]; // height
     tempMove[2] = lastMove[2] - 1; // left distance
     tempMove[3] = lastMove[3] + 1; // right distance
-    newMoves->push_back(tempMove);
+	if (tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0) {
+		newMoves->push_back(tempMove);
+	}
 
     // right
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1]; // height
     tempMove[2] = lastMove[2] + 1; // left distance
     tempMove[3] = lastMove[3] - 1; // right distance
-    newMoves->push_back(tempMove);
+	if (tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0) {
+		newMoves->push_back(tempMove);
+	}
 
     // bottom left
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] - 1; // height
     tempMove[2] = lastMove[2]; // left distance
+	if (tempMove[1] == 1) tempMove[2] -= 1;
     tempMove[3] = lastMove[3] + 1; // right distance
-    newMoves->push_back(tempMove);
+	if (tempMove[1] == 1) tempMove[3] -= 1;
+	if (tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0) {
+		newMoves->push_back(tempMove);
+	}
 
     // bottom right
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] - 1; // height
     tempMove[2] = lastMove[2] + 1; // left distance
+	if (tempMove[1] == 1) tempMove[2] -= 1;
     tempMove[3] = lastMove[3]; // right distance
-    newMoves->push_back(tempMove);
+	if (tempMove[1] == 1) tempMove[3] -= 1;
+	if (tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0) {
+		newMoves->push_back(tempMove);
+	}
+
+  }
+
+  return *newMoves;
+}
+
+vector<int*> Board::getNearby2(){
+  vector<int*> *newMoves = new vector<int*>();
+  int tempMove1[4];
+  int tempMove2[4];
+  int tempMove3[4];
+  int tempMove4[4];
+  int tempMove5[4];
+  int tempMove6[4];
+  for(int color = 1; color <= 3; color++){
+    // top left
+    tempMove1[0] = color; // color
+    tempMove1[1] = lastMove[1] + 1; // height
+    tempMove1[2] = lastMove[2] - 1; // left distance
+    tempMove1[3] = lastMove[3]; // right distance
+	if (tempMove1[1] > 0 && tempMove1[2] > 0 && tempMove1[3] > 0) {
+		newMoves->push_back(tempMove1);
+	}
+
+    // top right
+    tempMove2[0] = color; // color
+    tempMove2[1] = lastMove[1] + 1; // height
+    tempMove2[2] = lastMove[2]; // left distance
+    tempMove2[3] = lastMove[3] - 1; // right distance
+	if (tempMove2[1] > 0 && tempMove2[2] > 0 && tempMove2[3] > 0) {
+		newMoves->push_back(tempMove2);
+	}
+
+    // left
+    tempMove3[0] = color; // color
+    tempMove3[1] = lastMove[1]; // height
+    tempMove3[2] = lastMove[2] - 1; // left distance
+    tempMove3[3] = lastMove[3] + 1; // right distance
+	if (tempMove3[1] > 0 && tempMove3[2] > 0 && tempMove3[3] > 0) {
+		newMoves->push_back(tempMove3);
+	}
+
+    // right
+    tempMove4[0] = color; // color
+    tempMove4[1] = lastMove[1]; // height
+    tempMove4[2] = lastMove[2] + 1; // left distance
+    tempMove4[3] = lastMove[3] - 1; // right distance
+	if (tempMove4[1] > 0 && tempMove4[2] > 0 && tempMove4[3] > 0) {
+		newMoves->push_back(tempMove4);
+	}
+
+    // bottom left
+    tempMove5[0] = color; // color
+    tempMove5[1] = lastMove[1] - 1; // height
+    tempMove5[2] = lastMove[2]; // left distance
+	if (tempMove5[1] == 1) tempMove5[2] -= 1;
+    tempMove5[3] = lastMove[3] + 1; // right distance
+	if (tempMove5[1] == 1) tempMove5[3] -= 1;
+	if (tempMove5[1] > 0 && tempMove5[2] > 0 && tempMove5[3] > 0) {
+		newMoves->push_back(tempMove5);
+	}
+
+    // bottom right
+    tempMove6[0] = color; // color
+    tempMove6[1] = lastMove[1] - 1; // height
+    tempMove6[2] = lastMove[2] + 1; // left distance
+	if (tempMove6[1] == 1) tempMove6[2] -= 1;
+    tempMove6[3] = lastMove[3]; // right distance
+	if (tempMove6[1] == 1) tempMove6[3] -= 1;
+	if (tempMove6[1] > 0 && tempMove6[2] > 0 && tempMove6[3] > 0) {
+		newMoves->push_back(tempMove6);
+	}
 
   }
 
@@ -328,11 +418,29 @@ int eval(Board* board, int* lastMove) {
 	for (int i = 0; i < board->getBoardString().size(); i++) {
 		std::cout << "string: " << board->getBoardString()[i] << "\n";
 	}
-	std::cout << "size: " << board->getBoardString().size() << "\n";
+	
+	vector<int*> *v = new vector<int*>();
+	
+	int tempMove[4] = {5, 2, 3, 1};
+	v->push_back(tempMove);
+	tempMove[0] = 0;
+	tempMove[1] = 1;
+	tempMove[2] = 2;
+	tempMove[3] = 3;
+	v->push_back(tempMove);
 	
 	
+	vector<int*> result = board->getNearby2();
+	for (int i = 0; i < result.size(); i++) {
+		std::cout << "move: [";
+		for (int j = 0; j < 4; j++) {
+			std::cout << result[i][j] << ", ";
+		}
+		std::cout << "] \n";
+		std::cout << "size: " << sizeof(result[0]) << "\n";
+	}
 	
-	return 0;
+	return result.size();
 }
 
 void testGiuliano(char* argv[]) {
@@ -343,7 +451,7 @@ void testGiuliano(char* argv[]) {
   Board *startingBoard = new Board(inpt);
 
   int move[] = {2, 2, 3, 2};
-  eval(startingBoard, move);
+  std::cout << "eval: " << eval(startingBoard, move) << "\n";
 }
 
 int main(int argc, char* argv[])
@@ -360,9 +468,9 @@ int main(int argc, char* argv[])
   Board *startingBoard = new Board(inpt);
 
   //giuliano testing space
-  testGiuliano(argv);
+  //testGiuliano(argv);
 
-	/*
+  /*
   if (isWin(*startingBoard)){
     cerr << "debug: WIN!" << endl;
   }
