@@ -60,7 +60,7 @@ Board::Board(string initialString){
   // }
 
 
-  cerr << "before setLastMove" <<endl;
+  //cerr << "before setLastMove" <<endl;
   this->lastMove = new int[4];
   this->setLastMove(initialString.substr(9, initialString.length()));
 
@@ -316,7 +316,7 @@ bool isWin(Board board){
 
 
 int* minimax(){
-
+  return 0;
 }
 
 int eval(Board* board, int* lastMove) {
@@ -329,9 +329,9 @@ int eval(Board* board, int* lastMove) {
 		std::cout << "string: " << board->getBoardString()[i] << "\n";
 	}
 	std::cout << "size: " << board->getBoardString().size() << "\n";
-	
-	
-	
+
+
+
 	return 0;
 }
 
@@ -359,14 +359,16 @@ int main(int argc, char* argv[])
   }
   Board *startingBoard = new Board(inpt);
 
+
+
   //giuliano testing space
   testGiuliano(argv);
 
-	/*
+
   if (isWin(*startingBoard)){
     cerr << "debug: WIN!" << endl;
   }
-  */
+
   // parse the input string, i.e., argv[1]
 
   // perform intelligent search to determine the next move
