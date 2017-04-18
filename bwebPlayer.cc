@@ -99,7 +99,7 @@ public:
   int *top;
   int *left;
   int *right;
-  Triangle(int top[4], int left[4], int right[4]);
+  // Triangle(int top[4], int left[4], int right[4]);
   Triangle();
   ~Triangle();
 
@@ -115,7 +115,30 @@ public:
     }
     return;
   }
+
+  bool isWin(){
+    int c1 = top[0];
+    int c2 = left[0];
+    int c3 = right[0];
+
+    if (c1 != c2 && c2 != c3 && c3 != c1){
+      return true;
+    }
+    return false;
+
+  }
 };
+
+
+Triangle::Triangle(){
+
+}
+
+Triangle::~Triangle(){
+  delete[] top;
+  delete[] right;
+  delete[] left;
+}
 
   //db: print the vector contents
   //from stackoverflow
@@ -138,8 +161,14 @@ bool isWin(Board board){
       }
       triangles.push_back(*tri);
     }
-
   }
+
+  for (int x = 0; x < triangles.size(); x++){
+    if (triangles[x].isWin()){
+      return true;
+    }
+  }
+  return false;
 
 }
 
