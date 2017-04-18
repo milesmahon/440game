@@ -50,7 +50,7 @@ Board::Board(string initialString){
   //strip "LastMove:" from front of last line
 
   //flip the board so index of row = height of row *1
-  for (int i = boardStateCopy.size(); i >= 0; i--){
+  for (int i = boardStateCopy.size()-1; i >= 0; i--){
     boardState.push_back(boardStateCopy[i]);
   }
 
