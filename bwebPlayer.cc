@@ -121,9 +121,9 @@ vector<int*> Board::getNextMoves(){
     tempMove[3] = lastMove[3]; // right distance
     newMoves->push_back(tempMove);
 
-  }   
+  }
 
-  return *newMoves; 
+  return *newMoves;
 }
 
 //triangle holds the COLORS of an arbitrary triangle, no coordinates
@@ -139,11 +139,11 @@ public:
 
   void add(int color){
     if (top == -1){
-      this->top = move;
+      this->top = color;
     } else if (left == -1){
-      this->left = move;
+      this->left = color;
     } else if (right == -1){
-      this->right = move;
+      this->right = color;
     } else {
       cout << "ERROR -- triangle full -mm" << endl;
     }
