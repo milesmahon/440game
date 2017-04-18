@@ -54,6 +54,11 @@ Board::Board(Board *oldBoard, string newMove){
   this->setLastMove(newMove);
 }
 
+Board::~Board(){
+  delete[] lastMove;
+  
+}
+
 void Board::setLastMove(string move){
   string parsedMove = move.substr(1);
   int pos = parsedMove.find(',');
