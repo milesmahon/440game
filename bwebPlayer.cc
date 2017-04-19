@@ -333,6 +333,7 @@ Triangle::~Triangle(){
 }
 
 int eval(Board *board);
+int eval2(Board *board);
 
 //ported from AtroposCircle.java
 bool isValid(int* move, int size){
@@ -373,7 +374,14 @@ bool isValid(int i, int j, int k, int size){
 // Will *not* work if lastMove is entered incorrectly.
 bool isWin(Board board){
   vector<string> boardState = board.getBoardString();
-  int *lastMove = board.getLastMove();
+  int *lastMove1 = board.getLastMove();
+	int lastMove[4] = {};
+	lastMove[0] = lastMove1[0];
+	lastMove[1] = lastMove1[1];
+	lastMove[2] = lastMove1[2];
+	lastMove[3] = lastMove1[3];
+	
+	
   int color = lastMove[0];
   int height = lastMove[1];
   int left = lastMove[2];
@@ -605,6 +613,16 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
   return 0;
 }
 
+string moveToString(int *move) {
+	string result = "[";
+	for (int i = 0; i < 4; i++) {
+		result += to_string(move[i]);
+		result += ", ";
+	}
+	result += "]";
+	return result;
+}
+
 int eval(Board* board) {
 	vector<int*> result = board->getNextMoves();
 	for (int i = 0; i < result.size(); i++) {
@@ -625,28 +643,16 @@ int eval2(Board* board) {
 
 	for (int i = 0; i < nextMoves.size(); i++) {
 		Board *childBoard = new Board(board, nextMoves[i]);
+		std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
 		if (!isWin(*childBoard)) {
-			std::cerr << "move: [";
-			for (int j = 0; j < 4; j++) {
-				std::cerr << nextMoves[i][j] << ", ";
-			}
-			std::cerr << "] \n";
+			std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
 			result += 1;
 		}
+		std::cerr << "\n";
 	}
 
 	return result;
 
-}
-
-string moveToString(int *move) {
-	string result = "[";
-	for (int i = 0; i < 4; i++) {
-		result += move[i] + 48;
-		result += ", ";
-	}
-	result += "]";
-	return result;
 }
 
 void testGiuliano(Board* board) {
