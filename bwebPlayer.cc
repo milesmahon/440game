@@ -593,7 +593,6 @@ int eval(Board* board) {
 			std::cout << result[i][j] << ", ";
 		}
 		std::cout << "] \n";
-		std::cout << "size: " << sizeof(result[0]) << "\n";
 	}
 
 	return result.size();
