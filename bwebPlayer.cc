@@ -353,6 +353,7 @@ public:
     int c3 = this->right;
 
     if (c1 != c2 && c2 != c3 && c3 != c1){
+			std::cerr << "c1: " << c1 << "\n" << "c2: " << c2 << "\n" << "c3: " << c3 << "\n";
       return true;
     }
     return false;
@@ -583,24 +584,7 @@ int* minimax(){
 }
 
 int eval(Board* board) {
-	int height = board->getBoardString().size();
-	for (int i = 0; i < board->getBoardString().size(); i++) {
-		std::cout << "string: " << board->getBoardString()[i] << "\n";
-	}
-
-
-	vector<int*> *v = new vector<int*>();
-
-	int tempMove[4] = {5, 2, 3, 1};
-	v->push_back(tempMove);
-	tempMove[0] = 0;
-	tempMove[1] = 1;
-	tempMove[2] = 2;
-	tempMove[3] = 3;
-	v->push_back(tempMove);
-
-
-	vector<int*> result = board->getNearby();
+	vector<int*> result = board->getNextMoves();
 	for (int i = 0; i < result.size(); i++) {
 		std::cout << "move: [";
 		for (int j = 0; j < 4; j++) {
@@ -631,9 +615,23 @@ void printBoard(Board* board) {
 	}
 }
 
-void testGiuliano(Board* board) {
+string moveToString(int *move) {
+	string result = "[";
+	for (int i = 0; i < 4; i++) {
+		result += move[i] + 48;
+		result += ", ";
+	}
+	result += "]";
+	return result;
+}
 
-  std::cout << "eval: " << eval(board) << "\n";
+void testGiuliano(Board* board) {
+	std::cout << "lastMove: " << moveToString(board->getLastMove()) << endl;
+	
+  std::cout << "numMoves: " << eval(board) << "\n";
+	if (isWin(*board)) {
+		std::cout << "is a win!" << endl;
+	}
 	printBoard(board);
 }
 
@@ -651,6 +649,9 @@ int main(int argc, char* argv[])
   if (inpt == "board2") {
 	  inpt = "[13][302][1003][31002][100003][3000002][10000003][2121212]LastPlay:(1,4,1,3)";
   }
+	if (inpt == "board3") {
+	  inpt = "[13][302][1203][31102][100003][3000002][121212]LastPlay:(1,4,1,2)";
+	}
   Board *startingBoard = new Board(inpt);
   // Triangle *tri = new Triangle();
   // tri->add(1);
