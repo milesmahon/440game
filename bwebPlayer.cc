@@ -76,8 +76,6 @@ Board::~Board(){
 
 }
 
-//TODO: flipping board so index matches height
-
 void Board::setLastMove(string move){
   string parsedMove = move.substr(1);
   int pos = parsedMove.find(',');
@@ -230,8 +228,11 @@ public:
   // Triangle(int top[4], int left[4], int right[4]);
   Triangle();
   ~Triangle();
+  //db:
+  operator std::string() const {return (to_string(top) + "," + to_string(left) + "," + to_string(right));};
 
   void add(int color){
+    //cerr << "adding::" + to_string(color) << endl;
     if (top == -1){
       this->top = color;
     } else if (left == -1){
@@ -254,6 +255,22 @@ public:
     }
     return false;
   }
+
+  bool isValid(){
+    //cerr << "colors::" + to_string(this->top) + "," + to_string(this->left) + "," + to_string(this->right) << endl;
+    if (this->top != -1 && this->right != -1 && this->left != -1)
+      return true;
+    return false;
+
+  }
+
+  void clear(){
+    this->top = -1;
+    this->right = -1;
+    this->left = -1;
+
+  }
+
 };
 
 
@@ -264,6 +281,7 @@ Triangle::Triangle(){
 }
 
 Triangle::~Triangle(){
+  //no need anymore, since top,left,right are ints, not int*/int[]
     // delete[] top;
     // delete[] right;
     // delete[] left;
@@ -275,7 +293,18 @@ bool isValid(int* move, int size){
     return false;
   }
 
-  return (move[0] + move[1] + move[2] >= size);
+  return (move[0] + move[1] + move[2] == size);
+}
+
+bool isValid(int i, int j, int k, int size){
+  //cerr << "testing::" + to_string(i) + "," + to_string(j) + "," + to_string(k) << endl;
+  if (i >= size || j >= size || k >= size){
+    //cerr << "invalid::" + to_string(i) + "," + to_string(j) + "," + to_string(k) << endl;
+    return false;
+  }
+
+  //cerr << "checking ijk add to ::" + to_string(size) + ":" + to_string(i) + "," + to_string(j) + "," + to_string(k) << endl;
+  return (i + j + k == size);
 }
 
 
@@ -284,28 +313,160 @@ bool isValid(int* move, int size){
   // for (std::vector<string>::const_iterator i = rows.begin(); i != rows.end(); ++i)
   //   cerr << *i << endl;
   // cerr << lastMove << endl;
+
+//TODO: working, not well tested
 bool isWin(Board board){
   vector<string> boardState = board.getBoardString();
   int *lastMove = board.getLastMove();
+  int color = lastMove[0];
   int height = lastMove[1];
   int left = lastMove[2];
   int right = lastMove[3];
+  //cerr << left << endl;
+
+  // Hacks
+  int i, j, k; // temps
+  int c1 = -1;
+  int c2 = -1;
+  int c3 = -1;
+  int c4 = -1;
+  int c5 = -1;
+  int c6 = -1;
+
   vector<Triangle> triangles;
-  for (int i = left-1; i <= left + 1; i++){
-    for (int j = right - 1; j <= right + 1; j++){
-      Triangle *tri = new Triangle();
-      for (int k = height - 1; k <= height + 1; k++){
-        int move[3] = {i, j, k};
-        if (isValid(move, board.getBoardString().size())){ //need size of board
-          //TODO: test w getColor
-          tri->add(board.getColorAt(i, j, k)); //pass the color to the trianlge
-        }
-      }
-      triangles.push_back(*tri);
-    }
+  Triangle *tri = new Triangle();
+
+  // top left
+  i = height + 1; // height
+  j = left - 1; // left distance
+  k = right; // right distance
+  //int move [] = {i, j, k};
+  if (isValid(i, j, k, board.getBoardSize())){
+    //cerr << "valid::" + to_string(i) + "," + to_string(j) + "," + to_string(k) << endl;
+    c1 = board.getColorAt(i, j, k);
+    //cerr << "color::" + to_string(c1) << endl;
   }
 
+  // top right
+  i = height + 1; // height
+  j = left; // left distance
+  k = right-1; // right distance
+  //move = {i, j, k};
+  if (isValid(i, j, k, board.getBoardSize())){
+    //cerr << "valid::" + to_string(i) + "," + to_string(j) + "," + to_string(k) << endl;
+    c2 = board.getColorAt(i, j, k);
+  }
+
+  tri->add(c1);
+  tri->add(c2);
+  tri->add(color);
+  if (tri->isValid()){
+    triangles.push_back(*tri);
+  }
+  tri->clear();
+
+  // left
+  i = height; // height
+  j = left - 1; // left distance
+  k = right + 1; // right distance
+  if (isValid(i, j, k, board.getBoardSize()))
+    c3 = board.getColorAt(i, j, k);
+
+  tri->add(c2);
+  tri->add(c3);
+  tri->add(color);
+  if (tri->isValid()){
+    triangles.push_back(*tri);
+  }
+  tri->clear();
+
+  // right
+  i = height; // height
+  j = left + 1; // left distance
+  k = right - 1; // right distance
+  //int move [] = {i, j, k};
+  if (isValid(i, j, k, board.getBoardSize()))
+    c4 = board.getColorAt(i, j, k);
+
+  tri->add(c3);
+  tri->add(c4);
+  tri->add(color);
+  if (tri->isValid()){
+    triangles.push_back(*tri);
+  }
+  tri->clear();
+
+  // bottom left
+  i = height - 1; // height
+  j = left; // left distance
+  k = right + 1; // right distance
+  //int move [] = {i, j, k};
+  if (isValid(i, j, k, board.getBoardSize()))
+    c5 = board.getColorAt(i, j, k);
+
+  tri->add(c4);
+  tri->add(c5);
+  tri->add(color);
+  if (tri->isValid()){
+    triangles.push_back(*tri);
+  }
+  tri->clear();
+
+  // bottom right
+  i = height - 1; // height
+  j = left + 1; // left distance
+  k = right; // right distance
+  //int move [] = {i, j, k};
+  if (isValid(i, j, k, board.getBoardSize()))
+    c6 = board.getColorAt(i, j, k);
+
+  tri->add(c5);
+  tri->add(c6);
+  tri->add(color);
+  if (tri->isValid()){
+    triangles.push_back(*tri);
+  }
+  tri->clear();
+
+
+  //wrap around!
+
+  tri->add(c1);
+  tri->add(c6);
+  tri->add(color);
+  if (tri->isValid()){
+    triangles.push_back(*tri);
+  }
+  tri->clear();
+
+
+
+
+  // for (int i = height-1; i <= height + 1; i++){
+  //   for (int j = left - 1; j <= left + 1; j++){
+  //     Triangle *tri = new Triangle();
+  //     for (int k = right - 1; k <= right + 1; k++){
+  //
+  //       int move[3] = {i, j, k};
+  //       //cerr << (to_string(i) + "," + to_string(j) + "," + to_string(k)) << endl;
+  //       if (isValid(move, board.getBoardSize())){ //need size of board
+  //
+  //         cerr << ("valid move:: " + to_string(i) + "," + to_string(j) + "," + to_string(k)) << endl;
+  //         tri->add(board.getColorAt(i, j, k)); //pass the color to the trianlge
+  //       } else {
+  //         cerr << ("invalid move:: " + to_string(i) + "," + to_string(j) + "," + to_string(k)) << endl;
+  //       }
+  //     }
+  //
+  //     cerr << "triangle::" + string(*tri) << endl;
+  //     if (tri->isValid()) //Triangle also has an isValid func
+  //       triangles.push_back(*tri);
+  //   }
+  // }
+
   for (int x = 0; x < triangles.size(); x++){
+    //db
+    //cerr << "tri::::" + string(triangles[x]) << endl;
     if (triangles[x].isWin()){
       return true;
     }
@@ -358,16 +519,25 @@ int main(int argc, char* argv[])
 	  inpt = "[13][302][1003][31002][100003][3000002][121212]LastPlay:(1,3,1,3)";
   }
   Board *startingBoard = new Board(inpt);
+  // Triangle *tri = new Triangle();
+  // tri->add(1);
+  // tri->add(2);
+  // tri->add(3);
+  //cerr << "tri::::" + string(*tri) << endl;
 
 
+  // if (isWin(*startingBoard)){
+  //   cerr << "debug: WIN!" << endl;
+  // } else {
+  //
+  //   cerr << "debug: not win" << endl;
+  // }
 
   //giuliano testing space
   testGiuliano(argv);
 
 
-  if (isWin(*startingBoard)){
-    cerr << "debug: WIN!" << endl;
-  }
+
 
   // parse the input string, i.e., argv[1]
 
