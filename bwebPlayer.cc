@@ -115,7 +115,7 @@ vector<int*> Board::getNextMoves(){
     tempMove[2] = lastMove[2] - 1; // left distance
     tempMove[3] = lastMove[3]; // right distance
 
-    if(isValid(tempMove, getBoardSize()) 
+    if(isValid(tempMove, getBoardSize())
 			&& this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
         newMoves.push_back(tempMove);
     }
@@ -339,7 +339,7 @@ bool isValid(int* move, int size){
   if (move[1] >= size || move[2] >= size || move[3] >= size){
     return false;
   }
-	
+
 	if (move[1] < 0 || move[2] < 0 || move[3] < 0){
     return false;
   }
@@ -353,7 +353,7 @@ bool isValid(int i, int j, int k, int size){
     //cerr << "invalid::" + to_string(i) + "," + to_string(j) + "," + to_string(k) << endl;
     return false;
   }
-	
+
 		if (i < 0 || j < 0 || k < 0){
     return false;
   }
@@ -607,13 +607,14 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
 
 int eval(Board* board) {
 	vector<int*> result = board->getNextMoves();
-	for (int i = 0; i < result.size(); i++) {
-		std::cerr << "move: [";
-		for (int j = 0; j < 4; j++) {
-			std::cerr << result[i][j] << ", ";
-		}
-		std::cerr << "] \n";
-	}
+  // debug
+	// for (int i = 0; i < result.size(); i++) {
+	// 	std::cerr << "move: [";
+	// 	for (int j = 0; j < 4; j++) {
+	// 		std::cerr << result[i][j] << ", ";
+	// 	}
+	// 	std::cerr << "] \n";
+	// }
 
 	return result.size();
 
@@ -642,7 +643,8 @@ int eval2(Board* board) {
 string moveToString(int *move) {
 	string result = "[";
 	for (int i = 0; i < 4; i++) {
-		result += move[i] + 48;
+    result += to_string(move[i]);
+		// result += move[i] + 48;
 		result += ", ";
 	}
 	result += "]";
@@ -678,6 +680,10 @@ int* chooseMove(Board *board, int depth){
     if (score > max){
       max = score;
       maxMove = nextMoves[i];
+      for (int j = 0; j < 4; j++){
+        maxMove[i] = nextMoves[i][j];
+      }
+      //cerr << moveToString(maxMove) << endl;
     }
   }
   cerr << moveToString(maxMove) << endl;
@@ -718,7 +724,7 @@ int main(int argc, char* argv[])
   // }
 
   //giuliano testing space
-  testGiuliano(startingBoard);
+  //testGiuliano(startingBoard);
 
 
   /*
@@ -731,10 +737,11 @@ int main(int argc, char* argv[])
 
   // perform intelligent search to determine the next move
 
-  //int* move = chooseMove(startingBoard, depth);
+  int* move = chooseMove(startingBoard, depth);
 
   // print to stdout for AtroposGame
-  //std::cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
+  //cerr << "hey" + moveToString(move) << endl;
+  std::cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
   // As you can see Zeek's algorithm is not very intelligent. He
   // will be disqualified.
 
