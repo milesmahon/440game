@@ -3,6 +3,11 @@
 #include <vector>
 using namespace std;
 
+#define COLOR_INDEX 0
+#define HEIGHT_INDEX 1
+#define LDISTANCE_INDEX 2
+#define RDISTANCE_INDEX 3
+
 class Board
 {
 private:
@@ -70,7 +75,13 @@ Board::Board(string initialString){
 Board::Board(Board *oldBoard, int* newMove){
   this->boardState = oldBoard->boardState; // same as (*oldBoard).boardState
   this->lastMove = newMove;
-  // this->setLastMove(newMove);
+
+  string row = this->boardState[newMove[HEIGHT_INDEX]];
+  cerr << "Before replace: " << row << endl;
+  row.replace(newMove[LDISTANCE_INDEX], 1, to_string(newMove[COLOR_INDEX]));
+  cerr << "After replace: " << row << endl;
+  this->boardState[newMove[HEIGHT_INDEX]] = row;
+  cerr << "After reassign: " << boardState[newMove[HEIGHT_INDEX]] << endl;
 }
 
 Board::~Board(){
@@ -171,8 +182,6 @@ vector<int*> Board::getNextMoves(){
 vector<int*> Board::getNearby(){
   vector<int*> newMoves;
 
-  cerr << "LastMove in getNearby: " << lastMove[1] << endl;
-
   for(int color = 1; color <= 3; color++){
     // top left
   	int *tempMove = new int[4];
@@ -244,76 +253,6 @@ vector<int*> Board::getNearby(){
   return newMoves;
 }
 
-vector<int*> Board::getNearby2(){
-  vector<int*> *newMoves = new vector<int*>();
-  int tempMove1[4];
-  int tempMove2[4];
-  int tempMove3[4];
-  int tempMove4[4];
-  int tempMove5[4];
-  int tempMove6[4];
-  std::cout << "lastMove: " << lastMove[0] << ", " << lastMove[1] << ", " << lastMove[2] << ", " << lastMove[3] << "\n";
-  // top left
-  tempMove1[1] = lastMove[1] + 1; // height
-  tempMove1[2] = lastMove[2] - 1; // left distance
-  tempMove1[3] = lastMove[3]; // right distance
-  tempMove1[0] = getColorAt(tempMove1[1], tempMove1[2], tempMove1[3]); // color
-  if (tempMove1[1] > 0 && tempMove1[2] > 0 && tempMove1[3] > 0) {
-	  newMoves->push_back(tempMove1);
-  }
-
-	// top right
-	tempMove2[1] = lastMove[1] + 1; // height
-	tempMove2[2] = lastMove[2]; // left distance
-	tempMove2[3] = lastMove[3] - 1; // right distance
-  tempMove2[0] = getColorAt(tempMove2[1], tempMove2[2], tempMove2[3]); // color
-	if (tempMove2[1] > 0 && tempMove2[2] > 0 && tempMove2[3] > 0) {
-		newMoves->push_back(tempMove2);
-	}
-
-	// left
-	tempMove3[1] = lastMove[1]; // height
-	tempMove3[2] = lastMove[2] - 1; // left distance
-	tempMove3[3] = lastMove[3] + 1; // right distance
-  tempMove3[0] = getColorAt(tempMove3[1], tempMove3[2], tempMove3[3]); // color
-	if (tempMove3[1] > 0 && tempMove3[2] > 0 && tempMove3[3] > 0) {
-		newMoves->push_back(tempMove3);
-	}
-
-	// right
-	tempMove4[1] = lastMove[1]; // height
-	tempMove4[2] = lastMove[2] + 1; // left distance
-	tempMove4[3] = lastMove[3] - 1; // right distance
-  tempMove4[0] = getColorAt(tempMove4[1], tempMove4[2], tempMove4[3]); // color
-	if (tempMove4[1] > 0 && tempMove4[2] > 0 && tempMove4[3] > 0) {
-		newMoves->push_back(tempMove4);
-	}
-
-	// bottom left
-	tempMove5[1] = lastMove[1] - 1; // height
-	tempMove5[2] = lastMove[2]; // left distance
-	if (tempMove5[1] == 1) tempMove5[2] -= 1;
-	tempMove5[3] = lastMove[3] + 1; // right distance
-	if (tempMove5[1] == 1) tempMove5[3] -= 1;
-  tempMove5[0] = getColorAt(tempMove5[1], tempMove5[2], tempMove5[3]); // color
-	if (tempMove5[1] > 0 && tempMove5[2] > 0 && tempMove5[3] > 0) {
-		newMoves->push_back(tempMove5);
-	}
-
-	// bottom right
-	tempMove6[1] = lastMove[1] - 1; // height
-	tempMove6[2] = lastMove[2] + 1; // left distance
-	if (tempMove6[1] == 1) tempMove6[2] -= 1;
-	tempMove6[3] = lastMove[3]; // right distance
-	if (tempMove6[1] == 1) tempMove6[3] -= 1;
-  tempMove6[0] = getColorAt(tempMove6[1], tempMove6[2], tempMove6[3]); // color
-	if (tempMove6[1] > 0 && tempMove6[2] > 0 && tempMove6[3] > 0) {
-		newMoves->push_back(tempMove6);
-	}
-
-  return *newMoves;
-}
-
 int Board::getColorAt(int height, int leftDistance, int rightDistance){
   string row = this->boardState[height];
   char color = row[leftDistance];
@@ -343,7 +282,7 @@ public:
     } else if (right == -1){
       this->right = color;
     } else {
-      cout << "ERROR -- triangle full -mm" << endl;
+      cerr << "ERROR -- triangle full -mm" << endl;
     }
     return;
   }
@@ -643,31 +582,13 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
 }
 
 int eval(Board* board) {
-	int height = board->getBoardString().size();
-	for (int i = 0; i < board->getBoardString().size(); i++) {
-		std::cout << "string: " << board->getBoardString()[i] << "\n";
-	}
-
-
-	vector<int*> *v = new vector<int*>();
-
-	int tempMove[4] = {5, 2, 3, 1};
-	v->push_back(tempMove);
-	tempMove[0] = 0;
-	tempMove[1] = 1;
-	tempMove[2] = 2;
-	tempMove[3] = 3;
-	v->push_back(tempMove);
-
-
-	vector<int*> result = board->getNearby();
+	vector<int*> result = board->getNextMoves();
 	for (int i = 0; i < result.size(); i++) {
 		std::cout << "move: [";
 		for (int j = 0; j < 4; j++) {
 			std::cout << result[i][j] << ", ";
 		}
 		std::cout << "] \n";
-		std::cout << "size: " << sizeof(result[0]) << "\n";
 	}
 
 	return result.size();
@@ -692,9 +613,23 @@ void printBoard(Board* board) {
 	}
 }
 
-void testGiuliano(Board* board) {
+string moveToString(int *move) {
+	string result = "[";
+	for (int i = 0; i < 4; i++) {
+		result += move[i] + 48;
+		result += ", ";
+	}
+	result += "]";
+	return result;
+}
 
-  std::cout << "eval: " << eval(board) << "\n";
+void testGiuliano(Board* board) {
+	std::cout << "lastMove: " << moveToString(board->getLastMove()) << endl;
+
+  std::cout << "numMoves: " << eval(board) << "\n";
+	if (isWin(*board)) {
+		std::cout << "is a win!" << endl;
+	}
 	printBoard(board);
 }
 
@@ -737,6 +672,9 @@ int main(int argc, char* argv[])
   if (inpt == "board2") {
 	  inpt = "[13][302][1003][31002][100003][3000002][10000003][2121212]LastPlay:(1,4,1,3)";
   }
+	if (inpt == "board3") {
+	  inpt = "[13][302][1203][31102][100003][3000002][121212]LastPlay:(1,4,1,2)";
+	}
   Board *startingBoard = new Board(inpt);
   // Triangle *tri = new Triangle();
   // tri->add(1);
