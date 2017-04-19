@@ -115,7 +115,8 @@ vector<int*> Board::getNextMoves(){
     tempMove[2] = lastMove[2] - 1; // left distance
     tempMove[3] = lastMove[3]; // right distance
 
-    if(isValid(tempMove, getBoardSize())){
+    if(isValid(tempMove, getBoardSize()) 
+			&& this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
         newMoves.push_back(tempMove);
     }
 
@@ -125,7 +126,7 @@ vector<int*> Board::getNextMoves(){
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2]; // left distance
     tempMove[3] = lastMove[3] - 1; // right distance
-    if(isValid(tempMove, getBoardSize())){
+    if(isValid(tempMove, getBoardSize()) && this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
         newMoves.push_back(tempMove);
     }
 
@@ -135,7 +136,7 @@ vector<int*> Board::getNextMoves(){
     tempMove[1] = lastMove[1]; // height
     tempMove[2] = lastMove[2] - 1; // left distance
     tempMove[3] = lastMove[3] + 1; // right distance
-    if(isValid(tempMove, getBoardSize())){
+    if(isValid(tempMove, getBoardSize()) && this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
         newMoves.push_back(tempMove);
     }
 
@@ -145,7 +146,7 @@ vector<int*> Board::getNextMoves(){
     tempMove[1] = lastMove[1]; // height
     tempMove[2] = lastMove[2] + 1; // left distance
     tempMove[3] = lastMove[3] - 1; // right distance
-    if(isValid(tempMove, getBoardSize())){
+    if(isValid(tempMove, getBoardSize()) && this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
         newMoves.push_back(tempMove);
     }
 
@@ -157,7 +158,7 @@ vector<int*> Board::getNextMoves(){
 		if (tempMove[1] == 1) tempMove[2] -= 1;
 		tempMove[3] = lastMove[3] + 1; // right distance
 		if (tempMove[1] == 1) tempMove[3] -= 1;
-    if(isValid(tempMove, getBoardSize())){
+    if(isValid(tempMove, getBoardSize()) && this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
         newMoves.push_back(tempMove);
     }
 
@@ -165,10 +166,11 @@ vector<int*> Board::getNextMoves(){
     tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] - 1; // height
+		tempMove[2] = lastMove[2] + 1; // left distance
 		if (tempMove[1] == 1) tempMove[2] -= 1;
 		tempMove[3] = lastMove[3]; // right distance
 		if (tempMove[1] == 1) tempMove[3] -= 1;
-    if(isValid(tempMove, getBoardSize())){
+    if(isValid(tempMove, getBoardSize()) && this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
         newMoves.push_back(tempMove);
     }
 
@@ -334,17 +336,25 @@ int eval(Board *board);
 
 //ported from AtroposCircle.java
 bool isValid(int* move, int size){
-  if (move[0] >= size || move[1] >= size || move[2] >= size){
+  if (move[1] >= size || move[2] >= size || move[3] >= size){
+    return false;
+  }
+	
+	if (move[1] < 0 || move[2] < 0 || move[3] < 0){
     return false;
   }
 
-  return (move[0] + move[1] + move[2] == size);
+  return (move[1] + move[2] + move[3] == size);
 }
 
 bool isValid(int i, int j, int k, int size){
   //cerr << "testing::" + to_string(i) + "," + to_string(j) + "," + to_string(k) << endl;
   if (i >= size || j >= size || k >= size){
     //cerr << "invalid::" + to_string(i) + "," + to_string(j) + "," + to_string(k) << endl;
+    return false;
+  }
+	
+		if (i < 0 || j < 0 || k < 0){
     return false;
   }
 
@@ -709,7 +719,7 @@ int main(int argc, char* argv[])
   // }
 
   //giuliano testing space
-  // testGiuliano(startingBoard);
+  testGiuliano(startingBoard);
 
 
   /*
