@@ -348,13 +348,16 @@ public:
     return;
   }
 
+  //an in-class isWin function for triangles,
+  //since triangle has immediate access to its own colors
   bool isWin(){
     int c1 = this->top;
     int c2 = this->left;
     int c3 = this->right;
 
     if (c1 != c2 && c2 != c3 && c3 != c1){
-      return true;
+      if (c1 != 0 && c2 != 0 && c3 != 0)
+        return true;
     }
     return false;
   }
@@ -700,12 +703,13 @@ void testGiuliano(Board* board) {
 // this (notably non-recursive) wrapper chooses the best possible move
 // based on the original starting board.
 // called from main on board passed thru stdin.
-int* chooseMove(Board board, int depth){
+int* chooseMove(Board *board, int depth){
   vector<int*> nextMoves = board->getNextMoves();
 
   int max = -100000;
-  int* maxMove;
+  int* maxMove = new int[4];
   for (int i = 0; i < nextMoves.size(); i++){
+    cerr << nextMoves[i] << endl;
     Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
     int score = minimax(childBoard, false, depth-1); // false bc their turn now
     if (score > max){
@@ -713,6 +717,8 @@ int* chooseMove(Board board, int depth){
       maxMove = nextMoves[i];
     }
   }
+  cerr << maxMove[0] << endl;
+  return maxMove;
 }
 
 int main(int argc, char* argv[])
@@ -760,16 +766,16 @@ int main(int argc, char* argv[])
 
   // perform intelligent search to determine the next move
 
+  int* move = chooseMove(startingBoard, depth);
+
   // print to stdout for AtroposGame
-  //std::cout << "(1,2,2,2)";
+  std::cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
   // As you can see Zeek's algorithm is not very intelligent. He
   // will be disqualified.
 
 
   //TODO: call minimax in here with myTurn = true
 
-    return chooseMove(startingBoard);
-
-
   return 0;
+
 }
