@@ -375,13 +375,13 @@ bool isValid(int i, int j, int k, int size){
 bool isWin(Board board){
   vector<string> boardState = board.getBoardString();
   int *lastMove1 = board.getLastMove();
-	int lastMove[4] = {};
+	int* lastMove = new int[4];
 	lastMove[0] = lastMove1[0];
 	lastMove[1] = lastMove1[1];
 	lastMove[2] = lastMove1[2];
 	lastMove[3] = lastMove1[3];
-	
-	
+
+
   int color = lastMove[0];
   int height = lastMove[1];
   int left = lastMove[2];
@@ -653,6 +653,8 @@ int eval2(Board* board) {
 	return result;
 
 }
+
+
 
 void testGiuliano(Board* board) {
 	std::cerr << "lastMove: " << moveToString(board->getLastMove()) << endl;
