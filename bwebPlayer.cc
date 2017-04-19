@@ -624,17 +624,15 @@ string moveToString(int *move) {
 }
 
 int eval(Board* board) {
-	vector<int*> result = board->getNextMoves();
-  // debug
-	// for (int i = 0; i < result.size(); i++) {
-	// 	std::cerr << "move: [";
-	// 	for (int j = 0; j < 4; j++) {
-	// 		std::cerr << result[i][j] << ", ";
-	// 	}
-	// 	std::cerr << "] \n";
-	// }
+	vector<int*> nextMoves = board->getNextMoves();
+	int result = 0;
+  
+	for (int i = 0; i < nextMoves.size(); i++) {
+		std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
+		result += 1;
+	}
 
-	return result.size();
+	return result;
 
 }
 
@@ -659,9 +657,11 @@ int eval2(Board* board) {
 void testGiuliano(Board* board) {
 	std::cerr << "lastMove: " << moveToString(board->getLastMove()) << endl;
 	std::cerr << "--------eval1---------" << "\n";
-	std::cerr << "eval1: " << eval(board) << "\n\n";
+	int e1 = eval(board);
+	std::cerr << "eval1: " << e1 << "\n\n";
 	std::cerr << "--------eval2---------" << "\n";
-  std::cerr << "eval2: " << eval2(board) << "\n\n";
+	int e2 = eval2(board);
+  std::cerr << "eval2: " << e2 << "\n\n";
 	if (isWin(*board)) {
 		std::cerr << "is a win!" << endl;
 	}
@@ -729,7 +729,7 @@ int main(int argc, char* argv[])
   // }
 
   //giuliano testing space
-  //testGiuliano(startingBoard);
+  testGiuliano(startingBoard);
 
 
   /*
