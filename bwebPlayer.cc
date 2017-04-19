@@ -656,16 +656,7 @@ int eval2(Board* board) {
 
 }
 
-// string moveToString(int *move) {
-// 	string result = "[";
-// 	for (int i = 0; i < 4; i++) {
-//     result += to_string(move[i]);
-// 		// result += move[i] + 48;
-// 		result += ", ";
-// 	}
-// 	result += "]";
-// 	return result;
-// }
+
 
 void testGiuliano(Board* board) {
 	std::cerr << "lastMove: " << moveToString(board->getLastMove()) << endl;
@@ -753,11 +744,11 @@ int main(int argc, char* argv[])
 
   // perform intelligent search to determine the next move
 
-  int* move = chooseMove(startingBoard, depth);
+  //int* move = chooseMove(startingBoard, depth);
 
   // print to stdout for AtroposGame
   //cerr << "hey" + moveToString(move) << endl;
-  std::cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
+  //std::cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
   // As you can see Zeek's algorithm is not very intelligent. He
   // will be disqualified.
 
