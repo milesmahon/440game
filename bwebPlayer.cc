@@ -3,6 +3,11 @@
 #include <vector>
 using namespace std;
 
+#define COLOR_INDEX 0
+#define HEIGHT_INDEX 1
+#define LDISTANCE_INDEX 2
+#define RDISTANCE_INDEX 3
+
 class Board
 {
 private:
@@ -70,7 +75,13 @@ Board::Board(string initialString){
 Board::Board(Board *oldBoard, int* newMove){
   this->boardState = oldBoard->boardState; // same as (*oldBoard).boardState
   this->lastMove = newMove;
-  // this->setLastMove(newMove);
+  
+  string row = this->boardState[newMove[HEIGHT_INDEX]];
+  cerr << "Before replace: " << row << endl;
+  row.replace(newMove[LDISTANCE_INDEX], 1, to_string(newMove[COLOR_INDEX]));
+  cerr << "After replace: " << row << endl;
+  this->boardState[newMove[HEIGHT_INDEX]] = row;
+  cerr << "After reassign: " << boardState[newMove[HEIGHT_INDEX]] << endl;
 }
 
 Board::~Board(){
