@@ -563,7 +563,7 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
   //evaluate valid moves
   //pick best move
   //call minimax again with that move done on the board
-  printBoard(board);
+  //printBoard(board);
   vector<int*> nextMoves = board->getNextMoves();
 
   if (myTurn){ //we are maximizing
@@ -640,7 +640,7 @@ int* chooseMove(Board *board, int depth){
   int max = -100000;
   int* maxMove = new int[4];
   for (int i = 0; i < nextMoves.size(); i++){
-    cerr << nextMoves[i] << endl;
+    cerr << moveToString(nextMoves[i]) << endl;
     Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
     int score = minimax(childBoard, false, depth-1); // false bc their turn now
     if (score > max){
@@ -648,7 +648,7 @@ int* chooseMove(Board *board, int depth){
       maxMove = nextMoves[i];
     }
   }
-  cerr << maxMove[0] << endl;
+  cerr << moveToString(maxMove) << endl;
   return maxMove;
 }
 
@@ -659,7 +659,6 @@ int main(int argc, char* argv[])
   // print to stderr for debugging purposes
   // remove all debugging statements before submitting your code
   std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
-
 
   string inpt = argv[1];
   if (inpt == "board1") {
@@ -704,11 +703,7 @@ int main(int argc, char* argv[])
 
   // print to stdout for AtroposGame
   std::cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
-  // As you can see Zeek's algorithm is not very intelligent. He
-  // will be disqualified.
 
-
-  //TODO: call minimax in here with myTurn = true
 
   return 0;
 
