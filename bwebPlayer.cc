@@ -478,7 +478,7 @@ int main(int argc, char* argv[])
   Board *startingBoard = new Board(inpt);
 
   //giuliano testing space
-  testGiuliano(startingBoard);
+  //testGiuliano(startingBoard);
 
   /*
   if (isWin(*startingBoard)){
