@@ -109,7 +109,7 @@ vector<int*> Board::getNextMoves(){
   vector<int*> newMoves;
   for(int color = 1; color <= 3; color++){
     // top left
-    int *tempMove = new int[4];	
+    int *tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2] - 1; // left distance
@@ -120,7 +120,7 @@ vector<int*> Board::getNextMoves(){
     }
 
     // top right
-    tempMove = new int[4];	
+    tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2]; // left distance
@@ -131,7 +131,7 @@ vector<int*> Board::getNextMoves(){
     }
 
     // left
-    tempMove = new int[4];	
+    tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1]; // height
     tempMove[2] = lastMove[2] - 1; // left distance
@@ -142,7 +142,7 @@ vector<int*> Board::getNextMoves(){
     }
 
     // right
-    tempMove = new int[4];	
+    tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1]; // height
     tempMove[2] = lastMove[2] + 1; // left distance
@@ -153,7 +153,7 @@ vector<int*> Board::getNextMoves(){
     }
 
     // bottom left
-    tempMove = new int[4];	
+    tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] - 1; // height
     tempMove[2] = lastMove[2]; // left distance
@@ -164,7 +164,7 @@ vector<int*> Board::getNextMoves(){
     }
 
     // bottom right
-    tempMove = new int[4];	
+    tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] - 1; // height
     tempMove[2] = lastMove[2] + 1; // left distance
@@ -186,7 +186,7 @@ vector<int*> Board::getNearby(){
 
   for(int color = 1; color <= 3; color++){
     // top left
-  	int *tempMove = new int[4];	
+  	int *tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2] - 1; // left distance
@@ -331,6 +331,7 @@ int Board::getColorAt(int height, int leftDistance, int rightDistance){
   return color - '0';
 }
 
+
 //triangle holds the COLORS of an arbitrary triangle, no coordinates
 class Triangle
 {
@@ -400,6 +401,8 @@ Triangle::~Triangle(){
     // delete[] left;
 }
 
+int eval(Board *board);
+
 //ported from AtroposCircle.java
 bool isValid(int* move, int size){
   if (move[0] >= size || move[1] >= size || move[2] >= size){
@@ -428,6 +431,7 @@ bool isValid(int i, int j, int k, int size){
   // cerr << lastMove << endl;
 
 //TODO: working, not well tested
+// Will *not* work if lastMove is entered incorrectly.
 bool isWin(Board board){
   vector<string> boardState = board.getBoardString();
   int *lastMove = board.getLastMove();
@@ -589,7 +593,67 @@ bool isWin(Board board){
 }
 
 
-int* minimax(){
+bool isEndState(Board board){
+  return isWin(board);
+}
+
+
+
+int minimax(Board *board, bool myTurn, int depth){ //returns a move in the form of int[4]
+
+  //check depth base case
+  //TODO: check isWin here?
+  //How does eval handle winning
+  if (isWin(*board)){ //if isWin(board) and is myTurn, then my opponent was one who played losing move
+    if (myTurn){
+      return 20; //TODO: is this best score?
+    } else {
+      return -20; //TODO: is this best score?
+    }
+  } else if (depth == 0){
+    return eval(board);
+  }
+
+  //find valid moves
+  //evaluate valid moves
+  //pick best move
+  //call minimax again with that move done on the board
+  vector<int*> nextMoves = board->getNextMoves();
+
+  if (myTurn){ //we are maximizing
+    int max = -100000; //NOTE: 0 is worst possible eval score, currently
+    int* maxMove;
+    for (int i = 0; i < nextMoves.size(); i++){
+      Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
+      int score = minimax(childBoard, false, depth-1); // false bc their turn now
+      if (score > max){
+        max = score;
+        //maxMove = nextMoves[i];
+      }
+    }
+    return max;
+  }
+  else { //minimizing
+    int min = 100000;
+    int* minMove;
+    for (int i = 0; i < nextMoves.size(); i++){
+      Board *childBoard = new Board(board, nextMoves[i]); //applies nextMoves[i] to the board
+      int score = minimax(childBoard, true, depth-1); // true bc my turn now
+      if (score < min){
+        min = score;
+        //minMove = nextMoves[i];
+      }
+    }
+    return min;
+  }
+
+
+
+
+
+
+
+
   return 0;
 }
 
@@ -671,12 +735,14 @@ int main(int argc, char* argv[])
   //cerr << "tri::::" + string(*tri) << endl;
 
 
-  // if (isWin(*startingBoard)){
-  //   cerr << "debug: WIN!" << endl;
-  // } else {
-  //
-  //   cerr << "debug: not win" << endl;
-  // }
+//TODO: call minimax in here with myTurn = true
+
+  if (isWin(*startingBoard)){
+    cerr << "debug: WIN!" << endl;
+  } else {
+
+    cerr << "debug: not win" << endl;
+  }
 
   //giuliano testing space
   testGiuliano(startingBoard);
