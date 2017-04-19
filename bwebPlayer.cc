@@ -3,6 +3,11 @@
 #include <vector>
 using namespace std;
 
+#define COLOR_INDEX 0
+#define HEIGHT_INDEX 1
+#define LDISTANCE_INDEX 2
+#define RDISTANCE_INDEX 3
+
 class Board
 {
 private:
@@ -70,7 +75,13 @@ Board::Board(string initialString){
 Board::Board(Board *oldBoard, int* newMove){
   this->boardState = oldBoard->boardState; // same as (*oldBoard).boardState
   this->lastMove = newMove;
-  // this->setLastMove(newMove);
+  
+  string row = this->boardState[newMove[HEIGHT_INDEX]];
+  cerr << "Before replace: " << row << endl;
+  row.replace(newMove[LDISTANCE_INDEX], 1, to_string(newMove[COLOR_INDEX]));
+  cerr << "After replace: " << row << endl;
+  this->boardState[newMove[HEIGHT_INDEX]] = row;
+  cerr << "After reassign: " << boardState[newMove[HEIGHT_INDEX]] << endl;
 }
 
 Board::~Board(){
@@ -98,7 +109,7 @@ vector<int*> Board::getNextMoves(){
   vector<int*> newMoves;
   for(int color = 1; color <= 3; color++){
     // top left
-    int *tempMove = new int[4];	
+    int *tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2] - 1; // left distance
@@ -109,7 +120,7 @@ vector<int*> Board::getNextMoves(){
     }
 
     // top right
-    tempMove = new int[4];	
+    tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2]; // left distance
@@ -120,7 +131,7 @@ vector<int*> Board::getNextMoves(){
     }
 
     // left
-    tempMove = new int[4];	
+    tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1]; // height
     tempMove[2] = lastMove[2] - 1; // left distance
@@ -131,7 +142,7 @@ vector<int*> Board::getNextMoves(){
     }
 
     // right
-    tempMove = new int[4];	
+    tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1]; // height
     tempMove[2] = lastMove[2] + 1; // left distance
@@ -142,7 +153,7 @@ vector<int*> Board::getNextMoves(){
     }
 
     // bottom left
-    tempMove = new int[4];	
+    tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] - 1; // height
     tempMove[2] = lastMove[2]; // left distance
@@ -153,7 +164,7 @@ vector<int*> Board::getNextMoves(){
     }
 
     // bottom right
-    tempMove = new int[4];	
+    tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] - 1; // height
     tempMove[2] = lastMove[2] + 1; // left distance
@@ -171,11 +182,9 @@ vector<int*> Board::getNextMoves(){
 vector<int*> Board::getNearby(){
   vector<int*> newMoves;
 
-  cerr << "LastMove in getNearby: " << lastMove[1] << endl;
-
   for(int color = 1; color <= 3; color++){
     // top left
-  	int *tempMove = new int[4];	
+  	int *tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2] - 1; // left distance
@@ -244,81 +253,12 @@ vector<int*> Board::getNearby(){
   return newMoves;
 }
 
-vector<int*> Board::getNearby2(){
-  vector<int*> *newMoves = new vector<int*>();
-  int tempMove1[4];
-  int tempMove2[4];
-  int tempMove3[4];
-  int tempMove4[4];
-  int tempMove5[4];
-  int tempMove6[4];
-  std::cout << "lastMove: " << lastMove[0] << ", " << lastMove[1] << ", " << lastMove[2] << ", " << lastMove[3] << "\n";
-  // top left
-  tempMove1[1] = lastMove[1] + 1; // height
-  tempMove1[2] = lastMove[2] - 1; // left distance
-  tempMove1[3] = lastMove[3]; // right distance
-  tempMove1[0] = getColorAt(tempMove1[1], tempMove1[2], tempMove1[3]); // color
-  if (tempMove1[1] > 0 && tempMove1[2] > 0 && tempMove1[3] > 0) {
-	  newMoves->push_back(tempMove1);
-  }
-
-	// top right
-	tempMove2[1] = lastMove[1] + 1; // height
-	tempMove2[2] = lastMove[2]; // left distance
-	tempMove2[3] = lastMove[3] - 1; // right distance
-  tempMove2[0] = getColorAt(tempMove2[1], tempMove2[2], tempMove2[3]); // color
-	if (tempMove2[1] > 0 && tempMove2[2] > 0 && tempMove2[3] > 0) {
-		newMoves->push_back(tempMove2);
-	}
-
-	// left
-	tempMove3[1] = lastMove[1]; // height
-	tempMove3[2] = lastMove[2] - 1; // left distance
-	tempMove3[3] = lastMove[3] + 1; // right distance
-  tempMove3[0] = getColorAt(tempMove3[1], tempMove3[2], tempMove3[3]); // color
-	if (tempMove3[1] > 0 && tempMove3[2] > 0 && tempMove3[3] > 0) {
-		newMoves->push_back(tempMove3);
-	}
-
-	// right
-	tempMove4[1] = lastMove[1]; // height
-	tempMove4[2] = lastMove[2] + 1; // left distance
-	tempMove4[3] = lastMove[3] - 1; // right distance
-  tempMove4[0] = getColorAt(tempMove4[1], tempMove4[2], tempMove4[3]); // color
-	if (tempMove4[1] > 0 && tempMove4[2] > 0 && tempMove4[3] > 0) {
-		newMoves->push_back(tempMove4);
-	}
-
-	// bottom left
-	tempMove5[1] = lastMove[1] - 1; // height
-	tempMove5[2] = lastMove[2]; // left distance
-	if (tempMove5[1] == 1) tempMove5[2] -= 1;
-	tempMove5[3] = lastMove[3] + 1; // right distance
-	if (tempMove5[1] == 1) tempMove5[3] -= 1;
-  tempMove5[0] = getColorAt(tempMove5[1], tempMove5[2], tempMove5[3]); // color
-	if (tempMove5[1] > 0 && tempMove5[2] > 0 && tempMove5[3] > 0) {
-		newMoves->push_back(tempMove5);
-	}
-
-	// bottom right
-	tempMove6[1] = lastMove[1] - 1; // height
-	tempMove6[2] = lastMove[2] + 1; // left distance
-	if (tempMove6[1] == 1) tempMove6[2] -= 1;
-	tempMove6[3] = lastMove[3]; // right distance
-	if (tempMove6[1] == 1) tempMove6[3] -= 1;
-  tempMove6[0] = getColorAt(tempMove6[1], tempMove6[2], tempMove6[3]); // color
-	if (tempMove6[1] > 0 && tempMove6[2] > 0 && tempMove6[3] > 0) {
-		newMoves->push_back(tempMove6);
-	}
-
-  return *newMoves;
-}
-
 int Board::getColorAt(int height, int leftDistance, int rightDistance){
   string row = this->boardState[height];
   char color = row[leftDistance];
   return color - '0';
 }
+
 
 //triangle holds the COLORS of an arbitrary triangle, no coordinates
 class Triangle
@@ -342,7 +282,7 @@ public:
     } else if (right == -1){
       this->right = color;
     } else {
-      cout << "ERROR -- triangle full -mm" << endl;
+      cerr << "ERROR -- triangle full -mm" << endl;
     }
     return;
   }
@@ -390,6 +330,8 @@ Triangle::~Triangle(){
     // delete[] left;
 }
 
+int eval(Board *board);
+
 //ported from AtroposCircle.java
 bool isValid(int* move, int size){
   if (move[0] >= size || move[1] >= size || move[2] >= size){
@@ -418,6 +360,7 @@ bool isValid(int i, int j, int k, int size){
   // cerr << lastMove << endl;
 
 //TODO: working, not well tested
+// Will *not* work if lastMove is entered incorrectly.
 bool isWin(Board board){
   vector<string> boardState = board.getBoardString();
   int *lastMove = board.getLastMove();
@@ -579,7 +522,60 @@ bool isWin(Board board){
 }
 
 
-int* minimax(){
+bool isEndState(Board board){ //wrapper because "isWin" is a misnomer
+  return isWin(board);
+}
+
+
+
+int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possible to attain from this board
+
+  //check depth base case
+  //TODO: check isWin here?
+  //How does eval handle winning
+  if (isWin(*board)){ //if isWin(board) and is myTurn, then my opponent was one who played losing move
+    if (myTurn){
+      return 20; //TODO: is this best score?
+    } else {
+      return -20; //TODO: is this best score?
+    }
+  } else if (depth == 0){
+    return eval(board);
+  }
+
+  //find valid moves
+  //evaluate valid moves
+  //pick best move
+  //call minimax again with that move done on the board
+  vector<int*> nextMoves = board->getNextMoves();
+
+  if (myTurn){ //we are maximizing
+    int max = -100000; //NOTE: 0 is worst possible eval score, currently
+    int* maxMove;
+    for (int i = 0; i < nextMoves.size(); i++){
+      Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
+      int score = minimax(childBoard, false, depth-1); // false bc their turn now
+      if (score > max){
+        max = score;
+        //maxMove = nextMoves[i];
+      }
+    }
+    return max;
+  }
+  else { //minimizing
+    int min = 100000;
+    int* minMove;
+    for (int i = 0; i < nextMoves.size(); i++){
+      Board *childBoard = new Board(board, nextMoves[i]); //applies nextMoves[i] to the board
+      int score = minimax(childBoard, true, depth-1); // true bc my turn now
+      if (score < min){
+        min = score;
+        //minMove = nextMoves[i];
+      }
+    }
+    return min;
+  }
+
   return 0;
 }
 
@@ -635,8 +631,30 @@ void testGiuliano(Board* board) {
 	printBoard(board);
 }
 
+//copied from miniMax function.
+// since minimax evaluates board positions without returning the board,
+// this (notably non-recursive) wrapper chooses the best possible move
+// based on the original starting board.
+// called from main on board passed thru stdin.
+int* chooseMove(Board board, int depth){
+  vector<int*> nextMoves = board->getNextMoves();
+
+  int max = -100000;
+  int* maxMove;
+  for (int i = 0; i < nextMoves.size(); i++){
+    Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
+    int score = minimax(childBoard, false, depth-1); // false bc their turn now
+    if (score > max){
+      max = score;
+      maxMove = nextMoves[i];
+    }
+  }
+}
+
 int main(int argc, char* argv[])
 {
+
+  int depth = 7; //for minimax function
   // print to stderr for debugging purposes
   // remove all debugging statements before submitting your code
   std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
@@ -685,6 +703,12 @@ int main(int argc, char* argv[])
   //std::cout << "(1,2,2,2)";
   // As you can see Zeek's algorithm is not very intelligent. He
   // will be disqualified.
+
+
+  //TODO: call minimax in here with myTurn = true
+
+    return chooseMove(startingBoard);
+
 
   return 0;
 }
