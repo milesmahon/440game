@@ -521,13 +521,13 @@ bool isWin(Board board){
 }
 
 
-bool isEndState(Board board){
+bool isEndState(Board board){ //wrapper because "isWin" is a misnomer
   return isWin(board);
 }
 
 
 
-int minimax(Board *board, bool myTurn, int depth){ //returns a move in the form of int[4]
+int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possible to attain from this board
 
   //check depth base case
   //TODO: check isWin here?
@@ -574,13 +574,6 @@ int minimax(Board *board, bool myTurn, int depth){ //returns a move in the form 
     }
     return min;
   }
-
-
-
-
-
-
-
 
   return 0;
 }
@@ -641,8 +634,30 @@ void testGiuliano(Board* board) {
 	printBoard(board);
 }
 
+//copied from miniMax function.
+// since minimax evaluates board positions without returning the board,
+// this (notably non-recursive) wrapper chooses the best possible move
+// based on the original starting board.
+// called from main on board passed thru stdin.
+int* chooseMove(Board board, int depth){
+  vector<int*> nextMoves = board->getNextMoves();
+
+  int max = -100000;
+  int* maxMove;
+  for (int i = 0; i < nextMoves.size(); i++){
+    Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
+    int score = minimax(childBoard, false, depth-1); // false bc their turn now
+    if (score > max){
+      max = score;
+      maxMove = nextMoves[i];
+    }
+  }
+}
+
 int main(int argc, char* argv[])
 {
+
+  int depth = 7; //for minimax function
   // print to stderr for debugging purposes
   // remove all debugging statements before submitting your code
   std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
@@ -663,14 +678,12 @@ int main(int argc, char* argv[])
   //cerr << "tri::::" + string(*tri) << endl;
 
 
-//TODO: call minimax in here with myTurn = true
-
-  if (isWin(*startingBoard)){
-    cerr << "debug: WIN!" << endl;
-  } else {
-
-    cerr << "debug: not win" << endl;
-  }
+  // if (isWin(*startingBoard)){
+  //   cerr << "debug: WIN!" << endl;
+  // } else {
+  //
+  //   cerr << "debug: not win" << endl;
+  // }
 
   //giuliano testing space
   testGiuliano(startingBoard);
@@ -690,6 +703,12 @@ int main(int argc, char* argv[])
   //std::cout << "(1,2,2,2)";
   // As you can see Zeek's algorithm is not very intelligent. He
   // will be disqualified.
+
+
+  //TODO: call minimax in here with myTurn = true
+
+    return chooseMove(startingBoard);
+
 
   return 0;
 }
