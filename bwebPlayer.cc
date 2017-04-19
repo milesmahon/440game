@@ -182,8 +182,6 @@ vector<int*> Board::getNextMoves(){
 vector<int*> Board::getNearby(){
   vector<int*> newMoves;
 
-  cerr << "LastMove in getNearby: " << lastMove[1] << endl;
-
   for(int color = 1; color <= 3; color++){
     // top left
   	int *tempMove = new int[4];
@@ -255,76 +253,6 @@ vector<int*> Board::getNearby(){
   return newMoves;
 }
 
-vector<int*> Board::getNearby2(){
-  vector<int*> *newMoves = new vector<int*>();
-  int tempMove1[4];
-  int tempMove2[4];
-  int tempMove3[4];
-  int tempMove4[4];
-  int tempMove5[4];
-  int tempMove6[4];
-  std::cout << "lastMove: " << lastMove[0] << ", " << lastMove[1] << ", " << lastMove[2] << ", " << lastMove[3] << "\n";
-  // top left
-  tempMove1[1] = lastMove[1] + 1; // height
-  tempMove1[2] = lastMove[2] - 1; // left distance
-  tempMove1[3] = lastMove[3]; // right distance
-  tempMove1[0] = getColorAt(tempMove1[1], tempMove1[2], tempMove1[3]); // color
-  if (tempMove1[1] > 0 && tempMove1[2] > 0 && tempMove1[3] > 0) {
-	  newMoves->push_back(tempMove1);
-  }
-
-	// top right
-	tempMove2[1] = lastMove[1] + 1; // height
-	tempMove2[2] = lastMove[2]; // left distance
-	tempMove2[3] = lastMove[3] - 1; // right distance
-  tempMove2[0] = getColorAt(tempMove2[1], tempMove2[2], tempMove2[3]); // color
-	if (tempMove2[1] > 0 && tempMove2[2] > 0 && tempMove2[3] > 0) {
-		newMoves->push_back(tempMove2);
-	}
-
-	// left
-	tempMove3[1] = lastMove[1]; // height
-	tempMove3[2] = lastMove[2] - 1; // left distance
-	tempMove3[3] = lastMove[3] + 1; // right distance
-  tempMove3[0] = getColorAt(tempMove3[1], tempMove3[2], tempMove3[3]); // color
-	if (tempMove3[1] > 0 && tempMove3[2] > 0 && tempMove3[3] > 0) {
-		newMoves->push_back(tempMove3);
-	}
-
-	// right
-	tempMove4[1] = lastMove[1]; // height
-	tempMove4[2] = lastMove[2] + 1; // left distance
-	tempMove4[3] = lastMove[3] - 1; // right distance
-  tempMove4[0] = getColorAt(tempMove4[1], tempMove4[2], tempMove4[3]); // color
-	if (tempMove4[1] > 0 && tempMove4[2] > 0 && tempMove4[3] > 0) {
-		newMoves->push_back(tempMove4);
-	}
-
-	// bottom left
-	tempMove5[1] = lastMove[1] - 1; // height
-	tempMove5[2] = lastMove[2]; // left distance
-	if (tempMove5[1] == 1) tempMove5[2] -= 1;
-	tempMove5[3] = lastMove[3] + 1; // right distance
-	if (tempMove5[1] == 1) tempMove5[3] -= 1;
-  tempMove5[0] = getColorAt(tempMove5[1], tempMove5[2], tempMove5[3]); // color
-	if (tempMove5[1] > 0 && tempMove5[2] > 0 && tempMove5[3] > 0) {
-		newMoves->push_back(tempMove5);
-	}
-
-	// bottom right
-	tempMove6[1] = lastMove[1] - 1; // height
-	tempMove6[2] = lastMove[2] + 1; // left distance
-	if (tempMove6[1] == 1) tempMove6[2] -= 1;
-	tempMove6[3] = lastMove[3]; // right distance
-	if (tempMove6[1] == 1) tempMove6[3] -= 1;
-  tempMove6[0] = getColorAt(tempMove6[1], tempMove6[2], tempMove6[3]); // color
-	if (tempMove6[1] > 0 && tempMove6[2] > 0 && tempMove6[3] > 0) {
-		newMoves->push_back(tempMove6);
-	}
-
-  return *newMoves;
-}
-
 int Board::getColorAt(int height, int leftDistance, int rightDistance){
   string row = this->boardState[height];
   char color = row[leftDistance];
@@ -354,7 +282,7 @@ public:
     } else if (right == -1){
       this->right = color;
     } else {
-      cout << "ERROR -- triangle full -mm" << endl;
+      cerr << "ERROR -- triangle full -mm" << endl;
     }
     return;
   }
