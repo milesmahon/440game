@@ -95,139 +95,153 @@ void Board::setLastMove(string move){
 }
 
 vector<int*> Board::getNextMoves(){
-  vector<int*> *newMoves = new vector<int*>();
-  int tempMove[4];
+  vector<int*> newMoves;
   for(int color = 1; color <= 3; color++){
     // top left
+    int *tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2] - 1; // left distance
     tempMove[3] = lastMove[3]; // right distance
     if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0
       && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
-        newMoves->push_back(tempMove);
+        newMoves.push_back(tempMove);
     }
 
     // top right
+    tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2]; // left distance
     tempMove[3] = lastMove[3] - 1; // right distance
     if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0
       && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
-        newMoves->push_back(tempMove);
+        newMoves.push_back(tempMove);
     }
 
     // left
+    tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1]; // height
     tempMove[2] = lastMove[2] - 1; // left distance
     tempMove[3] = lastMove[3] + 1; // right distance
     if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0
       && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
-        newMoves->push_back(tempMove);
+        newMoves.push_back(tempMove);
     }
 
     // right
+    tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1]; // height
     tempMove[2] = lastMove[2] + 1; // left distance
     tempMove[3] = lastMove[3] - 1; // right distance
     if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0
       && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
-        newMoves->push_back(tempMove);
+        newMoves.push_back(tempMove);
     }
 
     // bottom left
+    tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] - 1; // height
     tempMove[2] = lastMove[2]; // left distance
     tempMove[3] = lastMove[3] + 1; // right distance
     if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0
       && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
-        newMoves->push_back(tempMove);
+        newMoves.push_back(tempMove);
     }
 
     // bottom right
+    tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] - 1; // height
     tempMove[2] = lastMove[2] + 1; // left distance
     tempMove[3] = lastMove[3]; // right distance
     if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0
       && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
-        newMoves->push_back(tempMove);
+        newMoves.push_back(tempMove);
     }
 
   }
 
-  return *newMoves;
+  return newMoves;
 }
 
 vector<int*> Board::getNearby(){
-  vector<int*> *newMoves = new vector<int*>();
-  int tempMove[4];
+  vector<int*> newMoves;
+
+  cerr << "LastMove in getNearby: " << lastMove[1] << endl;
+
   for(int color = 1; color <= 3; color++){
     // top left
+  	int *tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2] - 1; // left distance
     tempMove[3] = lastMove[3]; // right distance
 	if (tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0) {
-		newMoves->push_back(tempMove);
+		newMoves.push_back(tempMove);
 	}
 
+
     // top right
+	tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2]; // left distance
     tempMove[3] = lastMove[3] - 1; // right distance
 	if (tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0) {
-		newMoves->push_back(tempMove);
+		newMoves.push_back(tempMove);
 	}
 
     // left
+	tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1]; // height
     tempMove[2] = lastMove[2] - 1; // left distance
     tempMove[3] = lastMove[3] + 1; // right distance
 	if (tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0) {
-		newMoves->push_back(tempMove);
+		newMoves.push_back(tempMove);
 	}
 
     // right
+	tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1]; // height
     tempMove[2] = lastMove[2] + 1; // left distance
     tempMove[3] = lastMove[3] - 1; // right distance
 	if (tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0) {
-		newMoves->push_back(tempMove);
+		newMoves.push_back(tempMove);
 	}
 
     // bottom left
+	tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] - 1; // height
-    tempMove[2] = lastMove[2]; // left distance
+	tempMove[2] = lastMove[2]; // left distance
 	if (tempMove[1] == 1) tempMove[2] -= 1;
-    tempMove[3] = lastMove[3] + 1; // right distance
+		tempMove[3] = lastMove[3] + 1; // right distance
 	if (tempMove[1] == 1) tempMove[3] -= 1;
 	if (tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0) {
-		newMoves->push_back(tempMove);
+		newMoves.push_back(tempMove);
 	}
 
     // bottom right
+	tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] - 1; // height
     tempMove[2] = lastMove[2] + 1; // left distance
 	if (tempMove[1] == 1) tempMove[2] -= 1;
-    tempMove[3] = lastMove[3]; // right distance
+		tempMove[3] = lastMove[3]; // right distance
 	if (tempMove[1] == 1) tempMove[3] -= 1;
 	if (tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0) {
-		newMoves->push_back(tempMove);
+		newMoves.push_back(tempMove);
 	}
 
   }
 
-  return *newMoves;
+  return newMoves;
 }
 
 vector<int*> Board::getNearby2(){
@@ -245,8 +259,7 @@ vector<int*> Board::getNearby2(){
   tempMove1[3] = lastMove[3]; // right distance
   tempMove1[0] = getColorAt(tempMove1[1], tempMove1[2], tempMove1[3]); // color
   if (tempMove1[1] > 0 && tempMove1[2] > 0 && tempMove1[3] > 0) {
-	  //newMoves->push_back(tempMove1);
-
+	  newMoves->push_back(tempMove1);
   }
 
 	// top right
@@ -264,7 +277,7 @@ vector<int*> Board::getNearby2(){
 	tempMove3[3] = lastMove[3] + 1; // right distance
   tempMove3[0] = getColorAt(tempMove3[1], tempMove3[2], tempMove3[3]); // color
 	if (tempMove3[1] > 0 && tempMove3[2] > 0 && tempMove3[3] > 0) {
-		//newMoves->push_back(tempMove3);
+		newMoves->push_back(tempMove3);
 	}
 
 	// right
@@ -273,7 +286,7 @@ vector<int*> Board::getNearby2(){
 	tempMove4[3] = lastMove[3] - 1; // right distance
   tempMove4[0] = getColorAt(tempMove4[1], tempMove4[2], tempMove4[3]); // color
 	if (tempMove4[1] > 0 && tempMove4[2] > 0 && tempMove4[3] > 0) {
-		//newMoves->push_back(tempMove4);
+		newMoves->push_back(tempMove4);
 	}
 
 	// bottom left
@@ -284,7 +297,7 @@ vector<int*> Board::getNearby2(){
 	if (tempMove5[1] == 1) tempMove5[3] -= 1;
   tempMove5[0] = getColorAt(tempMove5[1], tempMove5[2], tempMove5[3]); // color
 	if (tempMove5[1] > 0 && tempMove5[2] > 0 && tempMove5[3] > 0) {
-		//newMoves->push_back(tempMove5);
+		newMoves->push_back(tempMove5);
 	}
 
 	// bottom right
@@ -295,7 +308,7 @@ vector<int*> Board::getNearby2(){
 	if (tempMove6[1] == 1) tempMove6[3] -= 1;
   tempMove6[0] = getColorAt(tempMove6[1], tempMove6[2], tempMove6[3]); // color
 	if (tempMove6[1] > 0 && tempMove6[2] > 0 && tempMove6[3] > 0) {
-		//newMoves->push_back(tempMove6);
+		newMoves->push_back(tempMove6);
 	}
 
   return *newMoves;
@@ -651,7 +664,7 @@ int eval(Board* board) {
 	v->push_back(tempMove);
 
 
-	vector<int*> result = board->getNearby2();
+	vector<int*> result = board->getNearby();
 	for (int i = 0; i < result.size(); i++) {
 		std::cout << "move: [";
 		for (int j = 0; j < 4; j++) {
@@ -685,7 +698,7 @@ void printBoard(Board* board) {
 
 void testGiuliano(Board* board) {
 
-  //std::cout << "eval: " << eval(board) << "\n";
+  std::cout << "eval: " << eval(board) << "\n";
 	printBoard(board);
 }
 
@@ -721,7 +734,7 @@ int main(int argc, char* argv[])
   }
 
   //giuliano testing space
-  //testGiuliano(startingBoard);
+  testGiuliano(startingBoard);
 
 
   /*
