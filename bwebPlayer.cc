@@ -240,66 +240,64 @@ vector<int*> Board::getNearby2(){
   int tempMove4[4];
   int tempMove5[4];
   int tempMove6[4];
-  for(int color = 1; color <= 3; color++){
-    // top left
-    tempMove1[0] = color; // color
-    tempMove1[1] = lastMove[1] + 1; // height
-    tempMove1[2] = lastMove[2] - 1; // left distance
-    tempMove1[3] = lastMove[3]; // right distance
-	if (tempMove1[1] > 0 && tempMove1[2] > 0 && tempMove1[3] > 0) {
-		newMoves->push_back(tempMove1);
-	}
+  std::cout << "lastMove: " << lastMove[0] << ", " << lastMove[1] << ", " << lastMove[2] << ", " << lastMove[3] << "\n";
+  // top left
+  tempMove1[1] = lastMove[1] + 1; // height
+  tempMove1[2] = lastMove[2] - 1; // left distance
+  tempMove1[3] = lastMove[3]; // right distance
+  tempMove1[0] = getColorAt(tempMove1[1], tempMove1[2], tempMove1[3]); // color
+  if (tempMove1[1] > 0 && tempMove1[2] > 0 && tempMove1[3] > 0) {
+	  //newMoves->push_back(tempMove1);
+  }
 
-    // top right
-    tempMove2[0] = color; // color
-    tempMove2[1] = lastMove[1] + 1; // height
-    tempMove2[2] = lastMove[2]; // left distance
-    tempMove2[3] = lastMove[3] - 1; // right distance
+	// top right
+	tempMove2[1] = lastMove[1] + 1; // height
+	tempMove2[2] = lastMove[2]; // left distance
+	tempMove2[3] = lastMove[3] - 1; // right distance
+  tempMove2[0] = getColorAt(tempMove2[1], tempMove2[2], tempMove2[3]); // color
 	if (tempMove2[1] > 0 && tempMove2[2] > 0 && tempMove2[3] > 0) {
 		newMoves->push_back(tempMove2);
 	}
 
-    // left
-    tempMove3[0] = color; // color
-    tempMove3[1] = lastMove[1]; // height
-    tempMove3[2] = lastMove[2] - 1; // left distance
-    tempMove3[3] = lastMove[3] + 1; // right distance
+	// left
+	tempMove3[1] = lastMove[1]; // height
+	tempMove3[2] = lastMove[2] - 1; // left distance
+	tempMove3[3] = lastMove[3] + 1; // right distance
+  tempMove3[0] = getColorAt(tempMove3[1], tempMove3[2], tempMove3[3]); // color
 	if (tempMove3[1] > 0 && tempMove3[2] > 0 && tempMove3[3] > 0) {
-		newMoves->push_back(tempMove3);
+		//newMoves->push_back(tempMove3);
 	}
 
-    // right
-    tempMove4[0] = color; // color
-    tempMove4[1] = lastMove[1]; // height
-    tempMove4[2] = lastMove[2] + 1; // left distance
-    tempMove4[3] = lastMove[3] - 1; // right distance
+	// right
+	tempMove4[1] = lastMove[1]; // height
+	tempMove4[2] = lastMove[2] + 1; // left distance
+	tempMove4[3] = lastMove[3] - 1; // right distance
+  tempMove4[0] = getColorAt(tempMove4[1], tempMove4[2], tempMove4[3]); // color
 	if (tempMove4[1] > 0 && tempMove4[2] > 0 && tempMove4[3] > 0) {
-		newMoves->push_back(tempMove4);
+		//newMoves->push_back(tempMove4);
 	}
 
-    // bottom left
-    tempMove5[0] = color; // color
-    tempMove5[1] = lastMove[1] - 1; // height
-    tempMove5[2] = lastMove[2]; // left distance
+	// bottom left
+	tempMove5[1] = lastMove[1] - 1; // height
+	tempMove5[2] = lastMove[2]; // left distance
 	if (tempMove5[1] == 1) tempMove5[2] -= 1;
-    tempMove5[3] = lastMove[3] + 1; // right distance
+	tempMove5[3] = lastMove[3] + 1; // right distance
 	if (tempMove5[1] == 1) tempMove5[3] -= 1;
+  tempMove5[0] = getColorAt(tempMove5[1], tempMove5[2], tempMove5[3]); // color
 	if (tempMove5[1] > 0 && tempMove5[2] > 0 && tempMove5[3] > 0) {
-		newMoves->push_back(tempMove5);
+		//newMoves->push_back(tempMove5);
 	}
 
-    // bottom right
-    tempMove6[0] = color; // color
-    tempMove6[1] = lastMove[1] - 1; // height
-    tempMove6[2] = lastMove[2] + 1; // left distance
+	// bottom right
+	tempMove6[1] = lastMove[1] - 1; // height
+	tempMove6[2] = lastMove[2] + 1; // left distance
 	if (tempMove6[1] == 1) tempMove6[2] -= 1;
-    tempMove6[3] = lastMove[3]; // right distance
+	tempMove6[3] = lastMove[3]; // right distance
 	if (tempMove6[1] == 1) tempMove6[3] -= 1;
+  tempMove6[0] = getColorAt(tempMove6[1], tempMove6[2], tempMove6[3]); // color
 	if (tempMove6[1] > 0 && tempMove6[2] > 0 && tempMove6[3] > 0) {
-		newMoves->push_back(tempMove6);
+		//newMoves->push_back(tempMove6);
 	}
-
-  }
 
   return *newMoves;
 }
@@ -409,12 +407,8 @@ int* minimax(){
 
 }
 
-int eval(Board* board, int* lastMove) {
+int eval(Board* board) {
 	int height = board->getBoardString().size();
-	int numMoves = 0;
-	int color = lastMove[0];
-	int mh = lastMove[1];
-	int ml = lastMove[2];
 	for (int i = 0; i < board->getBoardString().size(); i++) {
 		std::cout << "string: " << board->getBoardString()[i] << "\n";
 	}
@@ -443,15 +437,28 @@ int eval(Board* board, int* lastMove) {
 	return result.size();
 }
 
-void testGiuliano(char* argv[]) {
-  string inpt = argv[1];
-  if (inpt == "board1") {
-	  inpt = "[13][302][1003][31002][100003][3000002][121212]LastPlay:(1,3,1,3)";
-  }
-  Board *startingBoard = new Board(inpt);
+/*
+ * outputs a board to stdout with formatting
+ */
+void printBoard(Board* board) {
+	int height = board->getBoardString().size();
+	vector<string> boardString = board->getBoardString();
+	for (int i = 0; i < height; i++) {
+		int layer = height - i;
+		for (int j = 0; j < abs((height-1) - (i+1)); j++) {
+			cout << " ";
+		}
+		for (int j = 0; j < boardString[layer-1].length(); j++) {
+			cout << boardString[layer-1][j] << " ";
+		}
+		cout << "\n";
+	}
+}
 
-  int move[] = {2, 2, 3, 2};
-  std::cout << "eval: " << eval(startingBoard, move) << "\n";
+void testGiuliano(Board* board) {
+
+  //std::cout << "eval: " << eval(board) << "\n";
+	printBoard(board);
 }
 
 int main(int argc, char* argv[])
@@ -465,10 +472,13 @@ int main(int argc, char* argv[])
   if (inpt == "board1") {
 	  inpt = "[13][302][1003][31002][100003][3000002][121212]LastPlay:(1,3,1,3)";
   }
+  if (inpt == "board2") {
+	  inpt = "[13][302][1003][31002][100003][3000002][10000003][2121212]LastPlay:(1,4,1,3)";
+  }
   Board *startingBoard = new Board(inpt);
 
   //giuliano testing space
-  //testGiuliano(argv);
+  testGiuliano(startingBoard);
 
   /*
   if (isWin(*startingBoard)){
