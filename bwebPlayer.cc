@@ -77,11 +77,8 @@ Board::Board(Board *oldBoard, int* newMove){
   this->lastMove = newMove;
 
   string row = this->boardState[newMove[HEIGHT_INDEX]];
-  cerr << "Before replace: " << row << endl;
   row.replace(newMove[LDISTANCE_INDEX], 1, to_string(newMove[COLOR_INDEX]));
-  cerr << "After replace: " << row << endl;
   this->boardState[newMove[HEIGHT_INDEX]] = row;
-  cerr << "After reassign: " << boardState[newMove[HEIGHT_INDEX]] << endl;
 }
 
 Board::~Board(){
@@ -584,14 +581,34 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
 int eval(Board* board) {
 	vector<int*> result = board->getNextMoves();
 	for (int i = 0; i < result.size(); i++) {
-		std::cout << "move: [";
+		std::cerr << "move: [";
 		for (int j = 0; j < 4; j++) {
-			std::cout << result[i][j] << ", ";
+			std::cerr << result[i][j] << ", ";
 		}
-		std::cout << "] \n";
+		std::cerr << "] \n";
 	}
 
 	return result.size();
+
+}
+
+int eval2(Board* board) {
+	vector<int*> nextMoves = board->getNextMoves();
+	int result = 0;
+	
+	for (int i = 0; i < nextMoves.size(); i++) {
+		Board *childBoard = new Board(board, nextMoves[i]);
+		if (!isWin(*childBoard)) {
+			std::cerr << "move: [";
+			for (int j = 0; j < 4; j++) {
+				std::cerr << nextMoves[i][j] << ", ";
+			}
+			std::cerr << "] \n";
+			result += 1;
+		}
+	}
+
+	return result;
 
 }
 
@@ -604,12 +621,12 @@ void printBoard(Board* board) {
 	for (int i = 0; i < height; i++) {
 		int layer = height - i;
 		for (int j = 0; j < abs((height-1) - (i+1)); j++) {
-			cout << " ";
+			cerr << " ";
 		}
 		for (int j = 0; j < boardString[layer-1].length(); j++) {
-			cout << boardString[layer-1][j] << " ";
+			cerr << boardString[layer-1][j] << " ";
 		}
-		cout << "\n";
+		cerr << "\n";
 	}
 }
 
@@ -624,11 +641,13 @@ string moveToString(int *move) {
 }
 
 void testGiuliano(Board* board) {
-	std::cout << "lastMove: " << moveToString(board->getLastMove()) << endl;
-
-  std::cout << "numMoves: " << eval(board) << "\n";
+	std::cerr << "lastMove: " << moveToString(board->getLastMove()) << endl;
+	std::cerr << "--------eval1---------" << "\n";
+	std::cerr << "eval1: " << eval(board) << "\n\n";
+	std::cerr << "--------eval2---------" << "\n";
+  std::cerr << "eval2: " << eval2(board) << "\n\n";
 	if (isWin(*board)) {
-		std::cout << "is a win!" << endl;
+		std::cerr << "is a win!" << endl;
 	}
 	printBoard(board);
 }
@@ -704,10 +723,10 @@ int main(int argc, char* argv[])
 
   // perform intelligent search to determine the next move
 
-  int* move = chooseMove(startingBoard, depth);
+  //int* move = chooseMove(startingBoard, depth);
 
   // print to stdout for AtroposGame
-  std::cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
+  //std::cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
   // As you can see Zeek's algorithm is not very intelligent. He
   // will be disqualified.
 
