@@ -15,7 +15,7 @@ class Board
 {
 private:
 
-  int *lastMove;
+  int *lastMove; //int*???????TODO or int *lastMove??????
   vector<string> boardState;
 public:
   Board(string initialString);
@@ -77,7 +77,13 @@ Board::Board(string initialString){
 }
 Board::Board(Board *oldBoard, int* newMove){
   this->boardState = oldBoard->boardState; // same as (*oldBoard).boardState
-  this->lastMove = newMove;
+
+  this->lastMove = new int[4];
+  this->lastMove[0] = newMove[0];
+  this->lastMove[1] = newMove[1];
+  this->lastMove[2] = newMove[2];
+  this->lastMove[3] = newMove[3];
+  //this->lastMove = newMove;
 
   string row = this->boardState[newMove[HEIGHT_INDEX]];
   row.replace(newMove[LDISTANCE_INDEX], 1, to_string(newMove[COLOR_INDEX]));
@@ -626,7 +632,7 @@ string moveToString(int *move) {
 int eval(Board* board) {
 	vector<int*> nextMoves = board->getNextMoves();
 	int result = 0;
-  
+
 	for (int i = 0; i < nextMoves.size(); i++) {
 		std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
 		result += 1;
@@ -681,7 +687,7 @@ int* chooseMove(Board *board, int depth){
   int max = -100000;
   int* maxMove = new int[4];
   for (int i = 0; i < nextMoves.size(); i++){
-    cerr << moveToString(nextMoves[i]) << endl;
+    //cerr << moveToString(nextMoves[i]) << endl;
     Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
     int score = minimax(childBoard, false, depth-1); // false bc their turn now
     if (score > max){
@@ -693,7 +699,7 @@ int* chooseMove(Board *board, int depth){
       //cerr << moveToString(maxMove) << endl;
     }
   }
-  cerr << moveToString(maxMove) << endl;
+  //cerr << moveToString(maxMove) << endl;
   return maxMove;
 }
 
@@ -731,7 +737,7 @@ int main(int argc, char* argv[])
   // }
 
   //giuliano testing space
-  testGiuliano(startingBoard);
+  //testGiuliano(startingBoard);
 
 
   /*
@@ -744,11 +750,11 @@ int main(int argc, char* argv[])
 
   // perform intelligent search to determine the next move
 
-  //int* move = chooseMove(startingBoard, depth);
+  int* move = chooseMove(startingBoard, depth);
 
   // print to stdout for AtroposGame
   //cerr << "hey" + moveToString(move) << endl;
-  //std::cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
+  std::cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
   // As you can see Zeek's algorithm is not very intelligent. He
   // will be disqualified.
 
