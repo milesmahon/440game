@@ -8,6 +8,9 @@ using namespace std;
 #define LDISTANCE_INDEX 2
 #define RDISTANCE_INDEX 3
 
+bool isValid(int* move, int size);
+bool isValid(int i, int j, int k, int size);
+
 class Board
 {
 private:
@@ -111,8 +114,8 @@ vector<int*> Board::getNextMoves(){
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2] - 1; // left distance
     tempMove[3] = lastMove[3]; // right distance
-    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0
-      && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
+
+    if(isValid(tempMove, getBoardSize())){
         newMoves.push_back(tempMove);
     }
 
@@ -122,8 +125,7 @@ vector<int*> Board::getNextMoves(){
     tempMove[1] = lastMove[1] + 1; // height
     tempMove[2] = lastMove[2]; // left distance
     tempMove[3] = lastMove[3] - 1; // right distance
-    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0
-      && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
+    if(isValid(tempMove, getBoardSize())){
         newMoves.push_back(tempMove);
     }
 
@@ -133,8 +135,7 @@ vector<int*> Board::getNextMoves(){
     tempMove[1] = lastMove[1]; // height
     tempMove[2] = lastMove[2] - 1; // left distance
     tempMove[3] = lastMove[3] + 1; // right distance
-    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0
-      && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
+    if(isValid(tempMove, getBoardSize())){
         newMoves.push_back(tempMove);
     }
 
@@ -144,8 +145,7 @@ vector<int*> Board::getNextMoves(){
     tempMove[1] = lastMove[1]; // height
     tempMove[2] = lastMove[2] + 1; // left distance
     tempMove[3] = lastMove[3] - 1; // right distance
-    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0
-      && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
+    if(isValid(tempMove, getBoardSize())){
         newMoves.push_back(tempMove);
     }
 
@@ -153,10 +153,11 @@ vector<int*> Board::getNextMoves(){
     tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] - 1; // height
-    tempMove[2] = lastMove[2]; // left distance
-    tempMove[3] = lastMove[3] + 1; // right distance
-    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0
-      && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
+		tempMove[2] = lastMove[2]; // left distance
+		if (tempMove[1] == 1) tempMove[2] -= 1;
+		tempMove[3] = lastMove[3] + 1; // right distance
+		if (tempMove[1] == 1) tempMove[3] -= 1;
+    if(isValid(tempMove, getBoardSize())){
         newMoves.push_back(tempMove);
     }
 
@@ -164,10 +165,10 @@ vector<int*> Board::getNextMoves(){
     tempMove = new int[4];
     tempMove[0] = color; // color
     tempMove[1] = lastMove[1] - 1; // height
-    tempMove[2] = lastMove[2] + 1; // left distance
-    tempMove[3] = lastMove[3]; // right distance
-    if(this->getColorAt(tempMove[1], tempMove[2], tempMove[3]) == 0
-      && tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0){
+		if (tempMove[1] == 1) tempMove[2] -= 1;
+		tempMove[3] = lastMove[3]; // right distance
+		if (tempMove[1] == 1) tempMove[3] -= 1;
+    if(isValid(tempMove, getBoardSize())){
         newMoves.push_back(tempMove);
     }
 
@@ -525,7 +526,23 @@ bool isEndState(Board board){ //wrapper because "isWin" is a misnomer
   return isWin(board);
 }
 
-
+/*
+ * outputs a board to stdout with formatting
+ */
+void printBoard(Board* board) {
+	int height = board->getBoardString().size();
+	vector<string> boardString = board->getBoardString();
+	for (int i = 0; i < height; i++) {
+		int layer = height - i;
+		for (int j = 0; j < abs((height-1) - (i+1)); j++) {
+			cout << " ";
+		}
+		for (int j = 0; j < boardString[layer-1].length(); j++) {
+			cout << boardString[layer-1][j] << " ";
+		}
+		cout << "\n";
+	}
+}
 
 int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possible to attain from this board
 
@@ -546,6 +563,7 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
   //evaluate valid moves
   //pick best move
   //call minimax again with that move done on the board
+  printBoard(board);
   vector<int*> nextMoves = board->getNextMoves();
 
   if (myTurn){ //we are maximizing
@@ -574,7 +592,6 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
     }
     return min;
   }
-
   return 0;
 }
 
@@ -610,24 +627,6 @@ int eval2(Board* board) {
 
 	return result;
 
-}
-
-/*
- * outputs a board to stdout with formatting
- */
-void printBoard(Board* board) {
-	int height = board->getBoardString().size();
-	vector<string> boardString = board->getBoardString();
-	for (int i = 0; i < height; i++) {
-		int layer = height - i;
-		for (int j = 0; j < abs((height-1) - (i+1)); j++) {
-			cerr << " ";
-		}
-		for (int j = 0; j < boardString[layer-1].length(); j++) {
-			cerr << boardString[layer-1][j] << " ";
-		}
-		cerr << "\n";
-	}
 }
 
 string moveToString(int *move) {
@@ -710,7 +709,7 @@ int main(int argc, char* argv[])
   // }
 
   //giuliano testing space
-  testGiuliano(startingBoard);
+  // testGiuliano(startingBoard);
 
 
   /*
