@@ -171,9 +171,9 @@ vector<int*> Board::getNextMoves(){
 	    tempMove[0] = color; // color
 	    tempMove[1] = lastMove[1] - 1; // height
 			tempMove[2] = lastMove[2]; // left distance
-			if (tempMove[1] == 1) tempMove[2] -= 1;
+			if (lastMove[1] == 1) tempMove[2] -= 1;
 			tempMove[3] = lastMove[3] + 1; // right distance
-			if (tempMove[1] == 1) tempMove[3] -= 1;
+			if (lastMove[1] == 1) tempMove[3] -= 1;
 	    if(isValid(tempMove, getBoardSize()) && this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
 	        newMoves.push_back(tempMove);
 	    }
@@ -183,9 +183,9 @@ vector<int*> Board::getNextMoves(){
 	    tempMove[0] = color; // color
 	    tempMove[1] = lastMove[1] - 1; // height
 			tempMove[2] = lastMove[2] + 1; // left distance
-			if (tempMove[1] == 1) tempMove[2] -= 1;
+			if (lastMove[1] == 1) tempMove[2] -= 1;
 			tempMove[3] = lastMove[3]; // right distance
-			if (tempMove[1] == 1) tempMove[3] -= 1;
+			if (lastMove[1] == 1) tempMove[3] -= 1;
 	    if(isValid(tempMove, getBoardSize()) && this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
 	        newMoves.push_back(tempMove);
 	    }
@@ -702,12 +702,12 @@ void testGiuliano(Board* board) {
 int* chooseMove(Board *board, int depth){
   vector<int*> nextMoves = board->getNextMoves();
 
-  cerr << "Size of nextMoves is " << nextMoves.size() << endl;
+  // cerr << "Size of nextMoves is " << nextMoves.size() << endl;
 
   int max = -100000;
   int* maxMove = new int[4];
   for (int i = 0; i < nextMoves.size(); i++){
-    cerr << moveToString(nextMoves[i]) << endl;
+    // cerr << moveToString(nextMoves[i]) << endl;
     Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
     int score = minimax(childBoard, false, depth-1); // false bc their turn now
     if (score > max){
