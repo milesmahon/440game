@@ -10,6 +10,7 @@ using namespace std;
 
 bool isValid(int* move, int size);
 bool isValid(int i, int j, int k, int size);
+string moveToString(int *move);
 
 class Board
 {
@@ -120,73 +121,96 @@ void Board::setLastMove(string move){
 
 vector<int*> Board::getNextMoves(){
   vector<int*> newMoves;
-  for(int color = 1; color <= 3; color++){
-    // top left
-    int *tempMove = new int[4];
-    tempMove[0] = color; // color
-    tempMove[1] = lastMove[1] + 1; // height
-    tempMove[2] = lastMove[2] - 1; // left distance
-    tempMove[3] = lastMove[3]; // right distance
 
-    if(isValid(tempMove, getBoardSize())
-			&& this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
-        newMoves.push_back(tempMove);
-    }
+  if(lastMove[0] > -1){
+	  for(int color = 1; color <= 3; color++){
+	    // top left
+	    int *tempMove = new int[4];
+	    tempMove[0] = color; // color
+	    tempMove[1] = lastMove[1] + 1; // height
+	    tempMove[2] = lastMove[2] - 1; // left distance
+	    tempMove[3] = lastMove[3]; // right distance
 
-    // top right
-    tempMove = new int[4];
-    tempMove[0] = color; // color
-    tempMove[1] = lastMove[1] + 1; // height
-    tempMove[2] = lastMove[2]; // left distance
-    tempMove[3] = lastMove[3] - 1; // right distance
-    if(isValid(tempMove, getBoardSize()) && this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
-        newMoves.push_back(tempMove);
-    }
+	    if(isValid(tempMove, getBoardSize())
+				&& this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
+	        newMoves.push_back(tempMove);
+	    }
 
-    // left
-    tempMove = new int[4];
-    tempMove[0] = color; // color
-    tempMove[1] = lastMove[1]; // height
-    tempMove[2] = lastMove[2] - 1; // left distance
-    tempMove[3] = lastMove[3] + 1; // right distance
-    if(isValid(tempMove, getBoardSize()) && this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
-        newMoves.push_back(tempMove);
-    }
+	    // top right
+	    tempMove = new int[4];
+	    tempMove[0] = color; // color
+	    tempMove[1] = lastMove[1] + 1; // height
+	    tempMove[2] = lastMove[2]; // left distance
+	    tempMove[3] = lastMove[3] - 1; // right distance
+	    if(isValid(tempMove, getBoardSize()) && this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
+	        newMoves.push_back(tempMove);
+	    }
 
-    // right
-    tempMove = new int[4];
-    tempMove[0] = color; // color
-    tempMove[1] = lastMove[1]; // height
-    tempMove[2] = lastMove[2] + 1; // left distance
-    tempMove[3] = lastMove[3] - 1; // right distance
-    if(isValid(tempMove, getBoardSize()) && this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
-        newMoves.push_back(tempMove);
-    }
+	    // left
+	    tempMove = new int[4];
+	    tempMove[0] = color; // color
+	    tempMove[1] = lastMove[1]; // height
+	    tempMove[2] = lastMove[2] - 1; // left distance
+	    tempMove[3] = lastMove[3] + 1; // right distance
+	    if(isValid(tempMove, getBoardSize()) && this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
+	        newMoves.push_back(tempMove);
+	    }
 
-    // bottom left
-    tempMove = new int[4];
-    tempMove[0] = color; // color
-    tempMove[1] = lastMove[1] - 1; // height
-		tempMove[2] = lastMove[2]; // left distance
-		if (tempMove[1] == 1) tempMove[2] -= 1;
-		tempMove[3] = lastMove[3] + 1; // right distance
-		if (tempMove[1] == 1) tempMove[3] -= 1;
-    if(isValid(tempMove, getBoardSize()) && this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
-        newMoves.push_back(tempMove);
-    }
+	    // right
+	    tempMove = new int[4];
+	    tempMove[0] = color; // color
+	    tempMove[1] = lastMove[1]; // height
+	    tempMove[2] = lastMove[2] + 1; // left distance
+	    tempMove[3] = lastMove[3] - 1; // right distance
+	    if(isValid(tempMove, getBoardSize()) && this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
+	        newMoves.push_back(tempMove);
+	    }
 
-    // bottom right
-    tempMove = new int[4];
-    tempMove[0] = color; // color
-    tempMove[1] = lastMove[1] - 1; // height
-		tempMove[2] = lastMove[2] + 1; // left distance
-		if (tempMove[1] == 1) tempMove[2] -= 1;
-		tempMove[3] = lastMove[3]; // right distance
-		if (tempMove[1] == 1) tempMove[3] -= 1;
-    if(isValid(tempMove, getBoardSize()) && this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
-        newMoves.push_back(tempMove);
-    }
+	    // bottom left
+	    tempMove = new int[4];
+	    tempMove[0] = color; // color
+	    tempMove[1] = lastMove[1] - 1; // height
+			tempMove[2] = lastMove[2]; // left distance
+			if (tempMove[1] == 1) tempMove[2] -= 1;
+			tempMove[3] = lastMove[3] + 1; // right distance
+			if (tempMove[1] == 1) tempMove[3] -= 1;
+	    if(isValid(tempMove, getBoardSize()) && this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
+	        newMoves.push_back(tempMove);
+	    }
 
+	    // bottom right
+	    tempMove = new int[4];
+	    tempMove[0] = color; // color
+	    tempMove[1] = lastMove[1] - 1; // height
+			tempMove[2] = lastMove[2] + 1; // left distance
+			if (tempMove[1] == 1) tempMove[2] -= 1;
+			tempMove[3] = lastMove[3]; // right distance
+			if (tempMove[1] == 1) tempMove[3] -= 1;
+	    if(isValid(tempMove, getBoardSize()) && this->getColorAt(tempMove[HEIGHT_INDEX], tempMove[LDISTANCE_INDEX], tempMove[RDISTANCE_INDEX]) == 0){
+	        newMoves.push_back(tempMove);
+	    }
+
+	  }
+	}
+  if(newMoves.size() == 0){
+  	// cerr << "newMoves size was zero" << endl;
+  	// for loop over rows
+  	for(int height = 1; height < this->getBoardSize(); height++){
+  		string row = this->boardState[height];
+  		for(int leftDistance = 1; leftDistance < row.length() - 1; leftDistance++){
+  			if(row[leftDistance] == '0'){
+  				for(int color = 1; color <= 3; color++){
+	  				int *tempMove = new int[4];
+	  				tempMove[COLOR_INDEX] = color;
+	  				tempMove[HEIGHT_INDEX] = height;
+	  				tempMove[LDISTANCE_INDEX] = leftDistance;
+	  				tempMove[RDISTANCE_INDEX] = this->getBoardSize() - height - leftDistance;
+	  				// cerr << "In get next moves (all board): move: " << moveToString(tempMove) << endl;
+	  				newMoves.push_back(tempMove);
+  				}
+  			}
+  		}
+  	}
   }
 
   return newMoves;
@@ -447,7 +471,7 @@ bool isWin(Board board){
   if (tri->isValid()){
     triangles.push_back(*tri);
   }
-  tri->clear();
+  tri = new Triangle();
 
   // left
   i = height; // height
@@ -462,7 +486,7 @@ bool isWin(Board board){
   if (tri->isValid()){
     triangles.push_back(*tri);
   }
-  tri->clear();
+  tri = new Triangle();
 
   // right
   i = height; // height
@@ -478,7 +502,7 @@ bool isWin(Board board){
   if (tri->isValid()){
     triangles.push_back(*tri);
   }
-  tri->clear();
+  tri = new Triangle();
 
   // bottom left
   i = height - 1; // height
@@ -494,7 +518,7 @@ bool isWin(Board board){
   if (tri->isValid()){
     triangles.push_back(*tri);
   }
-  tri->clear();
+  tri = new Triangle();
 
   // bottom right
   i = height - 1; // height
@@ -510,7 +534,7 @@ bool isWin(Board board){
   if (tri->isValid()){
     triangles.push_back(*tri);
   }
-  tri->clear();
+  tri = new Triangle();
 
 
   //wrap around!
@@ -521,7 +545,7 @@ bool isWin(Board board){
   if (tri->isValid()){
     triangles.push_back(*tri);
   }
-  tri->clear();
+  tri = new Triangle();
 
 
 
@@ -655,7 +679,8 @@ int eval(Board* board) {
 	int result = 0;
 
 	for (int i = 0; i < nextMoves.size(); i++) {
-		//std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
+		if(nextMoves[i][COLOR_INDEX] > 3)
+			std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
 		result += 1;
 	}
 
@@ -705,6 +730,8 @@ void testGiuliano(Board* board) {
 // called from main on board passed thru stdin.
 int* chooseMove(Board *board, int depth){
   vector<int*> nextMoves = board->getNextMoves();
+
+  cerr << "Size of nextMoves is " << nextMoves.size() << endl;
 
   int max = -100000;
   int* maxMove = new int[4];
@@ -773,7 +800,7 @@ int main(int argc, char* argv[])
   // }
 
   //giuliano testing space
-  // testGiuliano(startingBoard);
+   //testGiuliano(startingBoard);
 
 
   /*
