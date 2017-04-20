@@ -72,7 +72,14 @@ Board::Board(string initialString){
 
   //cerr << "before setLastMove" <<endl;
   this->lastMove = new int[4];
-  this->setLastMove(initialString.substr(9, initialString.length()));
+  if(initialString.substr(9) != "null")
+		this->setLastMove(initialString.substr(9, initialString.length()));
+	else{
+		lastMove[COLOR_INDEX] = -1;
+		lastMove[HEIGHT_INDEX] = -1;
+		lastMove[LDISTANCE_INDEX] = -1;
+		lastMove[RDISTANCE_INDEX] = -1;
+	}
 
 }
 Board::Board(Board *oldBoard, int* newMove){
@@ -553,8 +560,8 @@ bool isWin(Board board){
 }
 
 
-bool isEndState(Board board){ //wrapper because "isWin" is a misnomer
-  return isWin(board);
+bool isEndState(Board* board){ //wrapper because "isWin" is a misnomer
+  return isWin(*board);
 }
 
 /*
@@ -663,7 +670,7 @@ int eval2(Board* board) {
 	for (int i = 0; i < nextMoves.size(); i++) {
 		Board *childBoard = new Board(board, nextMoves[i]);
 		std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
-		if (!isWin(*childBoard)) {
+		if (isEndState(childBoard)) {
 			//std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
 			std:cerr << "results in loss" << endl;
 			result += 1;
@@ -745,6 +752,9 @@ int main(int argc, char* argv[])
 	if (inpt == "board4") {
 	  inpt = "[13][302][1103][32102][133333][21212]LastPlay:(1,3,1,2)";
 	}
+	if (inpt == "board5") {
+	  inpt = "[13][302][1003][30002][100003][3000002][121212]LastPlay:null";
+	}
 
 
   Board *startingBoard = new Board(inpt);
@@ -763,7 +773,7 @@ int main(int argc, char* argv[])
   // }
 
   //giuliano testing space
-  //testGiuliano(startingBoard);
+  testGiuliano(startingBoard);
 
 
   /*
