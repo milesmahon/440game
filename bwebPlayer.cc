@@ -658,7 +658,8 @@ int eval2(Board* board) {
 		Board *childBoard = new Board(board, nextMoves[i]);
 		std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
 		if (!isWin(*childBoard)) {
-			std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
+			//std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
+			std:cerr << "results in loss" << endl;
 			result += 1;
 		}
 		std::cerr << "\n";
@@ -672,9 +673,9 @@ int eval2(Board* board) {
 
 void testGiuliano(Board* board) {
 	std::cerr << "lastMove: " << moveToString(board->getLastMove()) << endl;
-	std::cerr << "--------eval1---------" << "\n";
-	int e1 = eval(board);
-	std::cerr << "eval1: " << e1 << "\n\n";
+	//std::cerr << "--------eval1---------" << "\n";
+	//int e1 = eval(board);
+	//std::cerr << "eval1: " << e1 << "\n\n";
 	std::cerr << "--------eval2---------" << "\n";
 	int e2 = eval2(board);
   std::cerr << "eval2: " << e2 << "\n\n";
@@ -735,6 +736,11 @@ int main(int argc, char* argv[])
 	if (inpt == "board3") {
 	  inpt = "[13][302][1203][31102][100003][3000002][121212]LastPlay:(1,4,1,2)";
 	}
+	if (inpt == "board4") {
+	  inpt = "[13][302][1103][32102][133333][21212]LastPlay:(1,3,1,2)";
+	}
+	
+	
   Board *startingBoard = new Board(inpt);
   // Triangle *tri = new Triangle();
   // tri->add(1);
@@ -764,11 +770,11 @@ int main(int argc, char* argv[])
 
   // perform intelligent search to determine the next move
 
-  int* move = chooseMove(startingBoard, depth);
+  //int* move = chooseMove(startingBoard, depth);
 
   // print to stdout for AtroposGame
   //cerr << "hey" + moveToString(move) << endl;
-  std::cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
+  //std::cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
   // As you can see Zeek's algorithm is not very intelligent. He
   // will be disqualified.
 
