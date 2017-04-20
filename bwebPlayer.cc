@@ -632,7 +632,7 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
     }
     return min;
   }
-  return -1500000;
+  return -1500000; //big, unique number for debug
 }
 
 string moveToString(int *move) {
@@ -665,7 +665,7 @@ int eval2(Board* board) {
 
 	for (int i = 0; i < nextMoves.size(); i++) {
 		Board *childBoard = new Board(board, nextMoves[i]);
-		std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
+		//std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
 		if (isEndState(childBoard)) {
 			//std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
 			std:cerr << "results in loss" << endl;
@@ -726,15 +726,11 @@ int* chooseMove(Board *board, int depth){
 }
 
 
-//TODO: fix bug where script dies if playing first (bc lastPlay = "null")
-//TODO: fix bug where script chooses losing move when it doesn't have to.
-  //although I'm not sure that's actually what happened?
-//Script sometimes tries illegal moves
-
 int main(int argc, char* argv[])
 {
 
-  int depth = 4; //for minimax function
+  //NOTE: LOOKAHEAD DEPTH
+  int depth = 5; //for minimax function
   // print to stderr for debugging purposes
   // remove all debugging statements before submitting your code
   std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
