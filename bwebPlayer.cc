@@ -573,12 +573,12 @@ void printBoard(Board* board) {
 	for (int i = 0; i < height; i++) {
 		int layer = height - i;
 		for (int j = 0; j < abs((height-1) - (i+1)); j++) {
-			cout << " ";
+			cerr << " ";
 		}
 		for (int j = 0; j < boardString[layer-1].length(); j++) {
-			cout << boardString[layer-1][j] << " ";
+			cerr << boardString[layer-1][j] << " ";
 		}
-		cout << "\n";
+		cerr << "\n";
 	}
 }
 
@@ -773,7 +773,7 @@ int main(int argc, char* argv[])
   // }
 
   //giuliano testing space
-  testGiuliano(startingBoard);
+  // testGiuliano(startingBoard);
 
 
   /*
@@ -790,7 +790,7 @@ int main(int argc, char* argv[])
 
   // print to stdout for AtroposGame
   //cerr << "hey" + moveToString(move) << endl;
-  //std::cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
+  std::cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
   // As you can see Zeek's algorithm is not very intelligent. He
   // will be disqualified.
 
