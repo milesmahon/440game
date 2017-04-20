@@ -719,8 +719,6 @@ int* chooseMove(Board *board, int depth){
     if (score > max){
       max = score;
       maxMove = nextMoves[i];
-      if(nextMoves[i][COLOR_INDEX] > 3)
-      	cerr << "Found a next move with color greater than three: " << moveToString(nextMoves[i]) << endl;
       for (int j = 0; j < 4; j++){
         maxMove[j] = nextMoves[i][j];
       }
