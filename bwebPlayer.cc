@@ -546,8 +546,8 @@ bool isWin(Board board){
 }
 
 
-bool isEndState(Board board){ //wrapper because "isWin" is a misnomer
-  return isWin(board);
+bool isEndState(Board* board){ //wrapper because "isWin" is a misnomer
+  return isWin(*board);
 }
 
 /*
@@ -649,7 +649,7 @@ int eval2(Board* board) {
 	for (int i = 0; i < nextMoves.size(); i++) {
 		Board *childBoard = new Board(board, nextMoves[i]);
 		std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
-		if (!isWin(*childBoard)) {
+		if (isEndState(childBoard)) {
 			//std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
 			std:cerr << "results in loss" << endl;
 			result += 1;
@@ -743,7 +743,7 @@ int main(int argc, char* argv[])
   // }
 
   //giuliano testing space
-  //testGiuliano(startingBoard);
+  testGiuliano(startingBoard);
 
 
   /*
