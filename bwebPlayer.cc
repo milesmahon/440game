@@ -376,6 +376,12 @@ bool isValid(int i, int j, int k, int size){
   //   cerr << *i << endl;
   // cerr << lastMove << endl;
 
+
+
+//TODO: why do losing moves have score 0 or 20 sometimes
+
+
+
 //TODO: working, not well tested
 // Will *not* work if lastMove is entered incorrectly.
 bool isWin(Board board){
@@ -739,8 +745,8 @@ int main(int argc, char* argv[])
 	if (inpt == "board4") {
 	  inpt = "[13][302][1103][32102][133333][21212]LastPlay:(1,3,1,2)";
 	}
-	
-	
+
+
   Board *startingBoard = new Board(inpt);
   // Triangle *tri = new Triangle();
   // tri->add(1);
