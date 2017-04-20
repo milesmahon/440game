@@ -379,8 +379,9 @@ bool isValid(int i, int j, int k, int size){
 //TODO: working, not well tested
 // Will *not* work if lastMove is entered incorrectly.
 bool isWin(Board board){
+  //printBoard(board);
   vector<string> boardState = board.getBoardString();
-  int *lastMove1 = board.getLastMove();
+  int* lastMove1 = board.getLastMove();
 	int* lastMove = new int[4];
 	lastMove[0] = lastMove1[0];
 	lastMove[1] = lastMove1[1];
@@ -570,9 +571,13 @@ void printBoard(Board* board) {
 
 int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possible to attain from this board
 
+  //vector<int*> nextMoves = new vector<int*>(board->getNextMoves());
+  vector<int*> nextMoves(board->getNextMoves()); //= new vector(board->getNextMoves());
+
   //check depth base case
   //TODO: check isWin here?
   //How does eval handle winning
+  //printBoard(board);
   if (isWin(*board)){ //if isWin(board) and is myTurn, then my opponent was one who played losing move
     if (myTurn){
       return 20; //TODO: is this best score?
@@ -582,17 +587,20 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
   } else if (depth == 0){
     return eval(board);
   }
+  else if (nextMoves.size() == 0){
+    return eval(board);
+  }
 
   //find valid moves
   //evaluate valid moves
   //pick best move
   //call minimax again with that move done on the board
   //printBoard(board);
-  vector<int*> nextMoves = board->getNextMoves();
+  //vector<int*> nextMoves = board->getNextMoves();
 
   if (myTurn){ //we are maximizing
     int max = -100000; //NOTE: 0 is worst possible eval score, currently
-    int* maxMove;
+    //int* maxMove;
     for (int i = 0; i < nextMoves.size(); i++){
       Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
       int score = minimax(childBoard, false, depth-1); // false bc their turn now
@@ -605,7 +613,7 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
   }
   else { //minimizing
     int min = 100000;
-    int* minMove;
+    //int* minMove;
     for (int i = 0; i < nextMoves.size(); i++){
       Board *childBoard = new Board(board, nextMoves[i]); //applies nextMoves[i] to the board
       int score = minimax(childBoard, true, depth-1); // true bc my turn now
@@ -616,7 +624,7 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
     }
     return min;
   }
-  return 0;
+  return -1500000;
 }
 
 string moveToString(int *move) {
@@ -700,14 +708,20 @@ int* chooseMove(Board *board, int depth){
       //cerr << moveToString(maxMove) << endl;
     }
   }
-  //cerr << moveToString(maxMove) << endl;
+  cerr << "Choosing " + moveToString(maxMove) << "because it has score " << to_string(max) << endl;
   return maxMove;
 }
+
+
+//TODO: fix bug where script dies if playing first (bc lastPlay = "null")
+//TODO: fix bug where script chooses losing move when it doesn't have to.
+  //although I'm not sure that's actually what happened?
+//Script sometimes tries illegal moves
 
 int main(int argc, char* argv[])
 {
 
-  int depth = 7; //for minimax function
+  int depth = 4; //for minimax function
   // print to stderr for debugging purposes
   // remove all debugging statements before submitting your code
   std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
