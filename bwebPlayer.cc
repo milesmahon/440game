@@ -715,6 +715,11 @@ int main(int argc, char* argv[])
 	if (inpt == "board3") {
 	  inpt = "[13][302][1203][31102][100003][3000002][121212]LastPlay:(1,4,1,2)";
 	}
+	if (inpt == "board4") {
+	  inpt = "[13][302][1103][32102][133333][21212]LastPlay:(1,3,1,2)";
+	}
+	
+	
   Board *startingBoard = new Board(inpt);
   // Triangle *tri = new Triangle();
   // tri->add(1);
