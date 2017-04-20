@@ -333,8 +333,7 @@ public:
 
     if (c1 != c2 && c2 != c3 && c3 != c1){
       if (c1 != 0 && c2 != 0 && c3 != 0){
-        if (c1 <= 3 && c2 <= 3 && c3 <= 3) //NOTE: trying to fix an issue w
-          return true;
+        return true;
       }
     }
     return false;
@@ -420,13 +419,7 @@ bool isValid(int i, int j, int k, int size){
 bool isWin(Board board){
   //printBoard(board);
   vector<string> boardState = board.getBoardString();
-  int* lastMove1 = board.getLastMove();
-	int* lastMove = new int[4];
-	lastMove[0] = lastMove1[0];
-	lastMove[1] = lastMove1[1];
-	lastMove[2] = lastMove1[2];
-	lastMove[3] = lastMove1[3];
-
+  int* lastMove = board.getLastMove();
 
   int color = lastMove[0];
   int height = lastMove[1];
@@ -475,10 +468,11 @@ bool isWin(Board board){
   }
   tri = new Triangle();
 
-  // left
+  // right
   i = height; // height
-  j = left - 1; // left distance
-  k = right + 1; // right distance
+  j = left + 1; // left distance
+  k = right - 1; // right distance
+  //int move [] = {i, j, k};
   if (isValid(i, j, k, board.getBoardSize()))
     c3 = board.getColorAt(i, j, k);
 
@@ -490,10 +484,11 @@ bool isWin(Board board){
   }
   tri = new Triangle();
 
-  // right
-  i = height; // height
+
+  // bottom right
+  i = height - 1; // height
   j = left + 1; // left distance
-  k = right - 1; // right distance
+  k = right; // right distance
   //int move [] = {i, j, k};
   if (isValid(i, j, k, board.getBoardSize()))
     c4 = board.getColorAt(i, j, k);
@@ -522,11 +517,10 @@ bool isWin(Board board){
   }
   tri = new Triangle();
 
-  // bottom right
-  i = height - 1; // height
-  j = left + 1; // left distance
-  k = right; // right distance
-  //int move [] = {i, j, k};
+  // left
+  i = height; // height
+  j = left - 1; // left distance
+  k = right + 1; // right distance
   if (isValid(i, j, k, board.getBoardSize()))
     c6 = board.getColorAt(i, j, k);
 
@@ -713,7 +707,7 @@ int* chooseMove(Board *board, int depth){
   int max = -100000;
   int* maxMove = new int[4];
   for (int i = 0; i < nextMoves.size(); i++){
-    //cerr << moveToString(nextMoves[i]) << endl;
+    cerr << moveToString(nextMoves[i]) << endl;
     Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
     int score = minimax(childBoard, false, depth-1); // false bc their turn now
     if (score > max){
@@ -722,7 +716,7 @@ int* chooseMove(Board *board, int depth){
       for (int j = 0; j < 4; j++){
         maxMove[j] = nextMoves[i][j];
       }
-      //cerr << moveToString(maxMove) << endl;
+      // cerr << moveToString(maxMove) << endl;
     }
   }
   cerr << "Choosing " + moveToString(maxMove) << "because it has score " << to_string(max) << endl;
