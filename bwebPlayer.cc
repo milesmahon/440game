@@ -332,8 +332,10 @@ public:
     int c3 = this->right;
 
     if (c1 != c2 && c2 != c3 && c3 != c1){
-      if (c1 != 0 && c2 != 0 && c3 != 0)
-        return true;
+      if (c1 != 0 && c2 != 0 && c3 != 0){
+        if (c1 <= 3 && c2 <= 3 && c3 <= 3) //NOTE: trying to fix an issue w
+          return true;
+      }
     }
     return false;
   }
@@ -547,31 +549,6 @@ bool isWin(Board board){
   }
   tri = new Triangle();
 
-
-
-
-  // for (int i = height-1; i <= height + 1; i++){
-  //   for (int j = left - 1; j <= left + 1; j++){
-  //     Triangle *tri = new Triangle();
-  //     for (int k = right - 1; k <= right + 1; k++){
-  //
-  //       int move[3] = {i, j, k};
-  //       //cerr << (to_string(i) + "," + to_string(j) + "," + to_string(k)) << endl;
-  //       if (isValid(move, board.getBoardSize())){ //need size of board
-  //
-  //         cerr << ("valid move:: " + to_string(i) + "," + to_string(j) + "," + to_string(k)) << endl;
-  //         tri->add(board.getColorAt(i, j, k)); //pass the color to the trianlge
-  //       } else {
-  //         cerr << ("invalid move:: " + to_string(i) + "," + to_string(j) + "," + to_string(k)) << endl;
-  //       }
-  //     }
-  //
-  //     cerr << "triangle::" + string(*tri) << endl;
-  //     if (tri->isValid()) //Triangle also has an isValid func
-  //       triangles.push_back(*tri);
-  //   }
-  // }
-
   for (int x = 0; x < triangles.size(); x++){
     //db
     //cerr << "tri::::" + string(triangles[x]) << endl;
@@ -617,9 +594,9 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
   //printBoard(board);
   if (isWin(*board)){ //if isWin(board) and is myTurn, then my opponent was one who played losing move
     if (myTurn){
-      return 20; //TODO: is this best score?
+      return 1111; //TODO: is this best score?
     } else {
-      return -20; //TODO: is this best score?
+      return -1111; //TODO: is this best score?
     }
   } else if (depth == 0){
     return eval(board);
