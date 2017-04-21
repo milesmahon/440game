@@ -764,7 +764,7 @@ int minimaxAB(Board *board, bool myTurn, int depth, int A, int B){ //returns max
       return -1111; //TODO: is this best score?
     }
   } else if (depth == 0){
-    int ev = eval2(board);
+    int ev = eval(board);
     if (myTurn) {
       return ev;
     }
@@ -773,7 +773,7 @@ int minimaxAB(Board *board, bool myTurn, int depth, int A, int B){ //returns max
     }
   }
   else if (nextMoves.size() == 0){
-    int ev = eval2(board);
+    int ev = eval(board);
     if (myTurn) {
       return ev;
     }
@@ -919,7 +919,7 @@ int main(int argc, char* argv[])
 {
 
   //NOTE: LOOKAHEAD DEPTH
-  int depth = 4; //for minimax function
+  int depth = 5; //for minimax function
   // print to stderr for debugging purposes
   // remove all debugging statements before submitting your code
   std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
