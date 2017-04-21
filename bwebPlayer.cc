@@ -855,7 +855,8 @@ int* chooseMove(Board *board, int depth){
   for (int i = 0; i < nextMoves.size(); i++){
     // cerr << moveToString(nextMoves[i]) << endl;
     Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
-    int score = minimax(childBoard, false, depth-1); // false bc their turn now
+    // int score = minimax(childBoard, false, depth-1); // false bc their turn now
+    int score = minimaxAB(childBoard, false, depth-1, -99999999, 99999999); // false bc their turn now
     if (score > max){
       max = score;
       maxMove = nextMoves[i];
@@ -875,7 +876,7 @@ int main(int argc, char* argv[])
 {
 
   //NOTE: LOOKAHEAD DEPTH
-  int depth = 5; //for minimax function
+  int depth = 8; //for minimax function
   // print to stderr for debugging purposes
   // remove all debugging statements before submitting your code
   std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
@@ -908,18 +909,18 @@ int main(int argc, char* argv[])
   // }
 
   //giuliano testing space
-  testGiuliano(startingBoard);
+  //testGiuliano(startingBoard);
 
 
   // parse the input string, i.e., argv[1]
 
   // perform intelligent search to determine the next move
 
-  //int* move = chooseMove(startingBoard, depth);
+  int* move = chooseMove(startingBoard, depth);
 
   // print to stdout for AtroposGame
   //cerr << "hey" + moveToString(move) << endl;
-  //cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
+  cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
   // As you can see Zeek's algorithm is not very intelligent. He
   // will be disqualified.
 
