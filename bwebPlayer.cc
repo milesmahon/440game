@@ -554,6 +554,92 @@ bool isWin(Board board){
 
 }
 
+//for use with eval2int
+bool isWin(vector<int> colors, int lastMoveColor){
+
+  vector<Triangle> triangles;
+  Triangle *tri = new Triangle();
+
+  //top left, top right, middle
+  tri->add(colors[0]);
+  tri->add(colors[1]);
+  tri->add(lastMoveColor);
+  if (tri->isValid()){
+    triangles.push_back(*tri);
+  }
+  tri = new Triangle();
+
+  //top right, right, middle
+  tri->add(colors[1]);
+  tri->add(colors[2]);
+  tri->add(lastMoveColor);
+  if (tri->isValid()){
+    triangles.push_back(*tri);
+  }
+  tri = new Triangle();
+
+  //right, bottom right, middle
+  tri->add(colors[2]);
+  tri->add(colors[3]);
+  tri->add(lastMoveColor);
+  if (tri->isValid()){
+    triangles.push_back(*tri);
+  }
+  tri = new Triangle();
+
+  //bottom right, bottom left, middle
+  tri->add(colors[3]);
+  tri->add(colors[4]);
+  tri->add(lastMoveColor);
+  if (tri->isValid()){
+    triangles.push_back(*tri);
+  }
+  tri = new Triangle();
+
+  //bottom left, left, middle
+  tri->add(colors[4]);
+  tri->add(colors[5]);
+  tri->add(lastMoveColor);
+  if (tri->isValid()){
+    triangles.push_back(*tri);
+  }
+  tri = new Triangle();
+
+
+  //wrap around!
+
+  //left, top left, middle
+  tri->add(colors[5]);
+  tri->add(colors[0]);
+  tri->add(lastMoveColor);
+  if (tri->isValid()){
+    triangles.push_back(*tri);
+  }
+
+  for (int x = 0; x < triangles.size(); x++){
+    //db
+    //cerr << "tri::::" + string(triangles[x]) << endl;
+    if (triangles[x].isWin()){
+      return true;
+    }
+  }
+  return false;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 bool isEndState(Board* board){ //wrapper because "isWin" is a misnomer
   return isWin(*board);
@@ -723,7 +809,8 @@ int* chooseMove(Board *board, int depth){
   return maxMove;
 }
 
-
+//TODO: possible optimization: don't use triangles at all
+//only used in isWin, and not really necessary
 int main(int argc, char* argv[])
 {
 
