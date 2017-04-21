@@ -16,7 +16,7 @@ class Board
 {
 private:
 
-  int *lastMove; //int*???????TODO or int *lastMove??????
+  int *lastMove;
   vector<string> boardState;
 public:
   Board(string initialString);
@@ -446,21 +446,10 @@ bool isValid(int i, int j, int k, int size){
   return (i + j + k == size);
 }
 
-
-  //db: print the vector contents
-  //from stackoverflow
-  // for (std::vector<string>::const_iterator i = rows.begin(); i != rows.end(); ++i)
-  //   cerr << *i << endl;
-  // cerr << lastMove << endl;
-
-
-
-//TODO: why do losing moves have score 0 or 20 sometimes
-
-
-
-//TODO: working, not well tested
-// Will *not* work if lastMove is entered incorrectly.
+// checks if board is at an end state
+// assumes this will be checked at every move, so only checks
+  // if lastMove was a winning/losing move
+// Will *not* work if lastMove is entered incorrectly (assumes lastMove not null)
 bool isWin(Board board){
   //printBoard(board);
   vector<string> boardState = board.getBoardString();
@@ -599,6 +588,92 @@ bool isWin(Board board){
 
 }
 
+//for use with eval2
+bool isWin(vector<int> colors, int lastMoveColor){
+
+  vector<Triangle> triangles;
+  Triangle *tri = new Triangle();
+
+  //top left, top right, middle
+  tri->add(colors[0]);
+  tri->add(colors[1]);
+  tri->add(lastMoveColor);
+  if (tri->isValid()){
+    triangles.push_back(*tri);
+  }
+  tri = new Triangle();
+
+  //top right, right, middle
+  tri->add(colors[1]);
+  tri->add(colors[2]);
+  tri->add(lastMoveColor);
+  if (tri->isValid()){
+    triangles.push_back(*tri);
+  }
+  tri = new Triangle();
+
+  //right, bottom right, middle
+  tri->add(colors[2]);
+  tri->add(colors[3]);
+  tri->add(lastMoveColor);
+  if (tri->isValid()){
+    triangles.push_back(*tri);
+  }
+  tri = new Triangle();
+
+  //bottom right, bottom left, middle
+  tri->add(colors[3]);
+  tri->add(colors[4]);
+  tri->add(lastMoveColor);
+  if (tri->isValid()){
+    triangles.push_back(*tri);
+  }
+  tri = new Triangle();
+
+  //bottom left, left, middle
+  tri->add(colors[4]);
+  tri->add(colors[5]);
+  tri->add(lastMoveColor);
+  if (tri->isValid()){
+    triangles.push_back(*tri);
+  }
+  tri = new Triangle();
+
+
+  //wrap around!
+
+  //left, top left, middle
+  tri->add(colors[5]);
+  tri->add(colors[0]);
+  tri->add(lastMoveColor);
+  if (tri->isValid()){
+    triangles.push_back(*tri);
+  }
+
+  for (int x = 0; x < triangles.size(); x++){
+    //db
+    //cerr << "tri::::" + string(triangles[x]) << endl;
+    if (triangles[x].isWin()){
+      return true;
+    }
+  }
+  return false;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 bool isEndState(Board* board){ //wrapper because "isWin" is a misnomer
   return isWin(*board);
@@ -623,6 +698,71 @@ void printBoard(Board* board) {
 }
 
 int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possible to attain from this board
+
+  //vector<int*> nextMoves = new vector<int*>(board->getNextMoves());
+  vector<int*> nextMoves(board->getNextMoves()); //= new vector(board->getNextMoves());
+
+  //base cases
+  if (isWin(*board)){ //if isWin(board) and is myTurn, then my opponent was one who played losing move
+    if (myTurn){
+      return 1111; //TODO: is this best score?
+    } else {
+      return -1111; //TODO: is this best score?
+    }
+  } else if (depth == 0){
+    int ev = eval(board);
+    if (myTurn) {
+      return ev;
+    }
+    else {
+      return -1*ev;
+    }
+  }
+  else if (nextMoves.size() == 0){
+    int ev = eval(board);
+    if (myTurn) {
+      return ev;
+    }
+    else {
+      return -1*ev;
+    }
+  }
+
+  //find valid moves
+  //evaluate valid moves
+  //pick best move
+  //call minimax again with that move done on the board
+
+  if (myTurn){ //we are maximizing
+    int max = -100000; //NOTE: 0 is worst possible eval score, currently
+    //int* maxMove;
+    for (int i = 0; i < nextMoves.size(); i++){
+      Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
+      int score = minimax(childBoard, false, depth-1); // false bc their turn now
+      if (score > max){
+        max = score;
+        //maxMove = nextMoves[i];
+      }
+    }
+    return max;
+  }
+  else { //minimizing
+    int min = 100000;
+    //int* minMove;
+    for (int i = 0; i < nextMoves.size(); i++){
+      Board *childBoard = new Board(board, nextMoves[i]); //applies nextMoves[i] to the board
+      int score = minimax(childBoard, true, depth-1); // true bc my turn now
+      if (score < min){
+        min = score;
+        //minMove = nextMoves[i];
+      }
+    }
+    return min;
+  }
+  return -1500000; //big, unique number for debug
+}
+
+int minimaxAB(Board *board, bool myTurn, int depth, int A, int B){ //returns maximum score possible to attain from this board
 
   //vector<int*> nextMoves = new vector<int*>(board->getNextMoves());
   vector<int*> nextMoves(board->getNextMoves()); //= new vector(board->getNextMoves());
@@ -656,11 +796,14 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
     //int* maxMove;
     for (int i = 0; i < nextMoves.size(); i++){
       Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
-      int score = minimax(childBoard, false, depth-1); // false bc their turn now
+      int score = minimaxAB(childBoard, false, depth-1, A, B); // false bc their turn now
       if (score > max){
         max = score;
         //maxMove = nextMoves[i];
       }
+			A = std::max(A, max);
+			if (B <= A)
+				break;
     }
     return max;
   }
@@ -669,11 +812,14 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
     //int* minMove;
     for (int i = 0; i < nextMoves.size(); i++){
       Board *childBoard = new Board(board, nextMoves[i]); //applies nextMoves[i] to the board
-      int score = minimax(childBoard, true, depth-1); // true bc my turn now
+      int score = minimaxAB(childBoard, true, depth-1, A, B); // true bc my turn now
       if (score < min){
         min = score;
         //minMove = nextMoves[i];
       }
+			B = std::min(B, min);
+			if (B <= A)
+				break;
     }
     return min;
   }
@@ -709,9 +855,15 @@ int eval2(Board* board) {
 	int result = 0;
 
 	for (int i = 0; i < nextMoves.size(); i++) {
+<<<<<<< HEAD
 		vector<int> colors = board->getNearbyColors(nextMoves[i][HEIGHT_INDEX], nextMoves[i][LDISTANCE_INDEX], nextMoves[i][RDISTANCE_INDEX]);
 		int current_color = board->getColorAt(board->getLastMove()[HEIGHT_INDEX], board->getLastMove()[LDISTANCE_INDEX], board->getLastMove()[RDISTANCE_INDEX]);
 		if (isEndState(colors, current_color)) {
+=======
+		Board *childBoard = new Board(board, nextMoves[i]);
+		//std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
+		if (isEndState(childBoard)) {
+>>>>>>> 6869b44e56623b79002d3f690de54dfcd89a8fe2
 			//std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
 			// std:cerr << "results in loss" << endl;
 			result += 1;
@@ -754,7 +906,8 @@ int* chooseMove(Board *board, int depth){
   for (int i = 0; i < nextMoves.size(); i++){
     // cerr << moveToString(nextMoves[i]) << endl;
     Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
-    int score = minimax(childBoard, false, depth-1); // false bc their turn now
+    // int score = minimax(childBoard, false, depth-1); // false bc their turn now
+    int score = minimaxAB(childBoard, false, depth-1, -99999999, 99999999); // false bc their turn now
     if (score > max){
       max = score;
       maxMove = nextMoves[i];
@@ -768,16 +921,13 @@ int* chooseMove(Board *board, int depth){
   return maxMove;
 }
 
-
-//TODO: fix bug where script dies if playing first (bc lastPlay = "null")
-//TODO: fix bug where script chooses losing move when it doesn't have to.
-  //although I'm not sure that's actually what happened?
-//Script sometimes tries illegal moves
-
+//TODO: possible optimization: don't use triangles at all
+//only used in isWin, and not really necessary
 int main(int argc, char* argv[])
 {
 
-  int depth = 4; //for minimax function
+  //NOTE: LOOKAHEAD DEPTH
+  int depth = 8; //for minimax function
   // print to stderr for debugging purposes
   // remove all debugging statements before submitting your code
   std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
@@ -790,7 +940,7 @@ int main(int argc, char* argv[])
 	  inpt = "[13][302][1003][31002][100003][3000002][10000003][2121212]LastPlay:(1,4,1,3)";
   }
 	if (inpt == "board3") {
-	  inpt = "[13][302][1203][31102][100003][3000002][121212]LastPlay:(1,4,1,2)";
+	  inpt = "[13][302][1203][31102][100003][3000002][121212]LastPlay:(2,4,1,2)";
 	}
 	if (inpt == "board4") {
 	  inpt = "[13][302][1103][32102][133333][21212]LastPlay:(1,3,1,2)";
@@ -801,12 +951,6 @@ int main(int argc, char* argv[])
 
 
   Board *startingBoard = new Board(inpt);
-  // Triangle *tri = new Triangle();
-  // tri->add(1);
-  // tri->add(2);
-  // tri->add(3);
-  //cerr << "tri::::" + string(*tri) << endl;
-
 
   // if (isWin(*startingBoard)){
   //   cerr << "debug: WIN!" << endl;
@@ -816,14 +960,8 @@ int main(int argc, char* argv[])
   // }
 
   //giuliano testing space
-   //testGiuliano(startingBoard);
+  //testGiuliano(startingBoard);
 
-
-  /*
-  if (isWin(*startingBoard)){
-    cerr << "debug: WIN!" << endl;
-  }
-  */
 
   // parse the input string, i.e., argv[1]
 
