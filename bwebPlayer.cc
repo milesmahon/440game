@@ -679,10 +679,22 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
       return -1111; //TODO: is this best score?
     }
   } else if (depth == 0){
-    return eval(board);
+    int ev = eval(board);
+    if (myTurn) {
+      return ev;
+    }
+    else {
+      return -1*ev;
+    }
   }
   else if (nextMoves.size() == 0){
-    return eval(board);
+    int ev = eval(board);
+    if (myTurn) {
+      return ev;
+    }
+    else {
+      return -1*ev;
+    }
   }
 
   //find valid moves
