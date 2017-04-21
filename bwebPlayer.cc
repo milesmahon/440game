@@ -920,6 +920,8 @@ int eval(Board* board){
 			return eval2(board);
 		case 3:
 			return eval3(board);
+		case 4:
+			return eval4(board);
 		default:
 			return eval1(board);
 	}
