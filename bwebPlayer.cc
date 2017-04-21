@@ -217,43 +217,42 @@ vector<int*> Board::getNextMoves(){
   return newMoves;
 }
 
-vector<int> getNearbyColors(int h, int ld, int rd){
+vector<int> Board::getNearbyColors(int h, int ld, int rd){
     vector<int> colors;
 
     // top left
-  	if(isValid(h + 1, ld - 1, rd)) // right distance
+  	if(isValid(h + 1, ld - 1, rd, getBoardSize())) // right distance
 			colors.push_back(getColorAt(h + 1, ld - 1, rd));
 
-
     // top right
-  	if(isValid(h + 1, ld, rd - 1)) // right distance
+  	if(isValid(h + 1, ld, rd - 1, getBoardSize())) // right distance
 			colors.push_back(getColorAt(h + 1, ld, rd - 1));
 
     // right
-    if(isValid(h, ld + 1, rd - 1)) // right distance
+    if(isValid(h, ld + 1, rd - 1, getBoardSize())) // right distance
 			colors.push_back(getColorAt(h, ld + 1, rd - 1));
 
     // bottom right
+    int h2, l2, r2;
     h2 = h - 1; // height
 		l2 = ld + 1; // left distance
 		if (h == 1) l2 -= 1;
 		r2 = rd; // right distance
 		if (h == 1) r2 -= 1;
-    if(isValid(h2, l2, r2)) // right distance
+    if(isValid(h2, l2, r2, getBoardSize())) // right distance
 			colors.push_back(getColorAt(h2, l2, r2));
 
 		// bottom left
-    int h2, l2, r2;
     h2 = h - 1; // height
 		l2 = ld; // left distance
 		if (h == 1) l2 -= 1;
 		r2 = rd + 1; // right distance
 		if (h == 1) r2 -= 1;
-    if(isValid(h2, l2, r2)) // right distance
+    if(isValid(h2, l2, r2, getBoardSize())) // right distance
 			colors.push_back(getColorAt(h2, l2, r2));
 
     // left
-    if(isValid(h, ld - 1, rd + 1)) // right distance
+    if(isValid(h, ld - 1, rd + 1, getBoardSize())) // right distance
 			colors.push_back(getColorAt(h, ld - 1, rd + 1));
 
 	return colors;
@@ -662,19 +661,6 @@ bool isWin(vector<int> colors, int lastMoveColor){
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 bool isEndState(Board* board){ //wrapper because "isWin" is a misnomer
   return isWin(*board);
 }
@@ -710,7 +696,7 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
       return -1111; //TODO: is this best score?
     }
   } else if (depth == 0){
-    int ev = eval(board);
+    int ev = eval2(board);
     if (myTurn) {
       return ev;
     }
@@ -719,7 +705,7 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
     }
   }
   else if (nextMoves.size() == 0){
-    int ev = eval(board);
+    int ev = eval2(board);
     if (myTurn) {
       return ev;
     }
@@ -778,10 +764,22 @@ int minimaxAB(Board *board, bool myTurn, int depth, int A, int B){ //returns max
       return -1111; //TODO: is this best score?
     }
   } else if (depth == 0){
-    return eval2(board);
+    int ev = eval2(board);
+    if (myTurn) {
+      return ev;
+    }
+    else {
+      return -1*ev;
+    }
   }
   else if (nextMoves.size() == 0){
-    return eval2(board);
+    int ev = eval2(board);
+    if (myTurn) {
+      return ev;
+    }
+    else {
+      return -1*ev;
+    }
   }
 
   //find valid moves
@@ -855,15 +853,9 @@ int eval2(Board* board) {
 	int result = 0;
 
 	for (int i = 0; i < nextMoves.size(); i++) {
-<<<<<<< HEAD
 		vector<int> colors = board->getNearbyColors(nextMoves[i][HEIGHT_INDEX], nextMoves[i][LDISTANCE_INDEX], nextMoves[i][RDISTANCE_INDEX]);
-		int current_color = board->getColorAt(board->getLastMove()[HEIGHT_INDEX], board->getLastMove()[LDISTANCE_INDEX], board->getLastMove()[RDISTANCE_INDEX]);
-		if (isEndState(colors, current_color)) {
-=======
-		Board *childBoard = new Board(board, nextMoves[i]);
-		//std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
-		if (isEndState(childBoard)) {
->>>>>>> 6869b44e56623b79002d3f690de54dfcd89a8fe2
+		int current_color = board->getColorAt(nextMoves[i][HEIGHT_INDEX], nextMoves[i][LDISTANCE_INDEX], nextMoves[i][RDISTANCE_INDEX]);
+		if (!isWin(colors, current_color)) {
 			//std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
 			// std:cerr << "results in loss" << endl;
 			result += 1;
@@ -927,7 +919,7 @@ int main(int argc, char* argv[])
 {
 
   //NOTE: LOOKAHEAD DEPTH
-  int depth = 8; //for minimax function
+  int depth = 6; //for minimax function
   // print to stderr for debugging purposes
   // remove all debugging statements before submitting your code
   std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
@@ -966,6 +958,8 @@ int main(int argc, char* argv[])
   // parse the input string, i.e., argv[1]
 
   // perform intelligent search to determine the next move
+
+  // cerr << startingBoard->getNearbyColors(1, 1, 5)[0] << endl;
 
   int* move = chooseMove(startingBoard, depth);
 
