@@ -888,8 +888,32 @@ int eval3(Board* board) {
 	return c1 + c2 + c3;
 }
 
+int max3(int c1, int c2, int c3){
+	int submax = (c1 > c2) ? c1 : c2;
+	return (submax > c3) ? submax : c3;
+}
+
+int eval4(Board* board) {
+	int* lastMove = board->getLastMove();
+	vector<int> colors = board->getNearbyColors(lastMove[HEIGHT_INDEX], lastMove[LDISTANCE_INDEX], lastMove[RDISTANCE_INDEX]);
+	colors.push_back(lastMove[COLOR_INDEX]);
+	int colors_included = 0;
+	int c1 = 0, c2 = 0, c3 = 0;
+	for(int i = 0; i < colors.size(); i++){
+		if(colors[i] == 1)
+			c1++;
+		if(colors[i] == 2)
+			c2++;
+		if(colors[i] == 3)
+			c3++;
+	}
+
+
+	return max3(c1, c2, c3) * 10;
+}
+
 int eval(Board* board){
-	switch(1){
+	switch(4){
 		case 1:
 			return eval1(board);
 		case 2:
@@ -931,7 +955,7 @@ int* chooseMove(Board *board, int depth){
     // cerr << moveToString(nextMoves[i]) << endl;
     Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
     // int score = minimax(childBoard, false, depth-1); // false bc their turn now
-    int score = minimaxAB(childBoard, false, depth-1, -99999999, 99999999); // false bc their turn now
+    int score = minimax(childBoard, false, depth-1);//, -99999999, 99999999); // false bc their turn now
     if (score > max){
       max = score;
       maxMove = nextMoves[i];
@@ -951,7 +975,7 @@ int main(int argc, char* argv[])
 {
 
   //NOTE: LOOKAHEAD DEPTH
-  int depth = 8; //for minimax function
+  int depth = 5; //for minimax function
   // print to stderr for debugging purposes
   // remove all debugging statements before submitting your code
   // std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
