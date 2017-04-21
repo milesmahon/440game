@@ -828,7 +828,7 @@ int main(int argc, char* argv[])
 	  inpt = "[13][302][1003][31002][100003][3000002][10000003][2121212]LastPlay:(1,4,1,3)";
   }
 	if (inpt == "board3") {
-	  inpt = "[13][302][1203][31102][100003][3000002][121212]LastPlay:(1,4,1,2)";
+	  inpt = "[13][302][1203][31102][100003][3000002][121212]LastPlay:(2,4,1,2)";
 	}
 	if (inpt == "board4") {
 	  inpt = "[13][302][1103][32102][133333][21212]LastPlay:(1,3,1,2)";
@@ -854,7 +854,7 @@ int main(int argc, char* argv[])
   // }
 
   //giuliano testing space
-   //testGiuliano(startingBoard);
+  testGiuliano(startingBoard);
 
 
   /*
@@ -867,11 +867,11 @@ int main(int argc, char* argv[])
 
   // perform intelligent search to determine the next move
 
-  int* move = chooseMove(startingBoard, depth);
+  //int* move = chooseMove(startingBoard, depth);
 
   // print to stdout for AtroposGame
   //cerr << "hey" + moveToString(move) << endl;
-  cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
+  //cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
   // As you can see Zeek's algorithm is not very intelligent. He
   // will be disqualified.
 
