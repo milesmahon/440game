@@ -913,7 +913,7 @@ int eval4(Board* board) {
 }
 
 int eval(Board* board){
-	switch(4){
+	switch(1){
 		case 1:
 			return eval1(board);
 		case 2:
@@ -955,7 +955,7 @@ int* chooseMove(Board *board, int depth){
     // cerr << moveToString(nextMoves[i]) << endl;
     Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
     // int score = minimax(childBoard, false, depth-1); // false bc their turn now
-    int score = minimax(childBoard, false, depth-1);//, -99999999, 99999999); // false bc their turn now
+    int score = minimaxAB(childBoard, false, depth-1, -99999999, 99999999); // false bc their turn now
     if (score > max){
       max = score;
       maxMove = nextMoves[i];
@@ -975,12 +975,8 @@ int main(int argc, char* argv[])
 {
 
   //NOTE: LOOKAHEAD DEPTH
-<<<<<<< HEAD
   int depth = 5; //for minimax function
-=======
-  int depth = 4; //for minimax function
 
->>>>>>> 9eb6a25f58fb07a6aa144d24f18f6f282b7e909c
   // print to stderr for debugging purposes
   // remove all debugging statements before submitting your code
   // std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
