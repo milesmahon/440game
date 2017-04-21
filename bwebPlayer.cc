@@ -16,7 +16,7 @@ class Board
 {
 private:
 
-  int *lastMove; //int*???????TODO or int *lastMove??????
+  int *lastMove;
   vector<string> boardState;
 public:
   Board(string initialString);
@@ -401,21 +401,10 @@ bool isValid(int i, int j, int k, int size){
   return (i + j + k == size);
 }
 
-
-  //db: print the vector contents
-  //from stackoverflow
-  // for (std::vector<string>::const_iterator i = rows.begin(); i != rows.end(); ++i)
-  //   cerr << *i << endl;
-  // cerr << lastMove << endl;
-
-
-
-//TODO: why do losing moves have score 0 or 20 sometimes
-
-
-
-//TODO: working, not well tested
-// Will *not* work if lastMove is entered incorrectly.
+// checks if board is at an end state
+// assumes this will be checked at every move, so only checks
+  // if lastMove was a winning/losing move
+// Will *not* work if lastMove is entered incorrectly (assumes lastMove not null)
 bool isWin(Board board){
   //printBoard(board);
   vector<string> boardState = board.getBoardString();
@@ -554,7 +543,7 @@ bool isWin(Board board){
 
 }
 
-//for use with eval2int
+//for use with eval2
 bool isWin(vector<int> colors, int lastMoveColor){
 
   vector<Triangle> triangles;
@@ -668,10 +657,7 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
   //vector<int*> nextMoves = new vector<int*>(board->getNextMoves());
   vector<int*> nextMoves(board->getNextMoves()); //= new vector(board->getNextMoves());
 
-  //check depth base case
-  //TODO: check isWin here?
-  //How does eval handle winning
-  //printBoard(board);
+  //base cases
   if (isWin(*board)){ //if isWin(board) and is myTurn, then my opponent was one who played losing move
     if (myTurn){
       return 1111; //TODO: is this best score?
@@ -701,8 +687,6 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
   //evaluate valid moves
   //pick best move
   //call minimax again with that move done on the board
-  //printBoard(board);
-  //vector<int*> nextMoves = board->getNextMoves();
 
   if (myTurn){ //we are maximizing
     int max = -100000; //NOTE: 0 is worst possible eval score, currently
@@ -851,12 +835,6 @@ int main(int argc, char* argv[])
 
 
   Board *startingBoard = new Board(inpt);
-  // Triangle *tri = new Triangle();
-  // tri->add(1);
-  // tri->add(2);
-  // tri->add(3);
-  //cerr << "tri::::" + string(*tri) << endl;
-
 
   // if (isWin(*startingBoard)){
   //   cerr << "debug: WIN!" << endl;
@@ -868,12 +846,6 @@ int main(int argc, char* argv[])
   //giuliano testing space
   testGiuliano(startingBoard);
 
-
-  /*
-  if (isWin(*startingBoard)){
-    cerr << "debug: WIN!" << endl;
-  }
-  */
 
   // parse the input string, i.e., argv[1]
 
