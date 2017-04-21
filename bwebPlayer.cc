@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <stdlib.h>
+#include <time.h>
 using namespace std;
 
 #define COLOR_INDEX 0
@@ -193,12 +195,16 @@ vector<int*> Board::getNextMoves(){
 
 	  }
 	}else{
+		srand(time(NULL));
+
 	 	int *tempMove = new int[4];
-    tempMove[0] = 1; // color
-    tempMove[1] = getBoardSize() / 2; // height
-    tempMove[2] = getBoardSize() / 4; // left distance
-    tempMove[3] = this->getBoardSize() - tempMove[1] - tempMove[2];
-		newMoves.push_back(tempMove);
+	 	for(int color = 1; color <= 3; color++){
+	 		tempMove[0] = color; // color
+	    tempMove[1] = rand() % (getBoardSize() - 2) + 1; // height
+	    tempMove[2] = rand() % (boardState[tempMove[HEIGHT_INDEX]].length() - 2) + 1; // left distance
+	    tempMove[3] = this->getBoardSize() - tempMove[1] - tempMove[2];
+			newMoves.push_back(tempMove);
+		}
 	}
 
 
