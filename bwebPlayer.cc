@@ -635,6 +635,64 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
   return -1500000;
 }
 
+int minimaxAB(Board *board, bool myTurn, int depth, int A, int B){ //returns maximum score possible to attain from this board
+
+  //vector<int*> nextMoves = new vector<int*>(board->getNextMoves());
+  vector<int*> nextMoves(board->getNextMoves()); //= new vector(board->getNextMoves());
+
+  //check depth base case
+  //TODO: check isWin here?
+  //How does eval handle winning
+  //printBoard(board);
+  if (isWin(*board)){ //if isWin(board) and is myTurn, then my opponent was one who played losing move
+    if (myTurn){
+      return 1111; //TODO: is this best score?
+    } else {
+      return -1111; //TODO: is this best score?
+    }
+  } else if (depth == 0){
+    return eval(board);
+  }
+  else if (nextMoves.size() == 0){
+    return eval(board);
+  }
+
+  //find valid moves
+  //evaluate valid moves
+  //pick best move
+  //call minimax again with that move done on the board
+  //printBoard(board);
+  //vector<int*> nextMoves = board->getNextMoves();
+
+  if (myTurn){ //we are maximizing
+    int max = -100000; //NOTE: 0 is worst possible eval score, currently
+    //int* maxMove;
+    for (int i = 0; i < nextMoves.size(); i++){
+      Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
+      int score = minimax(childBoard, false, depth-1); // false bc their turn now
+      if (score > max){
+        max = score;
+        //maxMove = nextMoves[i];
+      }
+    }
+    return max;
+  }
+  else { //minimizing
+    int min = 100000;
+    //int* minMove;
+    for (int i = 0; i < nextMoves.size(); i++){
+      Board *childBoard = new Board(board, nextMoves[i]); //applies nextMoves[i] to the board
+      int score = minimax(childBoard, true, depth-1); // true bc my turn now
+      if (score < min){
+        min = score;
+        //minMove = nextMoves[i];
+      }
+    }
+    return min;
+  }
+  return -1500000;
+}
+
 string moveToString(int *move) {
 	string result = "[";
 	for (int i = 0; i < 4; i++) {
