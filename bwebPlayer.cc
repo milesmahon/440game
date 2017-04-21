@@ -192,7 +192,16 @@ vector<int*> Board::getNextMoves(){
 	    }
 
 	  }
+	}else{
+	 	int *tempMove = new int[4];
+    tempMove[0] = 1; // color
+    tempMove[1] = getBoardSize() / 2; // height
+    tempMove[2] = getBoardSize() / 4; // left distance
+    tempMove[3] = this->getBoardSize() - tempMove[1] - tempMove[2];
+		newMoves.push_back(tempMove);
 	}
+
+
   if(newMoves.size() == 0){
   	// cerr << "newMoves size was zero" << endl;
   	// for loop over rows
@@ -415,7 +424,6 @@ Triangle::~Triangle(){
 }
 
 int eval(Board *board);
-int eval2(Board *board);
 
 //ported from AtroposCircle.java
 bool isValid(int* move, int size){
@@ -696,7 +704,7 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
       return -1111; //TODO: is this best score?
     }
   } else if (depth == 0){
-    int ev = eval2(board);
+    int ev = eval(board);
     if (myTurn) {
       return ev;
     }
@@ -705,7 +713,7 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
     }
   }
   else if (nextMoves.size() == 0){
-    int ev = eval2(board);
+    int ev = eval(board);
     if (myTurn) {
       return ev;
     }
@@ -764,7 +772,7 @@ int minimaxAB(Board *board, bool myTurn, int depth, int A, int B){ //returns max
       return -1111; //TODO: is this best score?
     }
   } else if (depth == 0){
-    int ev = eval2(board);
+    int ev = eval(board);
     if (myTurn) {
       return ev;
     }
@@ -773,7 +781,7 @@ int minimaxAB(Board *board, bool myTurn, int depth, int A, int B){ //returns max
     }
   }
   else if (nextMoves.size() == 0){
-    int ev = eval2(board);
+    int ev = eval(board);
     if (myTurn) {
       return ev;
     }
@@ -834,18 +842,8 @@ string moveToString(int *move) {
 	return result;
 }
 
-int eval(Board* board) {
-	vector<int*> nextMoves = board->getNextMoves();
-	int result = 0;
-
-	for (int i = 0; i < nextMoves.size(); i++) {
-		if(nextMoves[i][COLOR_INDEX] > 3)
-			std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
-		result += 1;
-	}
-
-	return result;
-
+int eval1(Board* board) {
+	return board->getNextMoves().size();
 }
 
 int eval2(Board* board) {
@@ -867,7 +865,35 @@ int eval2(Board* board) {
 
 }
 
+int eval3(Board* board) {
+	int* lastMove = board->getLastMove();
+	vector<int> colors = board->getNearbyColors(lastMove[HEIGHT_INDEX], lastMove[LDISTANCE_INDEX], lastMove[RDISTANCE_INDEX]);
+	int colors_included = 0;
+	int c1 = 0, c2 = 0, c3 = 0;
+	for(int i = 0; i < colors.size(); i++){
+		if(colors[i] == 1)
+			c1 = 1;
+		if(colors[i] == 2)
+			c2 = 1;
+		if(colors[i] == 3)
+			c3 = 1;
+	}
 
+	return c1 + c2 + c3;
+}
+
+int eval(Board* board){
+	switch(1){
+		case 1:
+			return eval1(board);
+		case 2:
+			return eval2(board);
+		case 3:
+			return eval3(board);
+		default:
+			return eval1(board);
+	}
+}
 
 void testGiuliano(Board* board) {
 	std::cerr << "lastMove: " << moveToString(board->getLastMove()) << endl;
@@ -919,10 +945,10 @@ int main(int argc, char* argv[])
 {
 
   //NOTE: LOOKAHEAD DEPTH
-  int depth = 6; //for minimax function
+  int depth = 8; //for minimax function
   // print to stderr for debugging purposes
   // remove all debugging statements before submitting your code
-  std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
+  // std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
 
   string inpt = argv[1];
   if (inpt == "board1") {
