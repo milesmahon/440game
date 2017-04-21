@@ -767,11 +767,14 @@ int minimaxAB(Board *board, bool myTurn, int depth, int A, int B){ //returns max
     //int* maxMove;
     for (int i = 0; i < nextMoves.size(); i++){
       Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
-      int score = minimax(childBoard, false, depth-1); // false bc their turn now
+      int score = minimaxAB(childBoard, false, depth-1, A, B); // false bc their turn now
       if (score > max){
         max = score;
         //maxMove = nextMoves[i];
       }
+			A = std::max(A, max);
+			if (B <= A)
+				break;
     }
     return max;
   }
@@ -780,11 +783,14 @@ int minimaxAB(Board *board, bool myTurn, int depth, int A, int B){ //returns max
     //int* minMove;
     for (int i = 0; i < nextMoves.size(); i++){
       Board *childBoard = new Board(board, nextMoves[i]); //applies nextMoves[i] to the board
-      int score = minimax(childBoard, true, depth-1); // true bc my turn now
+      int score = minimaxAB(childBoard, true, depth-1, A, B); // true bc my turn now
       if (score < min){
         min = score;
         //minMove = nextMoves[i];
       }
+			B = std::min(B, min);
+			if (B <= A)
+				break;
     }
     return min;
   }
