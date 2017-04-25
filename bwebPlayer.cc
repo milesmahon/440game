@@ -768,7 +768,6 @@ int minimaxAB(Board *board, bool myTurn, int depth, int A, int B){ //returns max
   vector<int*> nextMoves(board->getNextMoves()); //= new vector(board->getNextMoves());
 
   //check depth base case
-  //TODO: check isWin here?
   //How does eval handle winning
   //printBoard(board);
   if (isWin(*board)){ //if isWin(board) and is myTurn, then my opponent was one who played losing move
@@ -951,7 +950,7 @@ int main(int argc, char* argv[])
 {
 
   //NOTE: LOOKAHEAD DEPTH
-  int depth = 4; //for minimax function
+  int depth = 9; //for minimax function
 
   // print to stderr for debugging purposes
   // remove all debugging statements before submitting your code
