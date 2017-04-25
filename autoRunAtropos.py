@@ -9,7 +9,7 @@ one = 0
 two = 0
 
 for i in range(numTimes):
-    subprocess.check_output(["java AtroposGame 7 './bwebPlayerE4D7' > log.txt"], shell=True, stderr=subprocess.STDOUT)
+    subprocess.check_output(["java AtroposGame 7 './bwebPlayerE4D7' './bwebPlayerE2' > log.txt"], shell=True, stderr=subprocess.STDOUT)
     #print(subprocess.check_output(["grep 'has won' log.txt"], shell=True))
     out = subprocess.check_output(["grep 'has won' log.txt"], shell=True)
     if ("Script One" in str(out)):

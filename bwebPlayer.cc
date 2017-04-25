@@ -10,6 +10,8 @@ using namespace std;
 #define LDISTANCE_INDEX 2
 #define RDISTANCE_INDEX 3
 
+int EVAL;
+
 bool isValid(int* move, int size);
 bool isValid(int i, int j, int k, int size);
 string moveToString(int *move);
@@ -937,7 +939,7 @@ int eval4(Board* board) {
 }
 
 int eval(Board* board){
-	switch(4){
+	switch(EVAL){
 		case 1:
 			return eval1(board);
 		case 2:
@@ -1001,7 +1003,7 @@ int main(int argc, char* argv[])
 {
 
   //NOTE: LOOKAHEAD DEPTH
-  int depth = 6; //for minimax function
+  int depth = 10; //for minimax function
 
   // print to stderr for debugging purposes
   // remove all debugging statements before submitting your code
@@ -1044,7 +1046,17 @@ int main(int argc, char* argv[])
 
   // cerr << startingBoard->getNearbyColors(1, 1, 5)[0] << endl;
 
+  // move timing
+  EVAL = 4;
+
+  clock_t begin = clock();
+
   int* move = chooseMove(startingBoard, depth);
+
+  // move time recording
+  clock_t end = clock();
+  double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+  cerr << "moveTime for eval" << EVAL << ": " << elapsed_secs << " seconds" << endl;
 
   // print to stdout for AtroposGame
   //cerr << "hey" + moveToString(move) << endl;
