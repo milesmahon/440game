@@ -929,11 +929,83 @@ int eval4(Board* board) {
 			c3++;
 	}
 
-  // float returnInt = 0;
-  // if(c1 + c2 + c3 > 0)
-  //   returnInt = (float(max3(c1, c2, c3)) / (c1 + c2 + c3)) * 100;
-  // cerr << "Eval4 return value: " << returnInt << " Colors: " << c1 << " " << c2 << " " << c3 << "\n";
-	return max(max(c0, c1),  max(c2, c3));
+  return max(max(c0, c1),  max(c2, c3));
+}
+
+
+int minimax4(Board *board, bool myTurn, int depth, int A, int B){ //returns maximum score possible to attain from this board
+
+  //vector<int*> nextMoves = new vector<int*>(board->getNextMoves());
+  vector<int*> nextMoves(board->getNextMoves()); //= new vector(board->getNextMoves());
+
+  //check depth base case
+  //How does eval handle winning
+  //printBoard(board);
+  if (isWin(*board)){ //if isWin(board) and is myTurn, then my opponent was one who played losing move
+    if (myTurn){
+      return 1111; //TODO: is this best score?
+    } else {
+      return -1111; //TODO: is this best score?
+    }
+  } else if (depth == 0){
+    int ev = eval4(board);
+    if (myTurn) {
+      return ev;
+    }
+    else {
+      return -1*ev;
+    }
+  }
+  else if (nextMoves.size() == 0){
+    int ev = eval4(board);
+    if (myTurn) {
+      return ev;
+    }
+    else {
+      return -1*ev;
+    }
+  }
+
+  //find valid moves
+  //evaluate valid moves
+  //pick best move
+  //call minimax again with that move done on the board
+  //printBoard(board);
+  //vector<int*> nextMoves = board->getNextMoves();
+
+  if (myTurn){ //we are maximizing
+    int max = -100000; //NOTE: 0 is worst possible eval score, currently
+    //int* maxMove;
+    for (int i = 0; i < nextMoves.size(); i++){
+      Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
+      int score = minimax4(childBoard, false, depth-1, A, B); // false bc their turn now
+      if (score > max){
+        max = score;
+        //maxMove = nextMoves[i];
+      }
+			A = std::max(A, max);
+			if (B <= A)
+				break;
+    }
+    return max;
+  }
+  else { //minimizing
+    int min = 100000;
+    //int* minMove;
+    for (int i = 0; i < nextMoves.size(); i++){
+      Board *childBoard = new Board(board, nextMoves[i]); //applies nextMoves[i] to the board
+      int score = minimax4(childBoard, true, depth-1, A, B); // true bc my turn now
+      if (score < min){
+        min = score;
+        //minMove = nextMoves[i];
+      }
+			B = std::min(B, min);
+			if (B <= A)
+				break;
+    }
+    return min;
+  }
+  return -1500000;
 }
 
 int eval(Board* board){
