@@ -79,10 +79,10 @@ Board::Board(string initialString){
   if(initialString.substr(9) != "null")
 		this->setLastMove(initialString.substr(9, initialString.length()));
 	else{
-		lastMove[COLOR_INDEX] = -1;
-		lastMove[HEIGHT_INDEX] = -1;
-		lastMove[LDISTANCE_INDEX] = -1;
-		lastMove[RDISTANCE_INDEX] = -1;
+		this->lastMove[COLOR_INDEX] = -1;
+		this->lastMove[HEIGHT_INDEX] = -1;
+		this->lastMove[LDISTANCE_INDEX] = -1;
+		this->lastMove[RDISTANCE_INDEX] = -1;
 	}
 
 }
@@ -102,8 +102,7 @@ Board::Board(Board *oldBoard, int* newMove){
 }
 
 Board::~Board(){
-  delete[] lastMove;
-
+  //delete[] lastMove;
 }
 
 void Board::setLastMove(string move){
@@ -907,8 +906,85 @@ int eval4(Board* board) {
 			c3++;
 	}
 
+  int max = max3(c1, c2, c3) * 10;
+  cerr << max << endl;
+	return max;
+}
 
-	return max3(c1, c2, c3) * 10;
+
+int minimax4(Board *board, bool myTurn, int depth, int A, int B){ //returns maximum score possible to attain from this board
+
+  //vector<int*> nextMoves = new vector<int*>(board->getNextMoves());
+  vector<int*> nextMoves(board->getNextMoves()); //= new vector(board->getNextMoves());
+
+  //check depth base case
+  //How does eval handle winning
+  //printBoard(board);
+  if (isWin(*board)){ //if isWin(board) and is myTurn, then my opponent was one who played losing move
+    if (myTurn){
+      return 1111; //TODO: is this best score?
+    } else {
+      return -1111; //TODO: is this best score?
+    }
+  } else if (depth == 0){
+    int ev = eval4(board);
+    if (myTurn) {
+      return ev;
+    }
+    else {
+      return -1*ev;
+    }
+  }
+  else if (nextMoves.size() == 0){
+    int ev = eval4(board);
+    if (myTurn) {
+      return ev;
+    }
+    else {
+      return -1*ev;
+    }
+  }
+
+  //find valid moves
+  //evaluate valid moves
+  //pick best move
+  //call minimax again with that move done on the board
+  //printBoard(board);
+  //vector<int*> nextMoves = board->getNextMoves();
+
+  if (myTurn){ //we are maximizing
+    int max = -100000; //NOTE: 0 is worst possible eval score, currently
+    //int* maxMove;
+    for (int i = 0; i < nextMoves.size(); i++){
+      Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
+      int score = minimax4(childBoard, false, depth-1, A, B); // false bc their turn now
+      if (score > max){
+        max = score;
+        //maxMove = nextMoves[i];
+      }
+			A = std::max(A, max);
+			if (B <= A)
+				break;
+    }
+    return max;
+  }
+  else { //minimizing
+    int min = 100000;
+    //int* minMove;
+    for (int i = 0; i < nextMoves.size(); i++){
+      Board *childBoard = new Board(board, nextMoves[i]); //applies nextMoves[i] to the board
+      int score = minimax4(childBoard, true, depth-1, A, B); // true bc my turn now
+      if (score < min){
+        min = score;
+        //minMove = nextMoves[i];
+      }
+			B = std::min(B, min);
+			if (B <= A)
+				break;
+    }
+    return min;
+  }
+  return -1500000;
 }
 
 int eval(Board* board){
@@ -956,7 +1032,7 @@ int* chooseMove(Board *board, int depth){
     // cerr << moveToString(nextMoves[i]) << endl;
     Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
     // int score = minimax(childBoard, false, depth-1); // false bc their turn now
-    int score = minimaxAB(childBoard, false, depth-1, -99999999, 99999999); // false bc their turn now
+    int score = minimax4(childBoard, false, depth-1, -99999999, 99999999); // false bc their turn now
     if (score > max){
       max = score;
       maxMove = nextMoves[i];
@@ -970,17 +1046,16 @@ int* chooseMove(Board *board, int depth){
   return maxMove;
 }
 
+
+//EVAL4, DEPTH 5
 //TODO: possible optimization: don't use triangles at all
 //only used in isWin, and not really necessary
 int main(int argc, char* argv[])
 {
 
   //NOTE: LOOKAHEAD DEPTH
-<<<<<<< HEAD
-  int depth = 9; //for minimax function
-=======
-  int depth = 5; //for minimax function
->>>>>>> cb3d1c17f29b4d8ac74761cb2900ad96e0046929
+  int depth = 6; //for minimax function
+
 
   // print to stderr for debugging purposes
   // remove all debugging statements before submitting your code
