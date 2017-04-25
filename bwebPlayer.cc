@@ -887,6 +887,30 @@ int eval3(Board* board) {
 	return c1 + c2 + c3;
 }
 
+int max3(int c1, int c2, int c3){
+	int submax = (c1 > c2) ? c1 : c2;
+	return (submax > c3) ? submax : c3;
+}
+
+int eval4(Board* board) {
+	int* lastMove = board->getLastMove();
+	vector<int> colors = board->getNearbyColors(lastMove[HEIGHT_INDEX], lastMove[LDISTANCE_INDEX], lastMove[RDISTANCE_INDEX]);
+	colors.push_back(lastMove[COLOR_INDEX]);
+	int colors_included = 0;
+	int c1 = 0, c2 = 0, c3 = 0;
+	for(int i = 0; i < colors.size(); i++){
+		if(colors[i] == 1)
+			c1++;
+		if(colors[i] == 2)
+			c2++;
+		if(colors[i] == 3)
+			c3++;
+	}
+
+
+	return max3(c1, c2, c3) * 10;
+}
+
 int eval(Board* board){
 	switch(1){
 		case 1:
@@ -895,6 +919,8 @@ int eval(Board* board){
 			return eval2(board);
 		case 3:
 			return eval3(board);
+		case 4:
+			return eval4(board);
 		default:
 			return eval1(board);
 	}
@@ -950,7 +976,11 @@ int main(int argc, char* argv[])
 {
 
   //NOTE: LOOKAHEAD DEPTH
+<<<<<<< HEAD
   int depth = 9; //for minimax function
+=======
+  int depth = 5; //for minimax function
+>>>>>>> cb3d1c17f29b4d8ac74761cb2900ad96e0046929
 
   // print to stderr for debugging purposes
   // remove all debugging statements before submitting your code
