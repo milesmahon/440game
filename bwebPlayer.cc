@@ -1,7 +1,7 @@
 //@author Brandon Webster, Giuliano Conte, Miles Mahon
-//bweb, gaconte, mjm382
+//bweb@bu.edu, gaconte@bu.edu, mjm382@bu.edu
 //4/27/17
-//CS440
+//CS440 P3
 
 #include <iostream>
 #include <string>
