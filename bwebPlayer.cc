@@ -1077,12 +1077,10 @@ int main(int argc, char* argv[])
   //NOTE: LOOKAHEAD DEPTH
   int depth = 6; //for minimax function
 
-
-
   // print to stderr for debugging purposes
   // remove all debugging statements before submitting your code
   // std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
-
+  
   string inpt = argv[1];
   if (inpt == "board1") {
 	  inpt = "[13][302][1003][31002][100003][3000002][121212]LastPlay:(1,3,1,3)";
