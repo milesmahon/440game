@@ -998,7 +998,7 @@ int main(int argc, char* argv[])
   Board *startingBoard = new Board(inpt);
 
   // move timing
-  EVAL = 5;
+  EVAL = 4;
 
   clock_t begin = clock();
 
