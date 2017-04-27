@@ -952,6 +952,7 @@ int* chooseMove(Board *board, int depth){
   for (int i = 0; i < nextMoves.size(); i++){
     // cerr << moveToString(nextMoves[i]) << endl;
     Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
+
     int score = minimaxAB(childBoard, false, depth-1, -99999999, 99999999); // myTurn = false bc their turn now
     if (score > max){
       max = score;
