@@ -201,27 +201,49 @@ vector<int*> Board::getNextMoves(){
 	}else{
 		srand(time(NULL));
 
-    int height = rand() % (getBoardSize() - 2) + 1;
-    int ld = rand() % (boardState[height].length() - 2) + 1;
+	    int height = rand() % (getBoardSize() - 2) + 1;
+	    int ld = rand() % (boardState[height].length() - 2) + 1;
 	 	for(int color = 1; color <= 3; color++){
-      int *tempMove = new int[4];
+	      int *tempMove = new int[4];
 	 		tempMove[0] = color; // color
-	    tempMove[1] = height; // height
-	    tempMove[2] = ld; // left distance
-	    tempMove[3] = this->getBoardSize() - tempMove[1] - tempMove[2];
+		    tempMove[1] = height; // height
+		    tempMove[2] = ld; // left distance
+		    tempMove[3] = this->getBoardSize() - tempMove[1] - tempMove[2];
 			newMoves.push_back(tempMove);
 		}
 
-    height = rand() % (getBoardSize() - 2) + 1;
-    ld = rand() % (boardState[height].length() - 2) + 1;
-    for(int color = 1; color <= 3; color++){
-      int *tempMove = new int[4];
-      tempMove[0] = color; // color
-      tempMove[1] = height; // height
-      tempMove[2] = ld; // left distance
-      tempMove[3] = this->getBoardSize() - tempMove[1] - tempMove[2];
-      newMoves.push_back(tempMove);
-    }
+	    height = rand() % (getBoardSize() - 2) + 1;
+	    ld = rand() % (boardState[height].length() - 2) + 1;
+	    for(int color = 1; color <= 3; color++){
+	      int *tempMove = new int[4];
+	      tempMove[0] = color; // color
+	      tempMove[1] = height; // height
+	      tempMove[2] = ld; // left distance
+	      tempMove[3] = this->getBoardSize() - tempMove[1] - tempMove[2];
+	      newMoves.push_back(tempMove);
+	    }
+
+	    height = rand() % (getBoardSize() - 2) + 1;
+	    ld = rand() % (boardState[height].length() - 2) + 1;
+	    for(int color = 1; color <= 3; color++){
+	      int *tempMove = new int[4];
+	      tempMove[0] = color; // color
+	      tempMove[1] = height; // height
+	      tempMove[2] = ld; // left distance
+	      tempMove[3] = this->getBoardSize() - tempMove[1] - tempMove[2];
+	      newMoves.push_back(tempMove);
+	    }
+
+	   	height = rand() % (getBoardSize() - 2) + 1;
+	    ld = rand() % (boardState[height].length() - 2) + 1;
+	    for(int color = 1; color <= 3; color++){
+	      int *tempMove = new int[4];
+	      tempMove[0] = color; // color
+	      tempMove[1] = height; // height
+	      tempMove[2] = ld; // left distance
+	      tempMove[3] = this->getBoardSize() - tempMove[1] - tempMove[2];
+	      newMoves.push_back(tempMove);
+	    }
 	}
 
 
@@ -934,6 +956,29 @@ int eval4(Board* board) {
   return max(max(c0, c1),  max(c2, c3));
 }
 
+int eval5(Board* board) {
+	int* lastMove = board->getLastMove();
+	vector<int> colors = board->getNearbyColors(lastMove[HEIGHT_INDEX], lastMove[LDISTANCE_INDEX], lastMove[RDISTANCE_INDEX]);
+	colors.push_back(lastMove[COLOR_INDEX]);
+	int colors_included = 0;
+	int c0 = 0, c1 = 0, c2 = 0, c3 = 0;
+  // cerr << lastMove[HEIGHT_INDEX] << " " << board->getLastMove()[HEIGHT_INDEX] << endl;
+
+	for(int i = 0; i < colors.size(); i++){
+    // cerr << "Color: " << colors[i] << "\n";
+    if(colors[i] == 0)
+      c0++;
+		if(colors[i] == 1)
+			c1++;
+		if(colors[i] == 2)
+			c2++;
+		if(colors[i] == 3)
+			c3++;
+	}
+
+  return -max(max(c0, c1),  max(c2, c3));
+}
+
 
 int minimax4(Board *board, bool myTurn, int depth, int A, int B){ //returns maximum score possible to attain from this board
 
@@ -1020,6 +1065,8 @@ int eval(Board* board){
 			return eval3(board);
 		case 4:
 			return eval4(board);
+		case 5:
+			return eval5(board);
 		default:
 			return eval1(board);
 	}
@@ -1055,7 +1102,7 @@ int* chooseMove(Board *board, int depth){
     // cerr << moveToString(nextMoves[i]) << endl;
     Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
     // int score = minimax(childBoard, false, depth-1); // false bc their turn now
-    int score = minimax4(childBoard, false, depth-1, -99999999, 99999999); // false bc their turn now
+    int score = minimaxAB(childBoard, false, depth-1, -99999999, 99999999); // false bc their turn now
     if (score > max){
       max = score;
       maxMove = nextMoves[i];
@@ -1077,7 +1124,7 @@ int main(int argc, char* argv[])
 {
 
   //NOTE: LOOKAHEAD DEPTH
-  int depth = 10; //for minimax function
+  int depth = 9; //for minimax function
 
 
 
@@ -1123,7 +1170,7 @@ int main(int argc, char* argv[])
   // cerr << startingBoard->getNearbyColors(1, 1, 5)[0] << endl;
 
   // move timing
-  EVAL = 4;
+  EVAL = 5;
 
   clock_t begin = clock();
 
