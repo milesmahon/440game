@@ -470,7 +470,7 @@ Triangle::~Triangle(){
 
 int eval(Board *board);
 
-//ported from AtroposCircle.java
+//ported from AtroposCircle.java -- checks if a board position is on the board
 bool isValid(int* move, int size){
   if (move[1] >= size || move[2] >= size || move[3] >= size){
     return false;
@@ -483,6 +483,7 @@ bool isValid(int* move, int size){
   return (move[1] + move[2] + move[3] == size);
 }
 
+// overloading
 bool isValid(int i, int j, int k, int size){
   //cerr << "testing::" + to_string(i) + "," + to_string(j) + "," + to_string(k) << endl;
   if (i >= size || j >= size || k >= size){
@@ -503,7 +504,9 @@ bool isValid(int i, int j, int k, int size){
   // if lastMove was a winning/losing move
 // Will *not* work if lastMove is entered incorrectly (assumes lastMove not null)
 bool isWin(Board board){
-  //printBoard(board);
+
+  // checks all "triangles" that lastMove is a part of
+  // if the triangle contains all 3 colors, it's a "win" (end board state)
   vector<string> boardState = board.getBoardString();
   int* lastMove = board.getLastMove();
 
@@ -640,7 +643,7 @@ bool isWin(Board board){
 
 }
 
-//for use with eval2
+// overloading isWin; for use with eval2
 bool isWin(vector<int> colors, int lastMoveColor){
 
   vector<Triangle> triangles;
@@ -736,17 +739,17 @@ void printBoard(Board* board) {
 	}
 }
 
+// minimax without AB pruning, deprecated
 int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possible to attain from this board
 
-  //vector<int*> nextMoves = new vector<int*>(board->getNextMoves());
   vector<int*> nextMoves(board->getNextMoves()); //= new vector(board->getNextMoves());
 
   //base cases
   if (isWin(*board)){ //if isWin(board) and is myTurn, then my opponent was one who played losing move
     if (myTurn){
-      return 1111; //TODO: is this best score?
+      return 1111;
     } else {
-      return -1111; //TODO: is this best score?
+      return -1111;
     }
   } else if (depth == 0){
     int ev = eval(board);
@@ -803,19 +806,14 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
 
 int minimaxAB(Board *board, bool myTurn, int depth, int A, int B){ //returns maximum score possible to attain from this board
 
-  //vector<int*> nextMoves = new vector<int*>(board->getNextMoves());
-  vector<int*> nextMoves(board->getNextMoves()); //= new vector(board->getNextMoves());
+  vector<int*> nextMoves(board->getNextMoves());
 
-  //check depth base case
-  //How does eval handle winning
-  // printBoard(board);
-  // cerr << "Last move height: " << board->getLastMove()[HEIGHT_INDEX] << endl;
-
+  //check win/lose & depth base case
   if (isWin(*board)){ //if isWin(board) and is myTurn, then my opponent was one who played losing move
     if (myTurn){
-      return 1111; //TODO: is this best score?
+      return 1111;
     } else {
-      return -1111; //TODO: is this best score?
+      return -1111;
     }
   } else if (depth == 0){
     int ev = eval(board);
@@ -825,7 +823,7 @@ int minimaxAB(Board *board, bool myTurn, int depth, int A, int B){ //returns max
     else {
       return -1*ev;
     }
-  }
+  } // check for tie/sanity check base case
   else if (nextMoves.size() == 0){
     int ev = eval(board);
     if (myTurn) {
@@ -840,8 +838,6 @@ int minimaxAB(Board *board, bool myTurn, int depth, int A, int B){ //returns max
   //evaluate valid moves
   //pick best move
   //call minimax again with that move done on the board
-  //printBoard(board);
-  //vector<int*> nextMoves = board->getNextMoves();
 
   if (myTurn){ //we are maximizing
     int max = -100000; //NOTE: 0 is worst possible eval score, currently
@@ -888,10 +884,12 @@ string moveToString(int *move) {
 	return result;
 }
 
+// eval based on number of choices you have
 int eval1(Board* board) {
 	return board->getNextMoves().size();
 }
 
+// eval based on number of non-losing choices you have. slow.
 int eval2(Board* board) {
 	vector<int*> nextMoves = board->getNextMoves();
 	int result = 0;
@@ -910,7 +908,7 @@ int eval2(Board* board) {
 	return result;
 
 }
-
+// eval based on color diversity (worse)
 int eval3(Board* board) {
 	int* lastMove = board->getLastMove();
 	vector<int> colors = board->getNearbyColors(lastMove[HEIGHT_INDEX], lastMove[LDISTANCE_INDEX], lastMove[RDISTANCE_INDEX]);
@@ -933,6 +931,7 @@ int max3(int c1, int c2, int c3){
 	return (submax > c3) ? submax : c3;
 }
 
+// eval based on color diversity (better)
 int eval4(Board* board) {
 	int* lastMove = board->getLastMove();
 	vector<int> colors = board->getNearbyColors(lastMove[HEIGHT_INDEX], lastMove[LDISTANCE_INDEX], lastMove[RDISTANCE_INDEX]);
@@ -956,6 +955,7 @@ int eval4(Board* board) {
   return max(max(c0, c1),  max(c2, c3));
 }
 
+<<<<<<< HEAD
 int eval5(Board* board) {
 	int* lastMove = board->getLastMove();
 	vector<int> colors = board->getNearbyColors(lastMove[HEIGHT_INDEX], lastMove[LDISTANCE_INDEX], lastMove[RDISTANCE_INDEX]);
@@ -1055,6 +1055,8 @@ int minimax4(Board *board, bool myTurn, int depth, int A, int B){ //returns maxi
   return -1500000;
 }
 
+=======
+>>>>>>> 1d307ee5d417543ea9dbd1698f87b86a818d58c2
 int eval(Board* board){
 	switch(EVAL){
 		case 1:
@@ -1086,23 +1088,25 @@ void testGiuliano(Board* board) {
 	printBoard(board);
 }
 
-//copied from miniMax function.
+//copied from our miniMax function.
 // since minimax evaluates board positions without returning the board,
 // this (notably non-recursive) wrapper chooses the best possible move
 // based on the original starting board.
 // called from main on board passed thru stdin.
 int* chooseMove(Board *board, int depth){
   vector<int*> nextMoves = board->getNextMoves();
-
   // cerr << "Size of nextMoves is " << nextMoves.size() << endl;
-
   int max = -100000;
   int* maxMove = new int[4];
   for (int i = 0; i < nextMoves.size(); i++){
     // cerr << moveToString(nextMoves[i]) << endl;
     Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
+<<<<<<< HEAD
     // int score = minimax(childBoard, false, depth-1); // false bc their turn now
     int score = minimaxAB(childBoard, false, depth-1, -99999999, 99999999); // false bc their turn now
+=======
+    int score = minimaxAB(childBoard, false, depth-1, -99999999, 99999999); // myTurn = false bc their turn now
+>>>>>>> 1d307ee5d417543ea9dbd1698f87b86a818d58c2
     if (score > max){
       max = score;
       maxMove = nextMoves[i];
@@ -1116,14 +1120,11 @@ int* chooseMove(Board *board, int depth){
   return maxMove;
 }
 
-
-//EVAL4, DEPTH 5
-//TODO: possible optimization: don't use triangles at all
-//only used in isWin, and not really necessary
 int main(int argc, char* argv[])
 {
 
   //NOTE: LOOKAHEAD DEPTH
+<<<<<<< HEAD
   int depth = 9; //for minimax function
 
 
@@ -1131,7 +1132,11 @@ int main(int argc, char* argv[])
   // print to stderr for debugging purposes
   // remove all debugging statements before submitting your code
   // std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
+=======
+  int depth = 7; //for minimax function
+>>>>>>> 1d307ee5d417543ea9dbd1698f87b86a818d58c2
 
+  // test boards
   string inpt = argv[1];
   if (inpt == "board1") {
 	  inpt = "[13][302][1003][31002][100003][3000002][121212]LastPlay:(1,3,1,3)";
@@ -1152,23 +1157,6 @@ int main(int argc, char* argv[])
 
   Board *startingBoard = new Board(inpt);
 
-  // if (isWin(*startingBoard)){
-  //   cerr << "debug: WIN!" << endl;
-  // } else {
-  //
-  //   cerr << "debug: not win" << endl;
-  // }
-
-  //giuliano testing space
-  //testGiuliano(startingBoard);
-
-
-  // parse the input string, i.e., argv[1]
-
-  // perform intelligent search to determine the next move
-
-  // cerr << startingBoard->getNearbyColors(1, 1, 5)[0] << endl;
-
   // move timing
   EVAL = 5;
 
@@ -1182,12 +1170,7 @@ int main(int argc, char* argv[])
   cerr << "moveTime for eval" << EVAL << ": " << elapsed_secs << " seconds" << endl;
 
   // print to stdout for AtroposGame
-  //cerr << "hey" + moveToString(move) << endl;
   cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
-  // As you can see Zeek's algorithm is not very intelligent. He
-  // will be disqualified.
-
-
 
   return 0;
 
