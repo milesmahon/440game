@@ -861,6 +861,7 @@ int eval3(Board* board) {
 }
 
 
+// This is the actual evaluation function used in our player
 // eval based on color diversity (better)
 int eval4(Board* board) {
 	int* lastMove = board->getLastMove();
@@ -868,10 +869,8 @@ int eval4(Board* board) {
 	colors.push_back(lastMove[COLOR_INDEX]);
 	int colors_included = 0;
 	int c0 = 0, c1 = 0, c2 = 0, c3 = 0;
-  // cerr << lastMove[HEIGHT_INDEX] << " " << board->getLastMove()[HEIGHT_INDEX] << endl;
 
 	for(int i = 0; i < colors.size(); i++){
-    // cerr << "Color: " << colors[i] << "\n";
     if(colors[i] == 0)
       c0++;
 		if(colors[i] == 1)
@@ -885,16 +884,15 @@ int eval4(Board* board) {
   return max(max(c0, c1),  max(c2, c3));
 }
 
+// inverse of eval4, prioritizes spots with least color diversity
 int eval5(Board* board) {
 	int* lastMove = board->getLastMove();
 	vector<int> colors = board->getNearbyColors(lastMove[HEIGHT_INDEX], lastMove[LDISTANCE_INDEX], lastMove[RDISTANCE_INDEX]);
 	colors.push_back(lastMove[COLOR_INDEX]);
 	int colors_included = 0;
 	int c0 = 0, c1 = 0, c2 = 0, c3 = 0;
-  // cerr << lastMove[HEIGHT_INDEX] << " " << board->getLastMove()[HEIGHT_INDEX] << endl;
 
 	for(int i = 0; i < colors.size(); i++){
-    // cerr << "Color: " << colors[i] << "\n";
     if(colors[i] == 0)
       c0++;
 		if(colors[i] == 1)
@@ -923,20 +921,6 @@ int eval(Board* board){
 		default:
 			return eval1(board);
 	}
-}
-
-void testGiuliano(Board* board) {
-	std::cerr << "lastMove: " << moveToString(board->getLastMove()) << endl;
-	//std::cerr << "--------eval1---------" << "\n";
-	//int e1 = eval(board);
-	//std::cerr << "eval1: " << e1 << "\n\n";
-	std::cerr << "--------eval2---------" << "\n";
-	int e2 = eval2(board);
-  std::cerr << "eval2: " << e2 << "\n\n";
-	if (isWin(*board)) {
-		std::cerr << "is a win!" << endl;
-	}
-	printBoard(board);
 }
 
 //copied from our miniMax function.
@@ -974,7 +958,7 @@ int main(int argc, char* argv[])
   //depth of   9 9 7.5 8
 
   //NOTE: LOOKAHEAD DEPTH
-  int depth = 9; //for minimax function
+  int depth = 7; //for minimax function
 
   // test boards
   string inpt = argv[1];
@@ -992,6 +976,9 @@ int main(int argc, char* argv[])
 	}
 	if (inpt == "board5") {
 	  inpt = "[13][302][1003][30002][100003][3000002][121212]LastPlay:null";
+	}
+	if (inpt == "board6") {
+	  inpt = "[13][302][1003][30002][100003][3000002][10000003][300000002][1000000003][30100000002][100000000003][1212121212]LastPlay:(1,2,2,8)";
 	}
 
 
