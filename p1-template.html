@@ -47,6 +47,10 @@ width="119" height="120"></a>
 
 <div class="main-body">
 <hr>
+<h2> Instructions to build </h2>
+<p>
+g++ -o bwebPlayer bwebPlayer.cc
+</p>
 <h2> Problem Definition </h2>
 <p>
 Create an AI to play the turn-based game Atropos using game-tree search techniques.
@@ -54,28 +58,41 @@ Create an AI to play the turn-based game Atropos using game-tree search techniqu
 
 <hr>
 <h2> Method and Implementation </h2>
-<p>We implemented a Minimax search algorithm with alpha-beta pruning. At each board, there are at most 18 different moves to make (6 positions to fill with 3 colors each)
+<p>We implemented a Minimax search algorithm with alpha-beta pruning. 
+At each board, there are at most 18 different moves to make (6 positions to fill with 3 colors each), 
+so the game has a branching factor of at most 18. 
 </p>
 
 <p>
-Briefly outline the functions you created in your code to carry out your algorithmic steps described above.
+We created a Board class to process and contain information about boards given as strings. We also created
+a Triangle class which groups sets of 3 colors on the board which are mutually adjacent. This facilitates
+checking for if the game is ended or not. We created and tested multiple evaluation functions which take
+in a Board and give a static integer evaluation of the strength of that board.
+
 </p>
 
 <hr>
 <h2>Experiments</h2>
 <p>
-Describe your experiments, including the number of tests that you
-performed, and the relevant parameter values.  </p>
+We tested our many evaluation functions against the random player and against each other in matches of 50 rounds with the same search depth of 6. We had 5 different
+static evaluators:
+1. Count the amount of available moves around the last move.
+2. Count the amount of non-losing available moves around the last move.
+3. Count how many different colors are represented around the last move. 
+   This has a range of [0, 3].
+4. Count how many of each color are represented around the last move. Take the max of those 4 colors counts.
+5. Count how many of each color are represented around the last move. Take the max and multiply by -1.
+   This is the inverse of Eval(4).
+</p>
 <p>
-Define your evaluation
-metrics, e.g., detection rates, accuracy, running time. </p>
-
-
-<hr>
-<h2> Results</h2>
-<p>
-List your experimental results.  Provide examples of input images and output
-images. If relevant, you may provide images showing any intermediate steps
+<li>Eval(2) beat Evals (1) and (3). </li>
+<li>Eval(4) beat Evals (1) (2) (3). </li> 
+<li>Eval(5) beat Eval (4) handily but faired worse against (2). </li> 
+<li>Eval(4) did the best against a random player with a winning percentage of (78%). </li> 
+<li>Evals (1), (2), (4), and (5) had significantly faster search times than Eval (2), allowing them to search
+at higher depths. </li> 
+<li>When given depths 1 larger than Eval (2), Evals (4) and (5) beat Eval (2) more consistently. </li> 
+<li>All Eval functions did better than average against a random player. </li> 
 </p>
 
 <p>
@@ -86,23 +103,20 @@ images. If relevant, you may provide images showing any intermediate steps
 <p> 
 Discuss your method and results:
 <ul>
-<li>What are the strengths and weaknesses of your method? </li>
-<li>Do your results show that your method is generally successful or
-     are there limitations? Describe what you expected to find in your
-     experiments, and how that differed or was confirmed by your
-     results. </li>
-<li>Potential future work. How could your method be improved?   What
-would you try (if you had more time) to overcome the
-failures/limitations of your work?</li> 
+<li>We chose to use Eval(4) because of its speed and general proficiency against the other Eval functions
+and the random player. We believe it has the best play against diverse opponents while Eval(5) may
+be specialized against Eval(4) because of their similarity.</li>
+<li>We could expand upon this project by prioritizing exploration in promising paths. We could also use other search techniques
+like Monte-Carlo tree search.</li> 
 </ul>
 </p>
 
 <hr>
 <h2> Conclusions </h2>
-
+Minimax game tree search with alpha-beta pruning can be an effective and efficient way for an AI to play 
+turn-based games.
 <p>
-Based on your discussion, what are your conclusions?  What is your
-main message?
+
 </p>
 
 

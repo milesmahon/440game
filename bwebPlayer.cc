@@ -2,6 +2,13 @@
 //bweb@bu.edu, gaconte@bu.edu, mjm382@bu.edu
 //4/27/17
 //CS440 P3
+//
+// bwebPlayer.cc an AI player to play the game Atropos
+//
+// to build: 
+//    g++ -o bwebPlayer bwebPlayer.cc
+// or if it doesn't default to c++11:
+//    g++ -std=c++11 -o bwebPlayer bwebPlayer.cc
 
 #include <iostream>
 #include <string>
@@ -15,6 +22,7 @@ using namespace std;
 #define LDISTANCE_INDEX 2
 #define RDISTANCE_INDEX 3
 
+// global for which eval function we use (1-5). Assigned in main function at bottom
 int EVAL;
 
 bool isValid(int* move, int size);
@@ -47,6 +55,8 @@ public:
 
 };
 
+//Board class, takes in string given from atroposGame and represents it so it can be easily processed
+//by our functions
 Board::Board(string initialString){
   std::string delimiter = "[";
   vector<string> boardStateCopy; //"Copy" bc will be flipped later in function, see *1
@@ -72,11 +82,6 @@ Board::Board(string initialString){
   for (int i = boardStateCopy.size()-1; i >= 0; i--){
     boardState.push_back(boardStateCopy[i]);
   }
-
-  // db:
-  // for (int i = 0; i < boardState.size(); i++){
-  //   cerr << boardState[i] << endl;
-  // }
 
   //strip "LastMove:" from front of last line ("LastMove:" = 9 chars hence substr(9))
   this->lastMove = new int[4];
@@ -110,8 +115,6 @@ Board::Board(Board *oldBoard, int* newMove){
 }
 
 Board::~Board(){
-
-  // delete[] lastMove;
 
 }
 
@@ -256,8 +259,6 @@ vector<int*> Board::getNextMoves(){
 
 
   if(newMoves.size() == 0){
-  	// cerr << "newMoves size was zero" << endl;
-  	// for loop over rows
   	for(int height = 1; height < this->getBoardSize(); height++){
   		string row = this->boardState[height];
   		for(int leftDistance = 1; leftDistance < row.length() - 1; leftDistance++){
@@ -268,7 +269,6 @@ vector<int*> Board::getNextMoves(){
 	  				tempMove[HEIGHT_INDEX] = height;
 	  				tempMove[LDISTANCE_INDEX] = leftDistance;
 	  				tempMove[RDISTANCE_INDEX] = this->getBoardSize() - height - leftDistance;
-	  				// cerr << "In get next moves (all board): move: " << moveToString(tempMove) << endl;
 	  				newMoves.push_back(tempMove);
   				}
   			}
@@ -331,13 +331,13 @@ int Board::getColorAt(int height, int leftDistance, int rightDistance){
 
 
 //triangle holds the COLORS of an arbitrary triangle, no coordinates
+//This facilitates checking for board end-states
 class Triangle
 {
 public:
   int top;
   int left;
   int right;
-  // Triangle(int top[4], int left[4], int right[4]);
   Triangle();
   ~Triangle();
   //db:
@@ -345,14 +345,13 @@ public:
 
   //tries to find a place to add the color to the triangle (top left or right)
   void add(int color){
-    //cerr << "adding::" + to_string(color) << endl;
     if (top == -1){
       this->top = color;
     } else if (left == -1){
       this->left = color;
     } else if (right == -1){
       this->right = color;
-    } else { //debug
+    } else { 
       cerr << "ERROR -- triangle full -mm" << endl;
     }
     return;
@@ -376,7 +375,6 @@ public:
 
   // checks if all three colors are initialized to something (not -1)
   bool isValid(){
-    //cerr << "colors::" + to_string(this->top) + "," + to_string(this->left) + "," + to_string(this->right) << endl;
     if (this->top != -1 && this->right != -1 && this->left != -1)
       return true;
     return false;
@@ -393,10 +391,6 @@ Triangle::Triangle(){
 }
 
 Triangle::~Triangle(){
-  //no need anymore, since top,left,right are ints, not int*/int[]
-    // delete[] top;
-    // delete[] right;
-    // delete[] left;
 }
 
 int eval(Board *board);
@@ -416,9 +410,7 @@ bool isValid(int* move, int size){
 
 // overloading
 bool isValid(int i, int j, int k, int size){
-  //cerr << "testing::" + to_string(i) + "," + to_string(j) + "," + to_string(k) << endl;
   if (i >= size || j >= size || k >= size){
-    //cerr << "invalid::" + to_string(i) + "," + to_string(j) + "," + to_string(k) << endl;
     return false;
   }
 
@@ -426,7 +418,6 @@ bool isValid(int i, int j, int k, int size){
     return false;
   }
 
-  //cerr << "checking ijk add to ::" + to_string(size) + ":" + to_string(i) + "," + to_string(j) + "," + to_string(k) << endl;
   return (i + j + k == size);
 }
 
@@ -466,20 +457,15 @@ bool isWin(Board board){
   i = height + 1; // height
   j = left - 1; // left distance
   k = right; // right distance
-  //int move [] = {i, j, k};
   if (isValid(i, j, k, board.getBoardSize())){
-    //cerr << "valid::" + to_string(i) + "," + to_string(j) + "," + to_string(k) << endl;
     c1 = board.getColorAt(i, j, k);
-    //cerr << "color::" + to_string(c1) << endl;
   }
 
   // top right
   i = height + 1; // height
   j = left; // left distance
   k = right-1; // right distance
-  //move = {i, j, k};
   if (isValid(i, j, k, board.getBoardSize())){
-    //cerr << "valid::" + to_string(i) + "," + to_string(j) + "," + to_string(k) << endl;
     c2 = board.getColorAt(i, j, k);
   }
 
@@ -495,7 +481,6 @@ bool isWin(Board board){
   i = height; // height
   j = left + 1; // left distance
   k = right - 1; // right distance
-  //int move [] = {i, j, k};
   if (isValid(i, j, k, board.getBoardSize()))
     c3 = board.getColorAt(i, j, k);
 
@@ -512,7 +497,6 @@ bool isWin(Board board){
   i = height - 1; // height
   j = left + 1; // left distance
   k = right; // right distance
-  //int move [] = {i, j, k};
   if (isValid(i, j, k, board.getBoardSize()))
     c4 = board.getColorAt(i, j, k);
 
@@ -528,7 +512,6 @@ bool isWin(Board board){
   i = height - 1; // height
   j = left; // left distance
   k = right + 1; // right distance
-  //int move [] = {i, j, k};
   if (isValid(i, j, k, board.getBoardSize()))
     c5 = board.getColorAt(i, j, k);
 
@@ -567,8 +550,6 @@ bool isWin(Board board){
   tri = new Triangle();
 
   for (int x = 0; x < triangles.size(); x++){
-    //db
-    //cerr << "tri::::" + string(triangles[x]) << endl;
     if (triangles[x].isWin()){
       return true;
     }
@@ -640,8 +621,6 @@ bool isWin(vector<int> colors, int lastMoveColor){
   }
 
   for (int x = 0; x < triangles.size(); x++){
-    //db
-    //cerr << "tri::::" + string(triangles[x]) << endl;
     if (triangles[x].isWin()){
       return true;
     }
@@ -650,8 +629,8 @@ bool isWin(vector<int> colors, int lastMoveColor){
 
 }
 
-
-bool isEndState(Board* board){ //wrapper because "isWin" is a misnomer
+//wrapper because "isWin" is a misnomer
+bool isEndState(Board* board){ 
   return isWin(*board);
 }
 
@@ -676,7 +655,7 @@ void printBoard(Board* board) {
 // minimax without AB pruning, deprecated
 int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possible to attain from this board
 
-  vector<int*> nextMoves(board->getNextMoves()); //= new vector(board->getNextMoves());
+  vector<int*> nextMoves(board->getNextMoves()); //
 
   //base cases
   if (isWin(*board)){ //if isWin(board) and is myTurn, then my opponent was one who played losing move
@@ -711,26 +690,22 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
 
   if (myTurn){ //we are maximizing
     int max = -100000; //NOTE: 0 is worst possible eval score, currently
-    //int* maxMove;
     for (int i = 0; i < nextMoves.size(); i++){
       Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
-      int score = minimax(childBoard, false, depth-1); // false bc their turn now
+      int score = minimax(childBoard, false, depth-1); // false because their turn now
       if (score > max){
         max = score;
-        //maxMove = nextMoves[i];
       }
     }
     return max;
   }
   else { //minimizing
     int min = 100000;
-    //int* minMove;
     for (int i = 0; i < nextMoves.size(); i++){
       Board *childBoard = new Board(board, nextMoves[i]); //applies nextMoves[i] to the board
       int score = minimax(childBoard, true, depth-1); // true bc my turn now
       if (score < min){
         min = score;
-        //minMove = nextMoves[i];
       }
     }
     return min;
@@ -738,6 +713,7 @@ int minimax(Board *board, bool myTurn, int depth){ //returns maximum score possi
   return -1500000; //big, unique number for debug
 }
 
+// minimax with alpha-beta pruning
 int minimaxAB(Board *board, bool myTurn, int depth, int A, int B){ //returns maximum score possible to attain from this board
 
   vector<int*> nextMoves(board->getNextMoves());
@@ -775,13 +751,11 @@ int minimaxAB(Board *board, bool myTurn, int depth, int A, int B){ //returns max
 
   if (myTurn){ //we are maximizing
     int max = -100000; //NOTE: 0 is worst possible eval score, currently
-    //int* maxMove;
     for (int i = 0; i < nextMoves.size(); i++){
       Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
       int score = minimaxAB(childBoard, false, depth-1, A, B); // false bc their turn now
       if (score > max){
         max = score;
-        //maxMove = nextMoves[i];
       }
 			A = std::max(A, max);
 			if (B <= A)
@@ -791,13 +765,11 @@ int minimaxAB(Board *board, bool myTurn, int depth, int A, int B){ //returns max
   }
   else { //minimizing
     int min = 100000;
-    //int* minMove;
     for (int i = 0; i < nextMoves.size(); i++){
       Board *childBoard = new Board(board, nextMoves[i]); //applies nextMoves[i] to the board
-      int score = minimaxAB(childBoard, true, depth-1, A, B); // true bc my turn now
+      int score = minimaxAB(childBoard, true, depth-1, A, B); // true because my turn now
       if (score < min){
         min = score;
-        //minMove = nextMoves[i];
       }
 			B = std::min(B, min);
 			if (B <= A)
@@ -832,11 +804,8 @@ int eval2(Board* board) {
 		vector<int> colors = board->getNearbyColors(nextMoves[i][HEIGHT_INDEX], nextMoves[i][LDISTANCE_INDEX], nextMoves[i][RDISTANCE_INDEX]);
 		int current_color = board->getColorAt(nextMoves[i][HEIGHT_INDEX], nextMoves[i][LDISTANCE_INDEX], nextMoves[i][RDISTANCE_INDEX]);
 		if (!isWin(colors, current_color)) {
-			//std::cerr << "move: " << moveToString(nextMoves[i]) << endl;
-			// std:cerr << "results in loss" << endl;
 			result += 1;
 		}
-		// std::cerr << "\n";
 	}
 
 	return result;
@@ -951,11 +920,11 @@ int* chooseMove(Board *board, int depth){
   return maxMove;
 }
 
+/**
+ * We can achieve well under 5 second move times using MinimaxAB, lookahead depth of 7, and eval4
+ */
 int main(int argc, char* argv[])
 {
-  //with eval4 or eval5:
-  //board size 7 8 9 10
-  //depth of   9 9 7.5 8
 
   //NOTE: LOOKAHEAD DEPTH
   int depth = 7; //for minimax function
@@ -987,14 +956,16 @@ int main(int argc, char* argv[])
   // move timing
   EVAL = 4;
 
-  clock_t begin = clock();
+	/*code to begin timing each move*/
+	//begin timing
+  //clock_t begin = clock();
 
   int* move = chooseMove(startingBoard, depth);
 
-  // move time recording
-  clock_t end = clock();
-  double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-  cerr << "moveTime for eval" << EVAL << ": " << elapsed_secs << " seconds" << endl;
+	/*code to record the timing of each move*/
+  //clock_t end = clock();
+  //double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+  //cerr << "moveTime for eval" << EVAL << ": " << elapsed_secs << " seconds" << endl;
 
   // print to stdout for AtroposGame
   cout << "(" << move[0] << "," << move[1] << "," << move[2] << "," << move[3] << ")" << endl;
