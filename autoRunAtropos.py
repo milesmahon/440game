@@ -9,7 +9,8 @@ one = 0
 two = 0
 
 for i in range(numTimes):
-    subprocess.check_output(["java AtroposGame 7 './bwebPlayer' './bwebPlayer6' > log.txt"], shell=True, stderr=subprocess.STDOUT)
+    subprocess.check_output(["java AtroposGame 7 './bwebPlayerE4D7' './bwebPlayerE2' > log.txt"], shell=True, stderr=subprocess.STDOUT)
+
     #print(subprocess.check_output(["grep 'has won' log.txt"], shell=True))
     out = subprocess.check_output(["grep 'has won' log.txt"], shell=True)
     if ("Script One" in str(out)):
@@ -26,3 +27,7 @@ for i in range(numTimes):
     print("Game " + str(i) + " Completed")
 
 print("One wins with prob: " + str(one/(one+two)))
+<<<<<<< HEAD
+=======
+
+>>>>>>> 367a6a0746280d241deaf846254dbf3858b47e02
