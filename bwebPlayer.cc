@@ -975,7 +975,7 @@ int* chooseMove(Board *board, int depth){
   for (int i = 0; i < nextMoves.size(); i++){
     // cerr << moveToString(nextMoves[i]) << endl;
     Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
-    int score = minimax4(childBoard, false, depth-1, -99999999, 99999999); // myTurn = false bc their turn now
+    int score = minimaxAB(childBoard, false, depth-1, -99999999, 99999999); // myTurn = false bc their turn now
     if (score > max){
       max = score;
       maxMove = nextMoves[i];
@@ -993,7 +993,7 @@ int main(int argc, char* argv[])
 {
 
   //NOTE: LOOKAHEAD DEPTH
-  int depth = 10; //for minimax function
+  int depth = 7; //for minimax function
 
   // test boards
   string inpt = argv[1];
