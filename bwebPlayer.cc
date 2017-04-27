@@ -955,7 +955,6 @@ int eval4(Board* board) {
   return max(max(c0, c1),  max(c2, c3));
 }
 
-<<<<<<< HEAD
 int eval5(Board* board) {
 	int* lastMove = board->getLastMove();
 	vector<int> colors = board->getNearbyColors(lastMove[HEIGHT_INDEX], lastMove[LDISTANCE_INDEX], lastMove[RDISTANCE_INDEX]);
@@ -979,84 +978,6 @@ int eval5(Board* board) {
   return -max(max(c0, c1),  max(c2, c3));
 }
 
-
-int minimax4(Board *board, bool myTurn, int depth, int A, int B){ //returns maximum score possible to attain from this board
-
-  //vector<int*> nextMoves = new vector<int*>(board->getNextMoves());
-  vector<int*> nextMoves(board->getNextMoves()); //= new vector(board->getNextMoves());
-
-  //check depth base case
-  //How does eval handle winning
-  //printBoard(board);
-  if (isWin(*board)){ //if isWin(board) and is myTurn, then my opponent was one who played losing move
-    if (myTurn){
-      return 1111; //TODO: is this best score?
-    } else {
-      return -1111; //TODO: is this best score?
-    }
-  } else if (depth == 0){
-    int ev = eval4(board);
-    if (myTurn) {
-      return ev;
-    }
-    else {
-      return -1*ev;
-    }
-  }
-  else if (nextMoves.size() == 0){
-    int ev = eval4(board);
-    if (myTurn) {
-      return ev;
-    }
-    else {
-      return -1*ev;
-    }
-  }
-
-  //find valid moves
-  //evaluate valid moves
-  //pick best move
-  //call minimax again with that move done on the board
-  //printBoard(board);
-  //vector<int*> nextMoves = board->getNextMoves();
-
-  if (myTurn){ //we are maximizing
-    int max = -100000; //NOTE: 0 is worst possible eval score, currently
-    //int* maxMove;
-    for (int i = 0; i < nextMoves.size(); i++){
-      Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
-      int score = minimax4(childBoard, false, depth-1, A, B); // false bc their turn now
-      if (score > max){
-        max = score;
-        //maxMove = nextMoves[i];
-      }
-			A = std::max(A, max);
-			if (B <= A)
-				break;
-    }
-    return max;
-  }
-  else { //minimizing
-    int min = 100000;
-    //int* minMove;
-    for (int i = 0; i < nextMoves.size(); i++){
-      Board *childBoard = new Board(board, nextMoves[i]); //applies nextMoves[i] to the board
-      int score = minimax4(childBoard, true, depth-1, A, B); // true bc my turn now
-      if (score < min){
-        min = score;
-        //minMove = nextMoves[i];
-      }
-			B = std::min(B, min);
-			if (B <= A)
-				break;
-    }
-    return min;
-  }
-  return -1500000;
-}
-
-=======
->>>>>>> 1d307ee5d417543ea9dbd1698f87b86a818d58c2
 int eval(Board* board){
 	switch(EVAL){
 		case 1:
@@ -1101,12 +1022,8 @@ int* chooseMove(Board *board, int depth){
   for (int i = 0; i < nextMoves.size(); i++){
     // cerr << moveToString(nextMoves[i]) << endl;
     Board *childBoard = new Board(board, nextMoves[i]); // applies nextMoves[i] to the board
-<<<<<<< HEAD
-    // int score = minimax(childBoard, false, depth-1); // false bc their turn now
-    int score = minimaxAB(childBoard, false, depth-1, -99999999, 99999999); // false bc their turn now
-=======
+
     int score = minimaxAB(childBoard, false, depth-1, -99999999, 99999999); // myTurn = false bc their turn now
->>>>>>> 1d307ee5d417543ea9dbd1698f87b86a818d58c2
     if (score > max){
       max = score;
       maxMove = nextMoves[i];
@@ -1124,17 +1041,7 @@ int main(int argc, char* argv[])
 {
 
   //NOTE: LOOKAHEAD DEPTH
-<<<<<<< HEAD
   int depth = 9; //for minimax function
-
-
-
-  // print to stderr for debugging purposes
-  // remove all debugging statements before submitting your code
-  // std::cerr << "Given board "  << argv[1] << " thinking...\n" <<  std::flush;
-=======
-  int depth = 7; //for minimax function
->>>>>>> 1d307ee5d417543ea9dbd1698f87b86a818d58c2
 
   // test boards
   string inpt = argv[1];
