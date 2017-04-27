@@ -991,9 +991,11 @@ int* chooseMove(Board *board, int depth){
 
 int main(int argc, char* argv[])
 {
+  //board size 7 8 9 10
+  //depth of   9 9 7.5 8
 
   //NOTE: LOOKAHEAD DEPTH
-  int depth = 7; //for minimax function
+  int depth = 8; //for minimax function
 
   // test boards
   string inpt = argv[1];
