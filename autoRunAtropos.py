@@ -13,12 +13,12 @@ for i in range(numTimes):
 
     #print(subprocess.check_output(["grep 'has won' log.txt"], shell=True))
     out = subprocess.check_output(["grep 'has won' log.txt"], shell=True)
-    if ("Script One" in str(out)):
+    if ("Script" in str(out)):
         one+= 1
-    elif ("Script Two" in str(out)):
-        two+=1
-    elif ("Script" in str(out)):
-   	    one+=1
+    # elif ("Script Two" in str(out)):
+    #     two+=1
+    # elif ("Script" in str(out)):
+ #   	    one+=1
     elif("Default" in str(out)):
    	    two+=1
     else:
@@ -26,6 +26,5 @@ for i in range(numTimes):
 
     print("Game " + str(i + 1) + " Completed. One: " + str(one) + " Two: " + str(two))
 
-
+print("Board size 7 with bwebPlayer to a depth of 8 eval 5")
 print("One wins with prob: " + str(one/(one+two)))
-

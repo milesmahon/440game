@@ -1,3 +1,8 @@
+//@author Brandon Webster, Giuliano Conte, Miles Mahon
+//bweb, gaconte, mjm382
+//4/27/17
+//CS440
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -22,6 +27,7 @@ private:
 
   int *lastMove;
   vector<string> boardState;
+
 public:
   Board(string initialString);
   Board(Board *board, int* newMove);
@@ -37,15 +43,13 @@ public:
 
   vector<int*> getNextMoves();
 
-  vector<int*> getNearby();
-
   vector<int> getNearbyColors(int h, int ld, int rd);
 
 };
 
 Board::Board(string initialString){
   std::string delimiter = "[";
-  vector<string> boardStateCopy; //"Copy" bc will be flipped later in function at *1
+  vector<string> boardStateCopy; //"Copy" bc will be flipped later in function, see *1
 
   //https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
   size_t pos = 0;
@@ -55,15 +59,14 @@ Board::Board(string initialString){
   while ((pos = initialString.find(delimiter)) != string::npos) { //while can still find "["
       token = initialString.substr(0, pos-1); //substr from [ to ], don't include ]
       boardStateCopy.push_back(token); // append to list
-      //cerr << token << endl;
       initialString.erase(0, pos + delimiter.length());
   }
+
   //getting last move:
   pos = initialString.find("]");
   token = initialString.substr(0, pos);
   boardStateCopy.push_back(token);
   initialString.erase(0, pos + 1);
-  //strip "LastMove:" from front of last line
 
   //flip the board so index of row = height of row *1
   for (int i = boardStateCopy.size()-1; i >= 0; i--){
@@ -75,12 +78,11 @@ Board::Board(string initialString){
   //   cerr << boardState[i] << endl;
   // }
 
-
-  //cerr << "before setLastMove" <<endl;
+  //strip "LastMove:" from front of last line ("LastMove:" = 9 chars hence substr(9))
   this->lastMove = new int[4];
   if(initialString.substr(9) != "null")
 		this->setLastMove(initialString.substr(9, initialString.length()));
-	else{
+	else{ // case where "LastMove:null"
 		this->lastMove[COLOR_INDEX] = -1;
 		this->lastMove[HEIGHT_INDEX] = -1;
 		this->lastMove[LDISTANCE_INDEX] = -1;
@@ -88,6 +90,9 @@ Board::Board(string initialString){
 	}
 
 }
+
+//creates a new board which is oldBoard with newMove applied
+  // sets the returned board's last move to newMove
 Board::Board(Board *oldBoard, int* newMove){
   this->boardState = oldBoard->boardState; // same as (*oldBoard).boardState
 
@@ -110,6 +115,7 @@ Board::~Board(){
 
 }
 
+// parse the move string and set lastMove = move
 void Board::setLastMove(string move){
   string parsedMove = move.substr(1);
   int pos = parsedMove.find(',');
@@ -126,6 +132,8 @@ void Board::setLastMove(string move){
   parsedMove = parsedMove.substr(pos + 1);
 }
 
+// returns all possible moves that you can make, based on the lastMove made on
+  // this board. as a vector of moves (int[4])'s'
 vector<int*> Board::getNextMoves(){
   vector<int*> newMoves;
 
@@ -271,6 +279,7 @@ vector<int*> Board::getNextMoves(){
   return newMoves;
 }
 
+// returns the colors of all adjacent squares (up to 6 colors)
 vector<int> Board::getNearbyColors(int h, int ld, int rd){
     vector<int> colors;
 
@@ -313,81 +322,7 @@ vector<int> Board::getNearbyColors(int h, int ld, int rd){
 
 }
 
-
-vector<int*> Board::getNearby(){
-  vector<int*> newMoves;
-
-  for(int color = 1; color <= 3; color++){
-    // top left
-  	int *tempMove = new int[4];
-    tempMove[0] = color; // color
-    tempMove[1] = lastMove[1] + 1; // height
-    tempMove[2] = lastMove[2] - 1; // left distance
-    tempMove[3] = lastMove[3]; // right distance
-	if (tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0) {
-		newMoves.push_back(tempMove);
-	}
-
-
-    // top right
-	tempMove = new int[4];
-    tempMove[0] = color; // color
-    tempMove[1] = lastMove[1] + 1; // height
-    tempMove[2] = lastMove[2]; // left distance
-    tempMove[3] = lastMove[3] - 1; // right distance
-	if (tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0) {
-		newMoves.push_back(tempMove);
-	}
-
-    // left
-	tempMove = new int[4];
-    tempMove[0] = color; // color
-    tempMove[1] = lastMove[1]; // height
-    tempMove[2] = lastMove[2] - 1; // left distance
-    tempMove[3] = lastMove[3] + 1; // right distance
-	if (tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0) {
-		newMoves.push_back(tempMove);
-	}
-
-    // right
-	tempMove = new int[4];
-    tempMove[0] = color; // color
-    tempMove[1] = lastMove[1]; // height
-    tempMove[2] = lastMove[2] + 1; // left distance
-    tempMove[3] = lastMove[3] - 1; // right distance
-	if (tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0) {
-		newMoves.push_back(tempMove);
-	}
-
-    // bottom left
-	tempMove = new int[4];
-    tempMove[0] = color; // color
-    tempMove[1] = lastMove[1] - 1; // height
-	tempMove[2] = lastMove[2]; // left distance
-	if (tempMove[1] == 1) tempMove[2] -= 1;
-		tempMove[3] = lastMove[3] + 1; // right distance
-	if (tempMove[1] == 1) tempMove[3] -= 1;
-	if (tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0) {
-		newMoves.push_back(tempMove);
-	}
-
-    // bottom right
-	tempMove = new int[4];
-    tempMove[0] = color; // color
-    tempMove[1] = lastMove[1] - 1; // height
-    tempMove[2] = lastMove[2] + 1; // left distance
-	if (tempMove[1] == 1) tempMove[2] -= 1;
-		tempMove[3] = lastMove[3]; // right distance
-	if (tempMove[1] == 1) tempMove[3] -= 1;
-	if (tempMove[1] > 0 && tempMove[2] > 0 && tempMove[3] > 0) {
-		newMoves.push_back(tempMove);
-	}
-
-  }
-
-  return newMoves;
-}
-
+// get color at this board position (notice that rightDistance is not necessary)
 int Board::getColorAt(int height, int leftDistance, int rightDistance){
   string row = this->boardState[height];
   char color = row[leftDistance];
@@ -408,6 +343,7 @@ public:
   //db:
   operator std::string() const {return (to_string(top) + "," + to_string(left) + "," + to_string(right));};
 
+  //tries to find a place to add the color to the triangle (top left or right)
   void add(int color){
     //cerr << "adding::" + to_string(color) << endl;
     if (top == -1){
@@ -416,7 +352,7 @@ public:
       this->left = color;
     } else if (right == -1){
       this->right = color;
-    } else {
+    } else { //debug
       cerr << "ERROR -- triangle full -mm" << endl;
     }
     return;
@@ -424,6 +360,7 @@ public:
 
   //an in-class isWin function for triangles,
   //since triangle has immediate access to its own colors
+    //checks that colors are different, and not 0 (no color)
   bool isWin(){
     int c1 = this->top;
     int c2 = this->left;
@@ -437,6 +374,7 @@ public:
     return false;
   }
 
+  // checks if all three colors are initialized to something (not -1)
   bool isValid(){
     //cerr << "colors::" + to_string(this->top) + "," + to_string(this->left) + "," + to_string(this->right) << endl;
     if (this->top != -1 && this->right != -1 && this->left != -1)
@@ -445,16 +383,9 @@ public:
 
   }
 
-  void clear(){
-    this->top = -1;
-    this->right = -1;
-    this->left = -1;
-
-  }
-
 };
 
-
+// default constructor
 Triangle::Triangle(){
   top = -1;
   right = -1;
@@ -507,16 +438,19 @@ bool isWin(Board board){
 
   // checks all "triangles" that lastMove is a part of
   // if the triangle contains all 3 colors, it's a "win" (end board state)
+    // triangle->add adds a color to a triangle
+    // triangle->isWin checks if the three colors it holds are different
   vector<string> boardState = board.getBoardString();
   int* lastMove = board.getLastMove();
 
+  // parse parameters
   int color = lastMove[0];
   int height = lastMove[1];
   int left = lastMove[2];
   int right = lastMove[3];
   //cerr << left << endl;
 
-  // Hacks
+  // init values
   int i, j, k; // temps
   int c1 = -1;
   int c2 = -1;
@@ -926,10 +860,6 @@ int eval3(Board* board) {
 	return c1 + c2 + c3;
 }
 
-int max3(int c1, int c2, int c3){
-	int submax = (c1 > c2) ? c1 : c2;
-	return (submax > c3) ? submax : c3;
-}
 
 // eval based on color diversity (better)
 int eval4(Board* board) {
@@ -1039,6 +969,7 @@ int* chooseMove(Board *board, int depth){
 
 int main(int argc, char* argv[])
 {
+  //with eval4 or eval5:
   //board size 7 8 9 10
   //depth of   9 9 7.5 8
 
